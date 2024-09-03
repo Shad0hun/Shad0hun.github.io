@@ -27,7 +27,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic.imgdb.cn/item/66c89de9d9c307b7e9c7fab4.png">
 <meta property="article:published_time" content="2024-08-23T12:53:50.000Z">
-<meta property="article:modified_time" content="2024-08-23T14:35:20.911Z">
+<meta property="article:modified_time" content="2024-09-03T07:24:55.182Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="博客搭建&#x2F;运营指南">
 <meta name="twitter:card" content="summary">
@@ -499,7 +499,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">2</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -553,8 +553,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-08-23 22:35:20</span>
-            <span class="mobile">2024-08-23 22:35:20</span>
+            <span class="desktop">2024-09-03 15:24:55</span>
+            <span class="mobile">2024-09-03 15:24:55</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -618,7 +618,7 @@
 <li>方法二（一键部署）：<br>  这个方法需要我们修改<code>_config.yml</code>：<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Deployment</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/Shad0hun/Shad0hun.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure></div>
 然后使用命令<code>hexo d</code>一键部署，如果不成功的话，还是建议多试几次或者将https改为ssh进行上传。<br>完成上面的工作，实际上我们已经可以在自己的网站上看到博客了，如果看不到的话，去看看GitHub Pages有没有正常工作。</li>
 </ul>
-<h1 id="三-博客运营"><a href="#三-博客运营" class="headerlink" title="三.博客运营"></a>三.博客运营</h1><p>这里主要介绍hexo的一些指令，主要就是发布文章，同步到GitHub的一些操作。</p>
+<h1 id="三-博客运营"><a href="#三-博客运营" class="headerlink" title="三.博客运营"></a>三.博客运营</h1><p>修改<code>_config.yml</code>文件：<code>post_asset_folder: true</code>即可在生成文章的时候生成一个同名资源目录用于存放图片文件。<br>这里主要介绍hexo的一些指令，主要就是发布文章，同步到GitHub的一些操作。</p>
 <ul>
 <li>新建博客并初始化：<code>hexo init [folder]</code></li>
 <li>新建文章：<code>hexo new [layout] &lt;title&gt;</code></li>
@@ -644,7 +644,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-08-23 22:35:20
+                    :</strong> 2024-09-03 15:24:55
             </li>
         
         <li>
@@ -678,6 +678,26 @@
 
         
 
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2024/09/03/Fuzzing101-1%EF%BC%9AXpdf/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Fuzzing101-1：Xpdf</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+            </div>
         
 
 
@@ -766,7 +786,7 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共 1 篇文章
+                        共 2 篇文章
                     </span>
                     
                 </p>
