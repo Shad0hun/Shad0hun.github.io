@@ -25,14 +25,16 @@
 <meta property="og:site_name" content="Shad0hun&#39;s Blog">
 <meta property="og:description" content="一.概述整个Fuzzing101练习的目的就是为了让我们练习Fuzz工具的使用，以及漏洞挖掘的流程，这一篇主要是针对Xpdf（PDF查看器）进行模糊测试，目标是为了使用Fuzz工具（AFL++)，进行有源码的Fuzz，找到Xpdf中的CVE-2019-13288的崩溃。Fuzzing101-xpdf链接  二.构建Fuzz目标首先我们新建一个目录： 12cd $HOMEmkdir fuzzing_">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/Fuzzing101-1%EF%BC%9AXpdf/Pasted%20image%2020240903144807.png">
-<meta property="og:image" content="http://example.com/Fuzzing101-1%EF%BC%9AXpdf/afl++.png">
-<meta property="og:image" content="http://example.com/Fuzzing101-1%EF%BC%9AXpdf/crashes_sample.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66d8323fd9c307b7e9036ddb.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66d83254d9c307b7e9038d9e.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66d83264d9c307b7e903a8b5.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66d832d3d9c307b7e904ab48.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66d832e2d9c307b7e904cb71.png">
 <meta property="article:published_time" content="2024-09-03T07:24:43.000Z">
-<meta property="article:modified_time" content="2024-09-03T07:37:25.719Z">
+<meta property="article:modified_time" content="2024-09-04T10:14:28.211Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/Fuzzing101-1%EF%BC%9AXpdf/Pasted%20image%2020240903144807.png">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/66d8323fd9c307b7e9036ddb.png">
     
     
         <!-- Google tag (gtag.js) -->
@@ -496,7 +498,7 @@
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
@@ -554,12 +556,28 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-09-03 15:37:25</span>
-            <span class="mobile">2024-09-03 15:37:25</span>
+            <span class="desktop">2024-09-04 18:14:28</span>
+            <span class="mobile">2024-09-04 18:14:28</span>
             <span class="hover-info">更新</span>
         </span>
     
 
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Fuzzing101/">Fuzzing101</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
     
     
 
@@ -589,12 +607,12 @@
 <div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.xpdfreader.com/old/xpdf-3.02.tar.gz</span><br><span class="line">tar -xvzf xpdf-3.02.tar.gz</span><br></pre></td></tr></table></figure></div>
 <p>我们使用刚下载下来的源码进行构建目标：</p>
 <div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd xpdf-3.02</span><br><span class="line">sudo apt update &amp;&amp; sudo apt install -y build-essential gcc</span><br><span class="line">./configure --prefix=&quot;$HOME/fuzzing_xpdf/install/&quot;</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
-<p>我们进行模糊测试的时候需要是一些模板，下载下来：</p>
+<h1 id="三-下载测试用例"><a href="#三-下载测试用例" class="headerlink" title="三.下载测试用例"></a>三.下载测试用例</h1><p>我们进行模糊测试的时候需要是一些模板，下载下来：</p>
 <div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd $HOME/fuzzing_xpdf</span><br><span class="line">mkdir pdf_examples &amp;&amp; cd pdf_examples</span><br><span class="line">wget https://github.com/mozilla/pdf.js-sample-files/raw/master/helloworld.pdf</span><br><span class="line">wget http://www.africau.edu/images/default/sample.pdf</span><br><span class="line">wget https://www.melbpc.org.au/wp-content/uploads/2017/10/small-example-pdf-file.pdf</span><br></pre></td></tr></table></figure></div>
 <p>我当时下载的时候有一个是连接不上的。<br>从源码构建好之后，我们简单试用一下构建出来的目标，看看是否成功构建出来：<br><code>$HOME/fuzzing_xpdf/install/bin/pdfinfo -box -meta $HOME/fuzzing_xpdf/pdf_examples/helloworld.pdf</code><br><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/Fuzzing101-1%EF%BC%9AXpdf/Pasted%20image%2020240903144807.png"
+                     data-src="https://pic.imgdb.cn/item/66d8323fd9c307b7e9036ddb.png"
                       alt="sample"
                 ><br>这样就说明我们构建出来的目标程序是没错的。<br>我们刚才构建的程序是没有经过插桩的，想在我们需要使用AFL++的编译器，对源码进行插桩编译：</p>
 <div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -r $HOME/fuzzing_xpdf/install</span><br><span class="line">cd $HOME/fuzzing_xpdf/xpdf-3.02/</span><br><span class="line">make clean</span><br></pre></td></tr></table></figure></div>
@@ -604,19 +622,29 @@
 <div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -r $HOME/fuzzing_xpdf/install</span><br><span class="line">cd $HOME/fuzzing_xpdf/xpdf-3.02/</span><br><span class="line">make clean</span><br></pre></td></tr></table></figure></div>
 <p>现在我们生成新的目标程序：</p>
 <div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
-<p>现在我们就可以使用AFL++对目标程序进行Fuzz了：<br><code>afl-fuzz -i $HOME/fuzzing_xpdf/pdf_examples/ -o $HOME/fuzzing_xpdf/out/ -s 123 -- $HOME/fuzzing_xpdf/install/bin/pdftotext @@ $HOME/fuzzing_xpdf/output</code><br><img  
+<h1 id="四-Fuzzing"><a href="#四-Fuzzing" class="headerlink" title="四.Fuzzing"></a>四.Fuzzing</h1><p>现在我们就可以使用AFL++对目标程序进行Fuzz了：<br><code>afl-fuzz -i $HOME/fuzzing_xpdf/pdf_examples/ -o $HOME/fuzzing_xpdf/out/ -s 123 -- $HOME/fuzzing_xpdf/install/bin/pdftotext @@ $HOME/fuzzing_xpdf/output</code><br><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/Fuzzing101-1%EF%BC%9AXpdf/afl++.png"
+                     data-src="https://pic.imgdb.cn/item/66d83254d9c307b7e9038d9e.png"
                       alt="afl++"
                 ><br>可以看到程序已经开始Fuzz（我这里是跑了好久之后的截图）。<br>现在我们可以尝试进行漏洞分析，我们在<code>Fuzzing101/01/out/default/crashes</code>目录下可以看到导致进程crash的样本，这里一共是9个，我们现在要做的就是将这些样本传递给pdftotext，重现进程crash的场景；<br><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/Fuzzing101-1%EF%BC%9AXpdf/crashes_sample.png"
+                     data-src="https://pic.imgdb.cn/item/66d83264d9c307b7e903a8b5.png"
                       alt="crashes_sample"
                 ><br>我们现在将这些样本传递给目标程序，我们看看到底是为什么导致进程崩溃：<br>这里注意一下，其他导致进程crash的样本，不一定是漏洞，需要我们自己分析的。<br>现在我们就需要重新构建Xpdf，使用调试信息，这样做是为了我们方便调试跟踪：</p>
 <div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -r <span class="variable">$HOME</span>/fuzzing_xpdf/install</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$HOME</span>/fuzzing_xpdf/xpdf-3.02/</span><br><span class="line">make clean</span><br><span class="line">CFLAGS=<span class="string">&quot;-g -O0&quot;</span> CXXFLAGS=<span class="string">&quot;-g -O0&quot;</span> ./configure --prefix=<span class="string">&quot;<span class="variable">$HOME</span>/fuzzing_xpdf/install/&quot;</span></span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
-<p>现在我们使用gdb进行调试：<br>命令：<code>gdb --args &#39;/home/shad0hun/桌面/Fuzzing101/01/install/bin/pdftotext&#39; &#39;/home/shad0hun/桌面/Fuzzing101/01/out/default/crashes/id:000003,sig:11,src:000229,time:853052,execs:387696,op:havoc,rep:8&#39; ./output</code><br>待程序加载之后<code>run</code>起来，然后就能看到崩溃：![[run_crash.png]]然后<code>bt</code>获得函数调用栈回溯，gdb会一直滚动，这就表明出发了无限递归![[gdb_bt.png]]这里截取了一部分，这表明我们已经触发了该漏洞，而且由于我们有源码，这里明确指出了触发漏洞的位置，位于<code>Object.cc文件的Object::fetch()</code>方法上，而且我们还是有参数的，我们就可以利用这些信息去找到这个漏洞。</p>
+<p>现在我们使用gdb进行调试：<br>命令：<code>gdb --args &#39;/home/shad0hun/桌面/Fuzzing101/01/install/bin/pdftotext&#39; &#39;/home/shad0hun/桌面/Fuzzing101/01/out/default/crashes/id:000003,sig:11,src:000229,time:853052,execs:387696,op:havoc,rep:8&#39; ./output</code><br>待程序加载之后<code>run</code>起来，然后就能看到崩溃：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66d832d3d9c307b7e904ab48.png"
+                      alt="run_crash"
+                ><br>然后<code>bt</code>获得函数调用栈回溯，gdb会一直滚动，这就表明出发了无限递归<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66d832e2d9c307b7e904cb71.png"
+                      alt="gdb_bt"
+                ><br>这里截取了一部分，这表明我们已经触发了该漏洞，而且由于我们有源码，这里明确指出了触发漏洞的位置，位于<code>Object.cc文件的Object::fetch()</code>方法上，而且我们还是有参数的，我们就可以利用这些信息去找到这个漏洞。</p>
 
         </div>
 
@@ -631,7 +659,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-09-03 15:37:25
+                    :</strong> 2024-09-04 18:14:28
             </li>
         
         <li>
@@ -732,7 +760,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">Fuzzing101-1：Xpdf</div>
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80-%E6%A6%82%E8%BF%B0"><span class="nav-text">一.概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C-%E6%9E%84%E5%BB%BAFuzz%E7%9B%AE%E6%A0%87"><span class="nav-text">二.构建Fuzz目标</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80-%E6%A6%82%E8%BF%B0"><span class="nav-text">一.概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C-%E6%9E%84%E5%BB%BAFuzz%E7%9B%AE%E6%A0%87"><span class="nav-text">二.构建Fuzz目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89-%E4%B8%8B%E8%BD%BD%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="nav-text">三.下载测试用例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B-Fuzzing"><span class="nav-text">四.Fuzzing</span></a></li></ol>
 
     </div>
 </div>
