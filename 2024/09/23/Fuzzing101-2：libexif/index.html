@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Shad0hun">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2024/09/23/fuzzing101-2：libexif/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="libexif 通过第一个模糊测试的练习，已经对模糊测试的流程有一个大致了解了。接下来我们通过使用AFL++的afl-lto进行插桩编译，来挖掘libexif的两个崩溃。 &lt;1&gt;.构建目标程序首先新建一个文件夹，保存模糊测试进度：进入目录之后，下载libexif-06.14：官网提到了一个autoreconf -i命令，但是我这里没有，上网查了一下：这里使用命令来安装一下：sudo a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fuzzing101-2：libexif">
+<meta property="og:url" content="http://example.com/2024/09/23/Fuzzing101-2%EF%BC%9Alibexif/index.html">
+<meta property="og:site_name" content="Shad0hun&#39;s Blog">
+<meta property="og:description" content="libexif 通过第一个模糊测试的练习，已经对模糊测试的流程有一个大致了解了。接下来我们通过使用AFL++的afl-lto进行插桩编译，来挖掘libexif的两个崩溃。 &lt;1&gt;.构建目标程序首先新建一个文件夹，保存模糊测试进度：进入目录之后，下载libexif-06.14：官网提到了一个autoreconf -i命令，但是我这里没有，上网查了一下：这里使用命令来安装一下：sudo a">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f11f90f21886ccc0936279.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f11fbcf21886ccc093911a.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f11fcdf21886ccc0939e82.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f11feaf21886ccc093b88f.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f11ff9f21886ccc093c57c.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f1200ff21886ccc093e89d.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f1201bf21886ccc09414d7.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f12035f21886ccc094298b.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/66f1204cf21886ccc0943f36.png">
+<meta property="article:published_time" content="2024-09-23T07:45:28.000Z">
+<meta property="article:modified_time" content="2024-09-23T08:06:39.939Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/66f11f90f21886ccc0936279.png">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-2P50D0W8WD"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2P50D0W8WD');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Fuzzing101-2：libexif -
+        
+        Shad0hun&#39;s Blog
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"zh-CN"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":true},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":true,"id":"G-2P50D0W8WD"}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Shad0hun's Blog","subtitle":{"text":["愿许秋风知我意，散我心中意难平","要想人前显贵，就得人后受罪!"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.4","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Github":{"path":"https://github.com/Shad0hun","icon":"fa-brands fa-github"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":"有空多读书，没事早点睡","show_on_mobile":true,"links":{"Tags":{"path":"/tags","icon":"fa-regular fa-tags"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2024/8/26 00:00:00"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+
+    <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        Shad0hun&#39;s Blog
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [40,0],
+                translateZ: 0,
+                opacity: [0,1],
+                filter: ['blur(5px)', 'blur(0px)'], // Starting from blurred to unblurred
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i,
+            }).add({
+                targets: '.ml13 .letter',
+                translateY: [0,-40],
+                opacity: [1,0],
+                filter: ['blur(0px)', 'blur(5px)'], // Ending from unblurred to blurred
+                easing: "easeInExpo",
+                duration: 1200,
+                delay: (el, i) => 100 + 30 * i,
+                complete: function() {
+                    hidePreloader(); // Call hidePreloader after the animation completes
+                }
+            });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Shad0hun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   target="_blank" rel="noopener" href="https://github.com/Shad0hun"
+                                        >
+                                    <i class="fa-brands fa-github fa-fw"></i>
+                                    GITHUB
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    分类
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           target="_blank" rel="noopener" href="https://github.com/Shad0hun"
+                        >
+                            <span>
+                                GITHUB
+                            </span>
+                            
+                                <i class="fa-brands fa-github fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                分类
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">3</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Fuzzing101-2：libexif</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/Author.svg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-09-23 15:45:28</span>
+        <span class="mobile">2024-09-23 15:45:28</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-09-23 16:06:39</span>
+            <span class="mobile">2024-09-23 16:06:39</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Fuzzing101/">Fuzzing101</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p><a class="link"   target="_blank" rel="noopener" href="https://www.ruanx.net/fuzzing101-wp-2/" >libexif <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>通过第一个模糊测试的练习，已经对模糊测试的流程有一个大致了解了。接下来我们通过使用AFL++的afl-lto进行插桩编译，来挖掘libexif的两个崩溃。</p>
+<h1 id="构建目标程序"><a href="#构建目标程序" class="headerlink" title="&lt;1&gt;.构建目标程序"></a>&lt;1&gt;.构建目标程序</h1><p>首先新建一个文件夹，保存模糊测试进度：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f11f90f21886ccc0936279.png"
+                      alt="mkdir02.png"
+                ><br>进入目录之后，下载libexif-06.14：<br>官网提到了一个<code>autoreconf -i</code>命令，但是我这里没有，上网查了一下：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f11fbcf21886ccc093911a.png"
+                      alt="AutoPoint.png"
+                ><br>这里使用命令来安装一下：<br><code>sudo apt-get install autopoint</code><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f11fcdf21886ccc0939e82.png"
+                      alt="AutoPoint_install.png"
+                ><br>根据我们之前的经验，我们编译出两个版本，一个是正常构建出来的版本，方便我们后续的调试，还需要构建出来一个我们用来Fuzz的版本。</p>
+<ul>
+<li>我们首先构建出一个release版本：<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> libexif-libexif-0_6_14-release/</span><br><span class="line"><span class="built_in">sudo</span> apt-get install autopoint libtool gettext libpopt-dev</span><br><span class="line">autoreconf -fvi</span><br><span class="line">./configure --enable-shared=no --prefix=<span class="string">&quot;<span class="variable">$HOME</span>/fuzzing_libexif/install/&quot;</span></span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div></li>
+<li>再构建一个使用AFL-clang-lto插桩编译的版本：<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> libexif-libexif-0_6_14-release/</span><br><span class="line">make clean</span><br><span class="line"><span class="built_in">export</span> LLVM_CONFIG=<span class="string">&quot;llvm-config-14&quot;</span></span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/02/libexif_Fuzzing&#x27;</span> </span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+由于libexif是一个库，我们没办法像测试应用程序那样来测试它，所以我们要找一个应用程序，调用这个库，对其进行模糊测试：<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$HOME</span>/fuzzing_libexif</span><br><span class="line">wget https://github.com/libexif/exif/archive/refs/tags/exif-0_6_15-release.tar.gz</span><br><span class="line">tar -xzvf exif-0_6_15-release.tar.gz</span><br></pre></td></tr></table></figure></div>
+至此，我们就可以构建exif了，exif可以调用libexif库：<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> exif-exif-0_6_15-release/</span><br><span class="line">autoreconf -fvi</span><br><span class="line">./configure --enable-shared=no --prefix=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/02/exif_release&#x27;</span> PKG_CONFIG_PATH=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/02/release/lib/pkgconfig&#x27;</span></span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+可以看到我们构建成功：<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f11feaf21886ccc093b88f.png"
+                      alt="make_exif.png"
+                ><br>同样，我们需要构建一个使用afl-lto插桩编译的版本：<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> exif-exif-0_6_15-release/</span><br><span class="line">make clean</span><br><span class="line"><span class="built_in">export</span> LLVM_CONFIG=<span class="string">&quot;llvm-config-14&quot;</span></span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/02/exif_Fuzzing&#x27;</span> PKG_CONFIG_PATH=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/02/libexif_Fuzzing/lib/pkgconfig&#x27;</span></span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<h1 id="构建种子语料库"><a href="#构建种子语料库" class="headerlink" title="&lt;2&gt;.构建种子语料库"></a>&lt;2&gt;.构建种子语料库</h1><p>我们要进行Fuzz的话，我们首先需要种子语料库，作为模板传递给应用程序，这样效率就会高一点：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/02&#x27;</span></span><br><span class="line">wget https://github.com/ianare/exif-samples/archive/refs/heads/master.zip</span><br><span class="line">unzip master.zip</span><br></pre></td></tr></table></figure></div>
+<p>有了种子语料库之后，我们来看一下exif：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f11ff9f21886ccc093c57c.png"
+                      alt="exif_sample.png"
+                ></p>
+<h2 id="Fuzzing"><a href="#Fuzzing" class="headerlink" title="&lt;3&gt;.Fuzzing"></a>&lt;3&gt;.Fuzzing</h2><p><code>sudo afl-fuzz -i &#39;/home/shad0hun/桌面/Fuzzing101/02/exif-samples-master/jpg&#39; -o &#39;/home/shad0hun/桌面/Fuzzing101/02/out&#39; -s 123 -- &#39;/home/shad0hun/桌面/Fuzzing101/02/exif_Fuzzing/bin/exif&#39; @@</code><br>第一遍跑，很奇怪，跑了好4个小时，但是只跑出来一个进程crash：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f1200ff21886ccc093e89d.png"
+                      alt="Process_Crash.png"
+                ><br>后面又跑了好几遍，都是这个样子，考虑是语料库的原因，我们从网上找一些JPG文件，当作样本进行变异。<br>&#x3D;&#x3D;后面又跑了好几遍，但是还是同样的问题，后来通过排查，发现是在对exif进行插桩构建的时候，传入的pkgconfig目录，需要是经过插桩构建后的那个pkgconfig目录，也就是上面写的libexif_Fuzzing目录，而不是libexif_renease目录。&#x3D;&#x3D;<br>重新进行编译之后，AFL++成功运行，保存了好多异常样本，这时候已经运行了4个小时，拿到了50个导致异常的样本，循环了16次，而且stability为100%，表示这些异常我们都可以稳定复现，我们将AFL++程序终止，对拿到的样本进行复现，尝试寻找漏洞点：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f1201bf21886ccc09414d7.png"
+                      alt="Process_Crash_1.png"
+                ></p>
+<h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="&lt;4&gt;.漏洞复现"></a>&lt;4&gt;.漏洞复现</h1><p>在官网上是使用的<code>Eclipse_CDT</code>进行调试的，我没用过，之前一直使用的是<code>GDB</code>，并且安装了<code>pwndbg</code>插件。</p>
+<h2 id="1-gdb调试"><a href="#1-gdb调试" class="headerlink" title="1.gdb调试"></a>1.gdb调试</h2><p>首先我们需要使用<code>release</code>版本的exif，看一看是否触发漏洞：</p>
+<blockquote>
+<p>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000001,sig:11,src:000060,time:123747,execs:67327,op:havoc,rep:8’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000002,sig:11,src:000018,time:165654,execs:87593,op:havoc,rep:8’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000003,sig:11,src:000018,time:192397,execs:101338,op:havoc,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000004,sig:11,src:000018,time:216515,execs:113849,op:havoc,rep:6’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000005,sig:11,src:000000,time:289154,execs:149828,op:havoc,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000006,sig:11,src:000391,time:369558,execs:187368,op:havoc,rep:1’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000007,sig:11,src:000420,time:388696,execs:196153,op:havoc,rep:14’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000008,sig:11,src:000008,time:464911,execs:237917,op:havoc,rep:5’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000009,sig:11,src:000008,time:465338,execs:238108,op:havoc,rep:6’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000010,sig:11,src:000008,time:465797,execs:238329,op:havoc,rep:8’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000011,sig:11,src:000008,time:470322,execs:240409,op:havoc,rep:7’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000012,sig:11,src:000008,time:493368,execs:251414,op:havoc,rep:7’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000000,sig:11,src:000005,time:9562,execs:6379,op:arith32,pos:34,val:be:-9’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000013,sig:11,src:000469,time:757846,execs:397040,op:havoc,rep:12’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000014,sig:11,src:000022,time:808592,execs:417622,op:flip32,pos:781’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000015,sig:11,src:000022,time:808598,execs:417624,op:flip32,pos:793’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000016,sig:11,src:000623+000018,time:880514,execs:457047,op:splice,rep:7’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;Address boundary error&#x2F;id:000015,sig:11,src:000022,time:808598,execs:417624,op:flip32,pos:793’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000017,sig:11,src:000654,time:1004642,execs:523713,op:int32,pos:852,val:-1’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000018,sig:11,src:000562,time:1031590,execs:540253,op:havoc,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000019,sig:11,src:000642,time:1343682,execs:731376,op:havoc,rep:6’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000020,sig:11,src:000676,time:1502908,execs:823141,op:havoc,rep:3’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000021,sig:11,src:000603+000690,time:2202349,execs:1237864,op:splice,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000022,sig:11,src:000526,time:2334399,execs:1323172,op:havoc,rep:5’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000023,sig:11,src:000713+000601,time:2342727,execs:1329293,op:splice,rep:1’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000024,sig:11,src:000771+000794,time:2721773,execs:1584154,op:splice,rep:1’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000025,sig:11,src:000816,time:2838615,execs:1661910,op:inf,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000026,sig:11,src:000015+000576,time:2850736,execs:1670439,op:splice,rep:1’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000027,sig:11,src:000820,time:2902262,execs:1707616,op:havoc,rep:13’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000028,sig:11,src:000819,time:2910970,execs:1714315,op:havoc,rep:8’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000029,sig:11,src:000809+000741,time:2922885,execs:1721510,op:splice,rep:11’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000030,sig:11,src:000832,time:3012395,execs:1781433,op:havoc,rep:14’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000031,sig:11,src:000570,time:3174525,execs:1890852,op:havoc,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000032,sig:11,src:000765,time:3239427,execs:1936100,op:havoc,rep:3’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000033,sig:11,src:000845+000008,time:3783831,execs:2327918,op:splice,rep:7’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000034,sig:11,src:000189+000796,time:3895795,execs:2407302,op:splice,rep:1’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000035,sig:11,src:000821,time:7514774,execs:2509885,op:quick,pos:1147’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000036,sig:11,src:000874+000557,time:7601581,execs:2565527,op:splice,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000037,sig:11,src:000652,time:8190284,execs:2963034,op:havoc,rep:7’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000038,sig:11,src:000546,time:8843925,execs:3419167,op:havoc,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000039,sig:11,src:000895+000893,time:9097518,execs:3596587,op:splice,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000040,sig:11,src:000931,time:9219706,execs:3681775,op:havoc,rep:16’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000041,sig:11,src:000003+000308,time:9560985,execs:3919902,op:splice,rep:6’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000042,sig:11,src:000948+000861,time:9666992,execs:3994624,op:splice,rep:5’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000043,sig:11,src:000934,time:9867049,execs:4137984,op:havoc,rep:5’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000044,sig:11,src:000263+000792,time:10475862,execs:4563800,op:splice,rep:7’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000045,sig:11,src:000029,time:10796499,execs:4789897,op:havoc,rep:12’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000046,sig:11,src:000935+000287,time:11392053,execs:5207121,op:splice,rep:4’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000047,sig:11,src:000816,time:12098711,execs:5709624,op:havoc,rep:16’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000048,sig:11,src:000548,time:12232882,execs:5804671,op:havoc,rep:2’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;exif_release&#x2F;bin&#x2F;exif’ ‘&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;02&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000049,sig:11,src:000986+000814,time:14092212,execs:7111988,op:splice,rep:5’<br>fish: Job 1, ‘’&#x2F;home&#x2F;shad0hun&#x2F;桌面&#x2F;Fuzzing101&#x2F;0…’ terminated by signal SIGSEGV (Address boundary error)<br>shad0hun@shad0hun-virtual-machine ~&#x2F;桌&#x2F;F&#x2F;0&#x2F;exif-exif-0_6_15-release [SIGSEGV]&gt; </p>
+</blockquote>
+<p>这表示错误提示都是一样的（地址边界错误），本来不准备看是什么漏洞的，只知道是两个漏洞，准备自己去找到漏洞点并分析是什么漏洞，但是现在错误提示都一样，还是返回去看看是什么漏洞，一个是堆溢出，一个是越界读取。<br>这两个漏洞报错都是地址错误，也是没错的，现在我们使用gdb将样本跑起来，来看看错误原因（命令行将gdb启动，然后<code>r</code>让其运行，程序中断后使用<code>bt</code>命令查看函数调用栈回溯：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line">id:000000</span><br><span class="line"></span><br><span class="line">#0  0x000055555557c546 in exif_get_sshort (buf=0x5556557aded5 &lt;error: Cannot access memory at address 0x5556557aded5&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:92</span><br><span class="line">#1  exif_get_short (buf=0x5556557aded5 &lt;error: Cannot access memory at address 0x5556557aded5&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:104</span><br><span class="line">#2  exif_data_load_data (data=0x5555557ae360, d_orig=&lt;optimized out&gt;, ds_orig=&lt;optimized out&gt;) at exif-data.c:819</span><br><span class="line">#3  0x0000555555571b10 in exif_loader_get_data (loader=&lt;optimized out&gt;) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-loader.c:387</span><br><span class="line">#4  main (argc=argc@entry=2, argv=argv@entry=0x7fffffffe4c8) at main.c:438</span><br><span class="line">#5  0x00007ffff7c29d90 in __libc_start_call_main (main=main@entry=0x55555556f5d0 &lt;main&gt;, argc=argc@entry=2, argv=argv@entry=0x7fffffffe4c8) at ../sysdeps/nptl/libc_start_call_main.h:58</span><br><span class="line">#6  0x00007ffff7c29e40 in __libc_start_main_impl (main=0x55555556f5d0 &lt;main&gt;, argc=2, argv=0x7fffffffe4c8, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=0x7fffffffe4b8) at ../csu/libc-start.c:392</span><br><span class="line">#7  0x000055555556b205 in _start ()</span><br><span class="line"></span><br><span class="line">id:000001</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x000055555557e19c in exif_data_load_data_content (data=0x7ffef721c040, ifd=EXIF_IFD_1, d=0x5555557ca1b4 &quot;&quot;, ds=16084, offset=674, recursion_depth=&lt;optimized out&gt;) at exif-data.c:381</span><br><span class="line">#2  0x000055555557c6eb in exif_data_load_data (data=0x5555557ae6c0, d_orig=&lt;optimized out&gt;, ds_orig=&lt;optimized out&gt;) at exif-data.c:835</span><br><span class="line">#3  0x0000555555571b10 in exif_loader_get_data (loader=&lt;optimized out&gt;) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-loader.c:387</span><br><span class="line">#4  main (argc=argc@entry=2, argv=argv@entry=0x7fffffffe4d8) at main.c:438</span><br><span class="line">#5  0x00007ffff7c29d90 in __libc_start_call_main (main=main@entry=0x55555556f5d0 &lt;main&gt;, argc=argc@entry=2, argv=argv@entry=0x7fffffffe4d8) at ../sysdeps/nptl/libc_start_call_main.h:58</span><br><span class="line">#6  0x00007ffff7c29e40 in __libc_start_main_impl (main=0x55555556f5d0 &lt;main&gt;, argc=2, argv=0x7fffffffe4d8, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=0x7fffffffe4c8) at ../csu/libc-start.c:392</span><br><span class="line">#7  0x000055555556b205 in _start ()</span><br><span class="line"></span><br><span class="line">后面的报错跟上面两个一样，只是地址上的差别，后面就只记录最后一次函数调用了</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">id:000002</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:317</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x55555558a680, ifd=ifd@entry=EXIF_IFD_1, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=1986, offset=598, offset@entry=596, recursion_depth=recursion_depth@entry=0) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000003</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x55555558a680, ifd=ifd@entry=EXIF_IFD_1, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=1970, offset=598, offset@entry=596, recursion_depth=recursion_depth@entry=0) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000004</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x55555558a680, ifd=ifd@entry=EXIF_IFD_1, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=1986, offset=598, offset@entry=596, recursion_depth=recursion_depth@entry=0) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000005</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x55555558a870, ifd=ifd@entry=EXIF_IFD_1, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=2470, offset=998, offset@entry=996, recursion_depth=recursion_depth@entry=0) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000006</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x55555558a870, ifd=ifd@entry=EXIF_IFD_GPS, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=2470, offset=&lt;optimized out&gt;, recursion_depth=recursion_depth@entry=1) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000007</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x55555558a870, ifd=ifd@entry=EXIF_IFD_GPS, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=2088, offset=&lt;optimized out&gt;, recursion_depth=recursion_depth@entry=1) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000008</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294966791, __src=0x55555558cd81, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line">#2  exif_mnote_data_olympus_load (buf_size=4785, buf=0x55555558c900 &quot;Exif&quot;, en=0x55555558ed00) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000009</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294967291, __src=0x55555558cbf2, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000010</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294967283, __src=0x55555558cd75, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000011</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294966786, __src=0x55555558cce1, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000012</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294967265, __src=0x55555558cbf1, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000013</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x0000555555562a88 in exif_data_load_data_content (data=data@entry=0x55555558a870, ifd=ifd@entry=EXIF_IFD_GPS, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=1055, offset=&lt;optimized out&gt;, recursion_depth=recursion_depth@entry=1) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000014</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x0000555555568cb3 in memcpy (__len=4294966822, __src=0x55555558cc8d, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line">#2  exif_mnote_data_canon_load (ne=0x55555558fe60, buf=0x55555558c900 &quot;Exif&quot;, buf_size=7166) at exif-mnote-data-canon.c:224</span><br><span class="line"></span><br><span class="line">id:000015</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x0000555555568cb3 in memcpy (__len=4294966792, __src=0x55555558cc67, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:0000016</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x0000555555562a88 in exif_data_load_data_content (data=data@entry=0x55555558a870, ifd=ifd@entry=EXIF_IFD_GPS, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=1990, offset=&lt;optimized out&gt;, recursion_depth=recursion_depth@entry=1) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000017</span><br><span class="line">#0  0x00007ffff7da0d68 in __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x000055555556d4a5 in memcpy (__len=4294967295, __src=0x555555589ede, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000018</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:317</span><br><span class="line">#1  0x0000555555562966 in exif_data_load_data_content (data=data@entry=0x555555589eb0, ifd=ifd@entry=EXIF_IFD_1, d=d@entry=0x55555558c906 &quot;II*&quot;, ds=ds@entry=4789, offset=3056, offset@entry=3054, recursion_depth=recursion_depth@entry=0) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000019</span><br><span class="line">#0  0x00007ffff7da0d58 in __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294901764, __src=0x55555559d2a4, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000020</span><br><span class="line">#0  exif_get_long (buf=0x5555555a9000 &lt;error: Cannot access memory at address 0x5555555a9000&gt;, order=order@entry=EXIF_BYTE_ORDER_INTEL) at exif-utils.c:167</span><br><span class="line">#1  0x0000555555563e29 in exif_entry_fix (e=0x55555558cd30) at exif-entry.c:193</span><br><span class="line"></span><br><span class="line">id:000021</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:317</span><br><span class="line">#1  0x0000555555568cb3 in memcpy (__len=1944, __src=0x55565558c8b0, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000022</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555556a434 in memcpy (__len=4294967290, __src=0x55555558c906, __dest=&lt;optimized out&gt;) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29</span><br><span class="line"></span><br><span class="line">id:000023</span><br><span class="line">#0  0x0000555555578c6c in exif_get_slong (b=&lt;optimized out&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:135</span><br><span class="line"></span><br><span class="line">id:000024</span><br><span class="line">#0  0x000055555557c546 in exif_get_sshort (buf=0x5556557b0905 &lt;error: Cannot access memory at address 0x5556557b0905&gt;, order=EXIF_BYTE_ORDER_INTEL) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:92</span><br><span class="line"></span><br><span class="line">id:000025</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x0000555555562a88 in exif_data_load_data_content (data=data@entry=0x55555558a870, ifd=ifd@entry=EXIF_IFD_GPS, d=d@entry=0x555555589eb6 &quot;II*&quot;, ds=ds@entry=2150, offset=&lt;optimized out&gt;, recursion_depth=recursion_depth@entry=1) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000026</span><br><span class="line">#0  0x000055555557c546 in exif_get_sshort (buf=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, order=EXIF_BYTE_ORDER_INTEL) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:92</span><br><span class="line"></span><br><span class="line">id:000027</span><br><span class="line">#0  0x0000555555578c6c in exif_get_slong (b=&lt;optimized out&gt;, order=EXIF_BYTE_ORDER_INTEL) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:135</span><br><span class="line"></span><br><span class="line">id:000028</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x000055555557e3b3 in exif_data_load_data_content (data=0x5555557afb90, ifd=EXIF_IFD_INTEROPERABILITY, d=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, ds=4, offset=182, recursion_depth=&lt;optimized out&gt;) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000029</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x000055555557e3b3 in exif_data_load_data_content (data=0x5555557afb90, ifd=EXIF_IFD_GPS, d=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, ds=4, offset=2, recursion_depth=&lt;optimized out&gt;) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000030</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x000055555557e3b3 in exif_data_load_data_content (data=0x5555557afd90, ifd=EXIF_IFD_INTEROPERABILITY, d=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, ds=4, offset=2, recursion_depth=&lt;optimized out&gt;) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000031</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x000055555557e19c in exif_data_load_data_content (data=0x7ffef701c040, ifd=EXIF_IFD_1, d=0x5555557ca328 &quot;&quot;, ds=16335, offset=998, recursion_depth=&lt;optimized out&gt;) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000032</span><br><span class="line">#0  0x0000555555578c6c in exif_get_slong (b=&lt;optimized out&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:135</span><br><span class="line"></span><br><span class="line">id:000033</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b2d00, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=4795) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000034</span><br><span class="line">#0  0x000055555557c546 in exif_get_sshort (buf=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:92</span><br><span class="line"></span><br><span class="line">id:000035</span><br><span class="line">#0  0x0000555555578f42 in exif_get_slong (b=0x5555557cd000 &lt;error: Cannot access memory at address 0x5555557cd000&gt;, order=EXIF_BYTE_ORDER_INTEL) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:137</span><br><span class="line"></span><br><span class="line">id:000036</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b2d30, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=4795) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000037</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x000055555557e3b3 in exif_data_load_data_content (data=0x5555557afb90, ifd=EXIF_IFD_GPS, d=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, ds=4, offset=2, recursion_depth=&lt;optimized out&gt;) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000038</span><br><span class="line">#0  0x00007ffff7da0d68 in __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b15d0, buf=0x5555557adeb0 &quot;Exif&quot;, buf_size=1156) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000039</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:317</span><br><span class="line">#1  0x000055555557e19c in exif_data_load_data_content (data=0x7ffff7b5f010, ifd=EXIF_IFD_EXIF, d=0x55565571130f &lt;error: Cannot access memory at address 0x55565571130f&gt;, ds=656594, offset=226, recursion_depth=&lt;optimized out&gt;) at exif-data.c:381</span><br><span class="line"></span><br><span class="line">id:000040</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b22d0, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=4795) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000041</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:872</span><br><span class="line">#1  0x000055555558dd37 in exif_mnote_data_canon_load (ne=0x5555557b2c80, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=1992) at exif-mnote-data-canon.c:224</span><br><span class="line"></span><br><span class="line">id:000042</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:317</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b28a0, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=4506) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000043</span><br><span class="line">#0  0x00007ffff7da0d60 in __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b8330, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=16382) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000044</span><br><span class="line">#0  0x000055555557c546 in exif_get_sshort (buf=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:92</span><br><span class="line"></span><br><span class="line">id:000045</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:317</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b0840, buf=0x5555557b0900 &quot;Exif&quot;, buf_size=7165) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000046</span><br><span class="line">#0  0x0000555555578fa6 in exif_get_slong (b=0x5555557cd000 &lt;error: Cannot access memory at address 0x5555557cd000&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:135</span><br><span class="line"></span><br><span class="line">id:000047</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:383</span><br><span class="line">#1  0x000055555557e3b3 in exif_data_load_data_content (data=0x5555557afbd0, ifd=EXIF_IFD_GPS, d=0x5556557adeb5 &lt;error: Cannot access memory at address 0x5556557adeb5&gt;, ds=4, offset=2, recursion_depth=&lt;optimized out&gt;) at exif-data.c:374</span><br><span class="line"></span><br><span class="line">id:000048</span><br><span class="line">#0  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:874</span><br><span class="line">#1  0x0000555555592d70 in exif_mnote_data_olympus_load (en=0x5555557b1700, buf=0x5555557adeb0 &quot;Exif&quot;, buf_size=1127) at exif-mnote-data-olympus.c:357</span><br><span class="line"></span><br><span class="line">id:000049</span><br><span class="line">#0  0x000055555557c546 in exif_get_sshort (buf=0x5556557ae066 &lt;error: Cannot access memory at address 0x5556557ae066&gt;, order=EXIF_BYTE_ORDER_INTEL) at /home/shad0hun/桌面/Fuzzing101/02/libexif-libexif-0_6_14-release/libexif/exif-utils.c:92</span><br></pre></td></tr></table></figure></div>
+<p>可以看到，虽然报错大致方向一致，但是在具体的位置上，还是有细微的差别，经过我们排查，主要分为了五类：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f12035f21886ccc094298b.png"
+                      alt="error.png"
+                ></p>
+<h3 id="2-漏洞分析"><a href="#2-漏洞分析" class="headerlink" title="2.漏洞分析"></a>2.漏洞分析</h3><p>我们拿到了导致崩溃的样本，而且使用栈回溯找到了触发异常的位置，我们现在从源代码中寻找漏洞位置：</p>
+<h4 id="date-load-data-content"><a href="#date-load-data-content" class="headerlink" title="&lt;1&gt;.date_load_data_content"></a>&lt;1&gt;.date_load_data_content</h4><p>导致进程crash样本中，该类错误出现次数最多，我们就以这个错误点入手，分析这些错误。<br>首先，我们使用gdb跑一下样本，拿到进程crash时的函数调用栈，<strong>注意这里调试的时候，需要调试我们前面构建出来的release版本</strong>：</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bt</span><br><span class="line">#<span class="number">0</span>  __memmove_avx_unaligned_erms () at ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:<span class="number">874</span></span><br><span class="line">#<span class="number">1</span>  <span class="number">0x0000555555562966</span> in <span class="title function_">exif_data_load_data_content</span> <span class="params">(data=data<span class="meta">@entry</span>=<span class="number">0x55555558a6c0</span>, ifd=ifd<span class="meta">@entry</span>=EXIF_IFD_1, d=d<span class="meta">@entry</span>=<span class="number">0x555555589ec6</span> <span class="string">&quot;MM&quot;</span>, ds=ds<span class="meta">@entry</span>=<span class="number">2026</span>, offset=<span class="number">674</span>, offset<span class="meta">@entry</span>=<span class="number">672</span>, recursion_depth=recursion_depth<span class="meta">@entry</span>=<span class="number">0</span>)</span> at exif-data.c:<span class="number">381</span></span><br><span class="line">#<span class="number">2</span>  <span class="number">0x00005555555634b9</span> in <span class="title function_">exif_data_load_data</span> <span class="params">(data=<span class="number">0x55555558a6c0</span>, d_orig=&lt;optimized out&gt;, ds_orig=&lt;optimized out&gt;)</span> at exif-data.c:<span class="number">835</span></span><br><span class="line">#<span class="number">3</span>  <span class="number">0x00005555555675ca</span> in <span class="title function_">exif_loader_get_data</span> <span class="params">(loader=loader<span class="meta">@entry</span>=<span class="number">0x555555589e70</span>)</span> at exif-loader.c:<span class="number">387</span></span><br><span class="line">#<span class="number">4</span>  <span class="number">0x000055555555e0e5</span> in <span class="title function_">main</span> <span class="params">(argc=argc<span class="meta">@entry</span>=<span class="number">2</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffe5a8</span>)</span> at main.c:<span class="number">438</span></span><br><span class="line">#<span class="number">5</span>  <span class="number">0x00007ffff7c29d90</span> in <span class="title function_">__libc_start_call_main</span> <span class="params">(main=main<span class="meta">@entry</span>=<span class="number">0x55555555d780</span> &lt;main&gt;, argc=argc<span class="meta">@entry</span>=<span class="number">2</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffe5a8</span>)</span> at ../sysdeps/nptl/libc_start_call_main.h:<span class="number">58</span></span><br><span class="line">#<span class="number">6</span>  <span class="number">0x00007ffff7c29e40</span> in <span class="title function_">__libc_start_main_impl</span> <span class="params">(main=<span class="number">0x55555555d780</span> &lt;main&gt;, argc=<span class="number">2</span>, argv=<span class="number">0x7fffffffe5a8</span>, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=<span class="number">0x7fffffffe598</span>)</span> at ../csu/libc-start.c:<span class="number">392</span></span><br><span class="line">#<span class="number">7</span>  <span class="number">0x000055555555ea85</span> in <span class="title function_">_start</span> <span class="params">()</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>这是我第一次寻找漏洞，没有error，我就去看了第二类型的漏洞。</p>
+<h4 id="exif-get-long"><a href="#exif-get-long" class="headerlink" title="&lt;2&gt;.exif_get_long"></a>&lt;2&gt;.exif_get_long</h4><p>该类crash只有一个样本，这里还是使用gdb进行调试，我们来看看调试信息：<br>在使用<code>r</code>命令的时候，就出现了一段代码：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">In file: /home/shad0hun/桌面/Fuzzing101/<span class="number">02</span>/libexif-libexif<span class="number">-0</span>_6_14-release/libexif/exif-utils.c:<span class="number">167</span></span><br><span class="line">   <span class="number">162</span> &#125;</span><br><span class="line">   <span class="number">163</span> </span><br><span class="line">   <span class="number">164</span> ExifLong</span><br><span class="line">   <span class="number">165</span> exif_get_long (<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *buf, ExifByteOrder order)</span><br><span class="line">   <span class="number">166</span> &#123;</span><br><span class="line"> ► <span class="number">167</span>         <span class="keyword">return</span> (exif_get_slong (buf, order) &amp; <span class="number">0xffffffff</span>);</span><br><span class="line">   <span class="number">168</span> &#125;</span><br><span class="line">   <span class="number">169</span> </span><br><span class="line">   <span class="number">170</span> <span class="type">void</span></span><br><span class="line">   <span class="number">171</span> exif_set_long (<span class="type">unsigned</span> <span class="type">char</span> *b, ExifByteOrder order, ExifLong value)</span><br><span class="line">   <span class="number">172</span> &#123;</span><br></pre></td></tr></table></figure></div>
+<p>不出意外的话，这里说的应该是在exif-utils.c的167行<code>return (exif_get_slong (buf, order) &amp; 0xffffffff);</code>这一句代码中出现了问题，现在来看看函数调用链：</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bt</span><br><span class="line">#<span class="number">0</span>  exif_get_long (buf=<span class="number">0x5555555a9000</span> &lt;error: Cannot access memory at address <span class="number">0x5555555a9000</span>&gt;, order=order<span class="meta">@entry</span>=EXIF_BYTE_ORDER_INTEL) at exif-utils.c:<span class="number">167</span></span><br><span class="line">#<span class="number">1</span>  <span class="number">0x0000555555563e29</span> in <span class="title function_">exif_entry_fix</span> <span class="params">(e=<span class="number">0x55555558cd30</span>)</span> at exif-entry.c:<span class="number">193</span></span><br><span class="line">#<span class="number">2</span>  <span class="number">0x0000555555561693</span> in <span class="title function_">fix_func</span> <span class="params">(data=<span class="number">0x0</span>, e=&lt;optimized out&gt;)</span> at exif-content.c:<span class="number">231</span></span><br><span class="line">#<span class="number">3</span>  exif_content_foreach_entry (data=&lt;optimized out&gt;, func=&lt;optimized out&gt;, content=&lt;optimized out&gt;) at exif-content.c:<span class="number">200</span></span><br><span class="line">#<span class="number">4</span>  exif_content_foreach_entry (data=<span class="number">0x0</span>, func=<span class="number">0x5555555610c0</span> &lt;fix_func&gt;, content=<span class="number">0x55555558a770</span>) at exif-content.c:<span class="number">191</span></span><br><span class="line">#<span class="number">5</span>  exif_content_fix (c=<span class="number">0x55555558a770</span>) at exif-content.c:<span class="number">247</span></span><br><span class="line">#<span class="number">6</span>  <span class="number">0x0000555555563171</span> in <span class="title function_">exif_data_foreach_content</span> <span class="params">(user_data=&lt;optimized out&gt;, func=&lt;optimized out&gt;, data=&lt;optimized out&gt;)</span> at exif-data.c:<span class="number">1031</span></span><br><span class="line">#<span class="number">7</span>  exif_data_foreach_content (data=<span class="number">0x55555558a690</span>, func=<span class="number">0x555555562440</span> &lt;fix_func&gt;, user_data=<span class="number">0x0</span>) at exif-data.c:<span class="number">1022</span></span><br><span class="line">#<span class="number">8</span>  <span class="number">0x00005555555675ca</span> in <span class="title function_">exif_loader_get_data</span> <span class="params">(loader=loader<span class="meta">@entry</span>=<span class="number">0x555555589e70</span>)</span> at exif-loader.c:<span class="number">387</span></span><br><span class="line">#<span class="number">9</span>  <span class="number">0x000055555555e0e5</span> in <span class="title function_">main</span> <span class="params">(argc=argc<span class="meta">@entry</span>=<span class="number">2</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffe5b8</span>)</span> at main.c:<span class="number">438</span></span><br><span class="line">#<span class="number">10</span> <span class="number">0x00007ffff7c29d90</span> in <span class="title function_">__libc_start_call_main</span> <span class="params">(main=main<span class="meta">@entry</span>=<span class="number">0x55555555d780</span> &lt;main&gt;, argc=argc<span class="meta">@entry</span>=<span class="number">2</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffe5b8</span>)</span> at ../sysdeps/nptl/libc_start_call_main.h:<span class="number">58</span></span><br><span class="line">#<span class="number">11</span> <span class="number">0x00007ffff7c29e40</span> in <span class="title function_">__libc_start_main_impl</span> <span class="params">(main=<span class="number">0x55555555d780</span> &lt;main&gt;, argc=<span class="number">2</span>, argv=<span class="number">0x7fffffffe5b8</span>, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=<span class="number">0x7fffffffe5a8</span>)</span> at ../csu/libc-start.c:<span class="number">392</span></span><br><span class="line">#<span class="number">12</span> <span class="number">0x000055555555ea85</span> in <span class="title function_">_start</span> <span class="params">()</span></span><br></pre></td></tr></table></figure></div>
+<p>这里看到出现了<code>error</code>信息，很明显，是因为buf得内存指向了堆栈的外部，程序无法访问，那我们总结一下函数调用链：</p>
+<blockquote>
+<p>1._start<br>2.__libc_start_main_impl(..&#x2F;csu&#x2F;libc-start.c:392)<br>3.__libc_stadsrt_call_main(..&#x2F;sysdeps&#x2F;nptl&#x2F;libc_start_call_main.h:58)<br>4.main(main.c:438)<br>5.exif_loader_get_data(exif-loader.c:387)<br>6.__exif_data_foreach_content(exif-data.c:1022)<br>7.exif_data_foreach_content(exif-data.c:1031)<br>8.exif_content_fix(exif-content.c:247)<br>9.exif_content_foreach_entry(exif-content.c:191)<br>10.exif_content_foreach_entry)(exif-content.c:200)<br>11.fix_func(exif-content.c:231)<br>12.exif_entry_fix(exif-entry.c:193)<br>13.exif_get_long(exif-utils.c:167)</p>
+</blockquote>
+<p>现在可以清晰得看得到函数调用过程，现在我们去漏洞官网看一看这个漏洞的具体描述：</p>
+<blockquote>
+<p>libexif 0.6.18中libexif&#x2F;exif-entry. c的exif_entry_fix函数（也称为标记修复例程）中存在基于堆的缓冲区溢出，远程攻击者可利用无效的EXIF映像造成拒绝服务或可能执行任意代码。</p>
+</blockquote>
+<p>可以看到我们确实触发了CVE-2009-3895。<br>现在我们就到源代码中查看，看看漏洞触发的具体代码（是在<code>exif_entry.c</code>源代码的193行调用的：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">exif_entry_fix</span> <span class="params">(ExifEntry *e)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i;</span><br><span class="line">	ExifByteOrder o;</span><br><span class="line">	ExifRational r;</span><br><span class="line">	ExifSRational sr;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!e || !e-&gt;priv) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">switch</span> (e-&gt;tag) &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/* These tags all need to be of format SHORT. */</span></span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_YCBCR_SUB_SAMPLING:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_SUBJECT_AREA:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_COLOR_SPACE:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_PLANAR_CONFIGURATION:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_SENSING_METHOD:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_ORIENTATION:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_YCBCR_POSITIONING:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_PHOTOMETRIC_INTERPRETATION:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_CUSTOM_RENDERED:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_EXPOSURE_MODE:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_WHITE_BALANCE:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_SCENE_CAPTURE_TYPE:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_GAIN_CONTROL:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_SATURATION:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_CONTRAST:</span><br><span class="line">	<span class="keyword">case</span> EXIF_TAG_SHARPNESS:</span><br><span class="line">		<span class="keyword">switch</span> (e-&gt;format) &#123;</span><br><span class="line">		<span class="keyword">case</span> EXIF_FORMAT_LONG:</span><br><span class="line">			<span class="keyword">if</span> (!e-&gt;parent || !e-&gt;parent-&gt;parent) <span class="keyword">break</span>;</span><br><span class="line">			o = exif_data_get_byte_order (e-&gt;parent-&gt;parent);</span><br><span class="line">			<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; e-&gt;components; i++)</span><br><span class="line">				exif_set_short (</span><br><span class="line">					e-&gt;data + i *</span><br><span class="line">					exif_format_get_size (</span><br><span class="line">					EXIF_FORMAT_SHORT), o,</span><br><span class="line">					(ExifShort) exif_get_long (</span><br><span class="line">					e-&gt;data + i *</span><br><span class="line">					exif_format_get_size (</span><br><span class="line">					EXIF_FORMAT_LONG), o));</span><br><span class="line">			e-&gt;format = EXIF_FORMAT_SHORT;</span><br><span class="line">			e-&gt;size = e-&gt;components *</span><br><span class="line">				exif_format_get_size (e-&gt;format);</span><br><span class="line">			e-&gt;data = exif_entry_realloc (e, e-&gt;data, e-&gt;size);</span><br><span class="line">			exif_entry_log (e, EXIF_LOG_CODE_DEBUG,</span><br><span class="line">				_(<span class="string">&quot;Tag &#x27;%s&#x27; was of format &#x27;%s&#x27; (which is &quot;</span></span><br><span class="line">				<span class="string">&quot;against specification) and has been &quot;</span></span><br><span class="line">				<span class="string">&quot;changed to format &#x27;%s&#x27;.&quot;</span>),</span><br><span class="line">				exif_tag_get_name (e-&gt;tag), </span><br><span class="line">				exif_format_get_name (EXIF_FORMAT_LONG),</span><br><span class="line">				exif_format_get_name (EXIF_FORMAT_SHORT));</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> EXIF_FORMAT_SHORT:</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">break</span>;</span><br></pre></td></tr></table></figure></div>
+<p>我们发现，传给<code>exif_get_long</code>的第一个参数是由一个表达式：<code>e-&gt;data + i *exif_format_get_size (EXIF_FORMAT_LONG)</code>决定的。<br>如果说，<code>e-&gt;data</code>在堆的范围中是正常的，那么出错的原因就是因为后面加上的<code>i*exif_format_get_size(EXIF_FORMAT_LONG)</code>太大了，以至于第一个参数越过了堆的边界，所以，我们现在要关注的就是，到底是<code>e-&gt;data</code>太大了，还是说后面加上的1东西太大了 。其中<code>EXIF_FORMAT_LONG</code>是一个常量，所以我们猜测大概率是因为<code>i</code>的值太大了。而这里的<code>e-&gt;components</code>就是直接导致i太大的原因。</p>
+<h5 id="修复建议："><a href="#修复建议：" class="headerlink" title="修复建议："></a>修复建议：</h5><p>我们知道是因为<code>e-&gt;components</code>的原因导致的i太大，而这里的<code>e-&gt;components</code>就是因为读取data字段的时候，该字段过大导致的，那么在读取该字段的时候，就应该检查该值是否超过最大值。</p>
+<h4 id="exif-get-slong"><a href="#exif-get-slong" class="headerlink" title="&lt;3&gt;.exif_get_slong"></a>&lt;3&gt;.exif_get_slong</h4><p>我们首先来看看报错：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#0  0x00005555555684a0 in exif_get_slong (order=EXIF_BYTE_ORDER_MOTOROLA, b=0x5555555a9000 &lt;error: Cannot access memory at address 0x5555555a9000&gt;) at exif-utils.c:137</span><br><span class="line">#1  exif_get_long (buf=0x5555555a9000 &lt;error: Cannot access memory at address 0x5555555a9000&gt;, order=order@entry=EXIF_BYTE_ORDER_MOTOROLA) at exif-utils.c:167</span><br><span class="line">#2  0x0000555555563e29 in exif_entry_fix (e=0x55555558c470) at exif-entry.c:193</span><br><span class="line">#3  0x0000555555561693 in fix_func (data=0x0, e=&lt;optimized out&gt;) at exif-content.c:231</span><br><span class="line">#4  exif_content_foreach_entry (data=&lt;optimized out&gt;, func=&lt;optimized out&gt;, content=&lt;optimized out&gt;) at exif-content.c:200</span><br><span class="line">#5  exif_content_foreach_entry (data=0x0, func=0x5555555610c0 &lt;fix_func&gt;, content=0x55555558a480) at exif-content.c:191</span><br><span class="line">#6  exif_content_fix (c=0x55555558a480) at exif-content.c:247</span><br><span class="line">#7  0x0000555555563171 in exif_data_foreach_content (user_data=&lt;optimized out&gt;, func=&lt;optimized out&gt;, data=&lt;optimized out&gt;) at exif-data.c:1031</span><br><span class="line">#8  exif_data_foreach_content (data=0x55555558a350, func=0x555555562440 &lt;fix_func&gt;, user_data=0x0) at exif-data.c:1022</span><br><span class="line">#9  0x00005555555675ca in exif_loader_get_data (loader=loader@entry=0x555555589e70) at exif-loader.c:387</span><br><span class="line">#10 0x000055555555e0e5 in main (argc=argc@entry=2, argv=argv@entry=0x7fffffffe5a8) at main.c:438</span><br><span class="line">#11 0x00007ffff7c29d90 in __libc_start_call_main (main=main@entry=0x55555555d780 &lt;main&gt;, argc=argc@entry=2, argv=argv@entry=0x7fffffffe5a8) at ../sysdeps/nptl/libc_start_call_main.h:58</span><br><span class="line">#12 0x00007ffff7c29e40 in __libc_start_main_impl (main=0x55555555d780 &lt;main&gt;, argc=2, argv=0x7fffffffe5a8, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=0x7fffffffe598) at ../csu/libc-start.c:392</span><br></pre></td></tr></table></figure></div>
+<p>根据栈回溯，发现是还是因为<code>exif_entry_fix</code>中出现的问题，这里不再过多分析。</p>
+<h4 id="exif-get-sshort"><a href="#exif-get-sshort" class="headerlink" title="&lt;4&gt;.exif_get_sshort"></a>&lt;4&gt;.exif_get_sshort</h4><p>同样的，我们首先来看看栈回溯：</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">0</span>  <span class="number">0x0000555555568170</span> in <span class="title function_">exif_get_sshort</span> <span class="params">(order=EXIF_BYTE_ORDER_MOTOROLA, buf=<span class="number">0x555655589ec5</span> &lt;error: Cannot access memory at address <span class="number">0x555655589ec5</span>&gt;)</span> at exif-utils.c:<span class="number">94</span></span><br><span class="line">#<span class="number">1</span>  exif_get_short (buf=buf<span class="meta">@entry</span>=<span class="number">0x555655589ec5</span> &lt;error: Cannot access memory at address <span class="number">0x555655589ec5</span>&gt;, order=EXIF_BYTE_ORDER_MOTOROLA) at exif-utils.c:<span class="number">104</span></span><br><span class="line">#<span class="number">2</span>  <span class="number">0x0000555555563438</span> in <span class="title function_">exif_data_load_data</span> <span class="params">(data=<span class="number">0x55555558a350</span>, d_orig=&lt;optimized out&gt;, ds_orig=&lt;optimized out&gt;)</span> at exif-data.c:<span class="number">819</span></span><br><span class="line">#<span class="number">3</span>  <span class="number">0x00005555555675ca</span> in <span class="title function_">exif_loader_get_data</span> <span class="params">(loader=loader<span class="meta">@entry</span>=<span class="number">0x555555589e70</span>)</span> at exif-loader.c:<span class="number">387</span></span><br><span class="line">#<span class="number">4</span>  <span class="number">0x000055555555e0e5</span> in <span class="title function_">main</span> <span class="params">(argc=argc<span class="meta">@entry</span>=<span class="number">2</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffe5a8</span>)</span> at main.c:<span class="number">438</span></span><br><span class="line">#<span class="number">5</span>  <span class="number">0x00007ffff7c29d90</span> in <span class="title function_">__libc_start_call_main</span> <span class="params">(main=main<span class="meta">@entry</span>=<span class="number">0x55555555d780</span> &lt;main&gt;, argc=argc<span class="meta">@entry</span>=<span class="number">2</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffe5a8</span>)</span> at ../sysdeps/nptl/libc_start_call_main.h:<span class="number">58</span></span><br><span class="line">#<span class="number">6</span>  <span class="number">0x00007ffff7c29e40</span> in <span class="title function_">__libc_start_main_impl</span> <span class="params">(main=<span class="number">0x55555555d780</span> &lt;main&gt;, argc=<span class="number">2</span>, argv=<span class="number">0x7fffffffe5a8</span>, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=<span class="number">0x7fffffffe598</span>)</span> at ../csu/libc-start.c:<span class="number">392</span></span><br><span class="line">#<span class="number">7</span>  <span class="number">0x000055555555ea85</span> in <span class="title function_">_start</span> <span class="params">()</span></span><br></pre></td></tr></table></figure></div>
+<p>这看起来是不同于上面的报错，应该是触发了第二种漏洞。<br>我们来到源码中查看一下漏洞点（位于exir-utils.c 94行），exif_get_sshort函数调用的位置：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ExifSShort</span><br><span class="line"><span class="title function_">exif_get_sshort</span> <span class="params">(<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *buf, ExifByteOrder order)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (!buf) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">switch</span> (order) &#123;</span><br><span class="line">        <span class="keyword">case</span> EXIF_BYTE_ORDER_MOTOROLA:</span><br><span class="line">                <span class="keyword">return</span> ((buf[<span class="number">0</span>] &lt;&lt; <span class="number">8</span>) | buf[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">case</span> EXIF_BYTE_ORDER_INTEL:</span><br><span class="line">                <span class="keyword">return</span> ((buf[<span class="number">1</span>] &lt;&lt; <span class="number">8</span>) | buf[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Won&#x27;t be reached */</span></span><br><span class="line">	<span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>很显然，又是地址出现了错误，我们继续跟到上一层函数调用：<br><code>exif_get_short</code>（exif-utils.c：104)：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ExifShort</span><br><span class="line"><span class="title function_">exif_get_short</span> <span class="params">(<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *buf, ExifByteOrder order)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> (exif_get_sshort (buf, order) &amp; <span class="number">0xffff</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这里是直接将参数拿过来用了，那我们继续跟进上一层函数调用：<br><code>exif_data_load_data</code>（exif_dadta.c：819）：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n = exif_get_short (d + <span class="number">6</span> + offset, data-&gt;priv-&gt;order);</span><br></pre></td></tr></table></figure></div>
+<p>这里只放出来了触发漏洞的一行代码，根据这一样代码，我们来到GDB中跟踪看一下：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66f1204cf21886ccc0943f36.png"
+                      alt="GDB_load_data.png"
+                ><br>如果你能看得懂这个函数调用的话，相信你可以看出来，<code>d</code>是正常的，而<code>data-&gt;priv-&gt;order</code>也是正常的，那我们的问题就应该是出现在了<code>offset</code>上，从GDB中可以看见，<code>d</code>是指向exif结构的基地址，那我们去寻找<code>offet</code>赋值的地方：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">offset = exif_get_long (d + <span class="number">10</span>, data-&gt;priv-&gt;order);</span><br></pre></td></tr></table></figure></div>
+<p>可以看到，这里是从<code>d+10</code>处，取4字节转化为long值，后面还有对<code>offset</code>值的检查：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (offset + <span class="number">6</span> + <span class="number">2</span> &gt; ds) &#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></div>
+<p>也就是说，如果我们将<code>offset+8</code>位置的值覆盖为0，必然可以通过检查，也就是说，如果<code>offset</code>的值在<code>[-8,0]</code>这个区间，就会发生溢出，而且通过检查。所以在后面使用的时候就触发了漏洞。</p>
+<h5 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h5><p>我们知道是因为offset的值太大，发生溢出，以至于通过的检查，但是通过了检查，但是在后面使用的时候会发生错误，而offset赋值的根本是<code>d+10</code>字段的值，那我们在赋值的时候就检查，是否超过最大值。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>至此，两个漏洞都分析完毕，在复现漏洞的过程中，最好还是自己动手，多分析，还是对自己的提升挺大的。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> Fuzzing101-2：libexif</li>
+        <li><strong>作者:</strong> Shad0hun</li>
+        <li><strong>创建于
+                :</strong> 2024-09-23 15:45:28</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-09-23 16:06:39
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://shad0hun.github.io/2024/09/23/Fuzzing101-2：libexif/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/09/03/Fuzzing101-1%EF%BC%9AXpdf/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Fuzzing101-1：Xpdf</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="waline"></div>
+    <script type="module" data-swup-reload-script>
+      import { init } from '/js/libs/waline.mjs';
+
+      function loadWaline() {
+        init({
+          el: '#waline',
+          serverURL: 'https://example.example.com',
+          lang: 'zh-CN',
+          dark: 'body[class~="dark-mode"]',
+          reaction: false,
+          requiredMeta: ['nick', 'mail'],
+          emoji: [],
+          recaptchaV3Key: "wasd",
+          
+        });
+      }
+
+      if (typeof swup !== 'undefined') {
+        loadWaline();
+      } else {
+        window.addEventListener('DOMContentLoaded', loadWaline);
+      }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Fuzzing101-2：libexif</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F"><span class="nav-text">&lt;1&gt;.构建目标程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%A7%8D%E5%AD%90%E8%AF%AD%E6%96%99%E5%BA%93"><span class="nav-text">&lt;2&gt;.构建种子语料库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fuzzing"><span class="nav-text">&lt;3&gt;.Fuzzing</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="nav-text">&lt;4&gt;.漏洞复现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-gdb%E8%B0%83%E8%AF%95"><span class="nav-text">1.gdb调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-text">2.漏洞分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2024</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Shad0hun</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 3 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
