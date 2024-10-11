@@ -13,22 +13,26 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/categories/"/>
+    <link rel="canonical" href="http://example.com/2024/10/11/fuzzing101-3-tcpdump/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="The Blog From Shad0hun">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://example.com/categories/index.html">
+        <meta name="description" content="概述Fuzzing101-Exercise 3 - TCPdump 通过了前两个练习，我们大概是熟悉了模糊测试的流程，但是我们要慢慢地自己去Fuzz，问题还是挺多的，我们还是需要慢慢练习，从每一个练习中收获。 练习概要我们仔细阅读在GitHub上给出的练习概要，然后自己尝试去不看解决方案，一步一步去尝试Fuzz：TCPdump就像是wireshark，Linux下常用的抓包工具，这个工具我在实习的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fuzzing101-3:TCPdump">
+<meta property="og:url" content="http://example.com/2024/10/11/Fuzzing101-3-TCPdump/index.html">
 <meta property="og:site_name" content="Shad0hun&#39;s Blog">
-<meta property="og:description" content="The Blog From Shad0hun">
+<meta property="og:description" content="概述Fuzzing101-Exercise 3 - TCPdump 通过了前两个练习，我们大概是熟悉了模糊测试的流程，但是我们要慢慢地自己去Fuzz，问题还是挺多的，我们还是需要慢慢练习，从每一个练习中收获。 练习概要我们仔细阅读在GitHub上给出的练习概要，然后自己尝试去不看解决方案，一步一步去尝试Fuzz：TCPdump就像是wireshark，Linux下常用的抓包工具，这个工具我在实习的">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-08-23T14:13:24.000Z">
-<meta property="article:modified_time" content="2024-08-23T14:13:24.654Z">
+<meta property="og:image" content="https://pic.imgdb.cn/item/670899b8d29ded1a8c623bc1.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/670899fcd29ded1a8c626fbc.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/670899e5d29ded1a8c625ddf.png">
+<meta property="article:published_time" content="2024-10-11T03:15:36.000Z">
+<meta property="article:modified_time" content="2024-10-11T03:22:47.149Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/670899b8d29ded1a8c623bc1.png">
     
     
         <!-- Google tag (gtag.js) -->
@@ -50,7 +54,7 @@
     
     <title>
         
-            分类 -
+            Fuzzing101-3:TCPdump -
         
         Shad0hun&#39;s Blog
     </title>
@@ -342,7 +346,7 @@
 
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="active"
+                                <a class=""
                                    href="/categories"
                                         >
                                     <i class="fa-regular fa-folder fa-fw"></i>
@@ -433,7 +437,7 @@
 
                     <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
                         
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
                            href="/categories"
                         >
                             <span>
@@ -516,19 +520,275 @@
             <div class="main-content">
 
                 
-                    <div class="category-list-container">
-	<div >
-		<h1 class="category-header">
-			分类
-		</h1>
-	</div>
-	<div class="category-list-content">
-		<ul class="all-category-list"><li class="all-category-list-item"><a class="all-category-list-link" href="/categories/Fuzzing101/">Fuzzing101</a><span class="all-category-list-count">3</span></li></ul>
-	</div>
-	<div class="category-comments">
-		
-	</div>
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Fuzzing101-3:TCPdump</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/Author.svg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-10-11 11:15:36</span>
+        <span class="mobile">2024-10-11 11:15:36</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-10-11 11:22:47</span>
+            <span class="mobile">2024-10-11 11:22:47</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Fuzzing101/">Fuzzing101</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
 </div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise%203" >Fuzzing101-Exercise 3 - TCPdump <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>通过了前两个练习，我们大概是熟悉了模糊测试的流程，但是我们要慢慢地自己去Fuzz，问题还是挺多的，我们还是需要慢慢练习，从每一个练习中收获。</p>
+<h2 id="练习概要"><a href="#练习概要" class="headerlink" title="练习概要"></a>练习概要</h2><p>我们仔细阅读在GitHub上给出的练习概要，然后自己尝试去不看解决方案，一步一步去尝试Fuzz：<br>TCPdump就像是wireshark，Linux下常用的抓包工具，这个工具我在实习的时候经常使用，所以还是比较熟悉的，在本次练习中，我们要找到的漏洞是<code>CVE-2017-13028</code>，我们首先来看看这个漏洞的描述：</p>
+<h3 id="CVE-2017-13028"><a href="#CVE-2017-13028" class="headerlink" title="CVE-2017-13028"></a>CVE-2017-13028</h3><blockquote>
+<p>tcpdump 4.9.2 之前版本中的 BOOTP 解析器在 print-bootp.c:bootp_print() 中存在缓冲区过度读取问题。</p>
+</blockquote>
+<h3 id="预期收获"><a href="#预期收获" class="headerlink" title="预期收获"></a>预期收获</h3><p>通过本次练习，应该掌握：</p>
+<ol>
+<li>什么是<code>ASAN(Address Sanitizer)</code>，一种运行时内存错误检测工具</li>
+<li>如何使用<code>ASAN</code>来模糊测试目标</li>
+<li>使用<code>ASAN</code>对崩溃进行分类有多容易</li>
+</ol>
+<h1 id="Fuzzing"><a href="#Fuzzing" class="headerlink" title="Fuzzing"></a>Fuzzing</h1><p>首先我们不查看解决方案，尝试自己将漏洞给复现出来：<br>我们观察到出现漏洞的版本为<code>TCPdump 4.92</code>版本之前，我们首先要获取4.92版本之前的TCPdump：<br>我们在<a class="link"   target="_blank" rel="noopener" href="https://www.tcpdump.org/old_releases.html" >TCPdump官网 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>中找到旧版本，我这里使用<code>tcpdump 4.8.1</code>吧，将下载链接复制下来。</p>
+<h3 id="1-构建目标程序"><a href="#1-构建目标程序" class="headerlink" title="1.构建目标程序"></a>1.构建目标程序</h3><p>首先，创建一个文件夹，用于本次模糊测试练习：![[03-1-mkdir.png]]<br>然后使用我们刚复制出来的链接，将<code>4.8.1</code>的源代码下载下来：<br><code>wget https://www.tcpdump.org/release/tcpdump-4.8.1.tar.gz</code><br>然后我们还需要下载TCPdump所需的跨平台库libpcap：<br><code>wget https://www.tcpdump.org/release/libpcap-1.8.1.tar.gz</code><br>下载之后，我们使用命令将压缩包解压：</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -xzvf tcpdump-<span class="number">4.8</span><span class="number">.1</span>.tar.gz</span><br><span class="line">tar -xzvf libpcap-<span class="number">1.8</span><span class="number">.1</span>.tar.gz</span><br></pre></td></tr></table></figure></div>
+<p>由于<code>TCPdump</code>需要依赖<code>libpcap</code>，我们需要先构建<code>libpcap</code>：<br>这里我们先详细学习一下Linux编译安装的命令，这是我看了的博客：<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43038960/article/details/140425266" >点击这里直接跳转 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h4 id="Linux编译安装命令详解"><a href="#Linux编译安装命令详解" class="headerlink" title="Linux编译安装命令详解"></a>Linux编译安装命令详解</h4><p><code>./configure</code>,<code>make</code>,<code>install</code>这些都是常用的命令</p>
+<ul>
+<li>configure<br>如果我们从源代码进行构建，<code>./configure</code>是从源代码安装的第一步，这条命令会检测目标平台特征。主要作用是将源代码针对目标平台进行配置，检查当前环境是否满足构建软件的依赖关系，该命令会检查是不是有<code>CC</code>或者<code>GCC</code>，但是本身不会使用CC或者GCC，这只是个shell脚本。<br>比如：<code>./configure --prefix=/usr</code>意思是将软件安装在<code>/usr</code>目录下面，执行文件就会放在<code>/usr/bin</code>目录下面，资源文件会安装在<code>usr/share</code>，如果没有使用<code>-prefix</code>指定路径的话，就会使用默认路径：</li>
+</ul>
+<ol>
+<li>可执行文件安装在<code>/usr/local/bin</code>中</li>
+<li>库文件存放在<code>/usr/local/lib</code>中</li>
+<li>配置文件放在<code>/usr/local/etc</code>中</li>
+<li>资源文件存放在<code>/usr/local/share</code>中</li>
+</ol>
+<ul>
+<li>Make<br>这一步是编译，大多数的源码包都通过这一步进行编译</li>
+<li>make install<br>这条命令是用来安装的</li>
+</ul>
+<h4 id="构建release版本"><a href="#构建release版本" class="headerlink" title="构建release版本"></a>构建release版本</h4><p>然后我们就来从源代码进行构建<code>TCPdump</code>和<code>libpcap</code>：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ./libpcap-1.8.1/</span><br><span class="line">./configure --prefix=&#x27;/home/shad0hun/桌面/Fuzzing101/03/libpcap-install&#x27;</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+<p>在构建完成之后，使用命令<code>tcpdump -h</code>查看是否成功：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/670899b8d29ded1a8c623bc1.png"
+                      alt="libcpcap_build"
+                ><br>由于我之前安装过tcpdump，所以这里的版本是更新的，这里我需要将原来的卸载掉。<br>libpcap构建完成之后，我们来构建tcpdump：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ./tcpdump-4.8.1/</span><br><span class="line">./configure --prefix=&#x27;/home/shad0hun/桌面/Fuzzing101/03/tcpdump-release&#x27;</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+<h3 id="2-构建预料种子库"><a href="#2-构建预料种子库" class="headerlink" title="2.构建预料种子库"></a>2.构建预料种子库</h3><p>在我们下载的<code>TCPdump</code>源码包中，有一个test文件夹，里面为我们提供了许多.pcap示例，我们看看：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/670899fcd29ded1a8c626fbc.png"
+                      alt="tcpdump-test.png"
+                ></p>
+<h4 id="3-ASan简介"><a href="#3-ASan简介" class="headerlink" title="3.ASan简介"></a>3.ASan简介</h4><p>AddressSanitizer（ASan）是一款用于C和C++的快速内存地址错误检测器。<br>它由编译器检测模块和运行时库组成。该工具能够查找对堆，栈和全局对象的越界访问，以及释放后冲利用，双重释放和内存泄漏漏洞错误。</p>
+<h3 id="4-在使用ASan的情况下构建"><a href="#4-在使用ASan的情况下构建" class="headerlink" title="4.在使用ASan的情况下构建"></a>4.在使用ASan的情况下构建</h3><p>我们首先构建<code>libpcap</code>：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ./libpcap-1.8.1/</span><br><span class="line">make clean</span><br><span class="line"><span class="built_in">export</span> LLVM_CONFIG=<span class="string">&quot;llvm-config-14&quot;</span></span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/03/tcpdump-fuzz&#x27;</span></span><br><span class="line">AFL-USE-ASAN=1 make</span><br></pre></td></tr></table></figure></div>
+<p>然后我们构建<code>tcpdump</code>：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ./tcpdump-4.8.1</span><br><span class="line">make clean</span><br><span class="line">AFL_USE_ASAN=1 CC=afl-clang-lto ./configure --prefix=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/03/tcpdump-fuzzing&#x27;</span></span><br><span class="line">AFL_USE_ASAN=1 make</span><br><span class="line">AFL_USE_ASAN=1 make install</span><br></pre></td></tr></table></figure></div>
+<h3 id="5-Fuzzing"><a href="#5-Fuzzing" class="headerlink" title="5.Fuzzing"></a>5.Fuzzing</h3><p>使用命令进行模糊测试：<code>afl-fuzz -m none -i /home/shad0hun/桌面/Fuzzing101/03/tcpdump-4.8.1/tests/ -o /home/shad0hun/桌面/Fuzzing101/03/out -s 123 -- /home/shad0hun/桌面/Fuzzing101/03/tcpdump-fuzzing/sbin/tcpdump -vvvvXX -ee -nn -r @@</code><br>运行一个小时后，我们拿到了68个crash样本：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/670899e5d29ded1a8c625ddf.png"
+                      alt="afl_tcpdump.png"
+                ></p>
+<h3 id="6-崩溃分类"><a href="#6-崩溃分类" class="headerlink" title="6.崩溃分类"></a>6.崩溃分类</h3><p>使用ASan构建的程序，分类起来是很容易的，不想前面的两个练习，需要我们使用调试器，我们直接向程序提供崩溃样本即可：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">./tcpdump -vvvvXX -ee -nn -r &#x27;/home/shad0hun/桌面/Fuzzing101/03/out/default/crashes/id:000000,sig:11,src:000312,time:10156,execs:3722,op:havoc,rep:4&#x27; </span><br><span class="line">reading from file /home/shad0hun/桌面/Fuzzing101/03/out/default/crashes/id:000000,sig:11,src:000312,time:10156,execs:3722,op:havoc,rep:4, link-type EN10MB (Ethernet)</span><br><span class="line">AddressSanitizer:DEADLYSIGNAL</span><br><span class="line">=================================================================</span><br><span class="line">==3458==ERROR: AddressSanitizer: SEGV on unknown address 0x654b80839de8 (pc 0x654b4d70244f bp 0x7ffd914f60f0 sp 0x7ffd914f5e20 T0)</span><br><span class="line">==3458==The signal is caused by a READ memory access.</span><br><span class="line">    #0 0x654b4d70244f in init_crc10_table /home/shad0hun/桌面/Fuzzing101/03/tcpdump-4.8.1/./checksum.c:102:24</span><br><span class="line">    #1 0x654b4d70244f in init_checksum /home/shad0hun/桌面/Fuzzing101/03/tcpdump-4.8.1/./checksum.c:130:5</span><br><span class="line">    #2 0x654b4d6e8d06 in init_print /home/shad0hun/桌面/Fuzzing101/03/tcpdump-4.8.1/./print.c:254:2</span><br><span class="line">    #3 0x654b4d6e8d06 in main /home/shad0hun/桌面/Fuzzing101/03/tcpdump-4.8.1/./tcpdump.c:1549:2</span><br><span class="line">    #4 0x78a251829d8f in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16</span><br><span class="line">    #5 0x78a251829e3f in __libc_start_main csu/../csu/libc-start.c:392:3</span><br><span class="line">    #6 0x654b4d61f004 in _start (/home/shad0hun/桌面/Fuzzing101/03/tcpdump-fuzzing/sbin/tcpdump+0x2db004) (BuildId: 3065b5f945137783)</span><br><span class="line"></span><br><span class="line">AddressSanitizer can not provide additional info.</span><br><span class="line">SUMMARY: AddressSanitizer: SEGV /home/shad0hun/桌面/Fuzzing101/03/tcpdump-4.8.1/./checksum.c:102:24 in init_crc10_table</span><br><span class="line">==3458==ABORTING</span><br></pre></td></tr></table></figure></div>
+<p>我们可以清晰得看得到程序发生崩溃时的函数调用栈，方便我们进行分类。<br>经过我们分类，发现所有有效崩溃的样本，崩溃信息都是一样的，发生崩溃的位置也是一样的，就是在<code>checksum.c:102:24</code>，我们在这里将函数调用栈提取出来，然后跟踪源码查看导致崩溃的位置：</p>
+<blockquote>
+<p>1.init_crc10_table(checksum.c:102:24)<br>2.init_checksum(checksum.c:130:5)<br>3.init_print(print.c:254:2)<br>4.main(tcpdump.c:1549:2)</p>
+</blockquote>
+<p>后面就是代码审计找到漏洞并利用的过程。</p>
+<h3 id="7-前三个练习总结"><a href="#7-前三个练习总结" class="headerlink" title="7.前三个练习总结"></a>7.前三个练习总结</h3><p>前三个练习都是基于有源码的Fuzz，也就是我们所说的白盒测试，通过前面的练习，我们要掌握的东西有：</p>
+<ol>
+<li>afl-fuzz的基本使用</li>
+<li>使用GDB调试器堆崩溃进行1分类</li>
+<li>如何使用ASan来模糊测试目标</li>
+</ol>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> Fuzzing101-3:TCPdump</li>
+        <li><strong>作者:</strong> Shad0hun</li>
+        <li><strong>创建于
+                :</strong> 2024-10-11 11:15:36</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-10-11 11:22:47
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://shad0hun.github.io/2024/10/11/Fuzzing101-3-TCPdump/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/09/23/Fuzzing101-2%EF%BC%9Alibexif/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Fuzzing101-2：libexif</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="waline"></div>
+    <script type="module" data-swup-reload-script>
+      import { init } from '/js/libs/waline.mjs';
+
+      function loadWaline() {
+        init({
+          el: '#waline',
+          serverURL: 'https://example.example.com',
+          lang: 'zh-CN',
+          dark: 'body[class~="dark-mode"]',
+          reaction: false,
+          requiredMeta: ['nick', 'mail'],
+          emoji: [],
+          recaptchaV3Key: "wasd",
+          
+        });
+      }
+
+      if (typeof swup !== 'undefined') {
+        loadWaline();
+      } else {
+        window.addEventListener('DOMContentLoaded', loadWaline);
+      }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Fuzzing101-3:TCPdump</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%83%E4%B9%A0%E6%A6%82%E8%A6%81"><span class="nav-text">练习概要</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CVE-2017-13028"><span class="nav-text">CVE-2017-13028</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E6%94%B6%E8%8E%B7"><span class="nav-text">预期收获</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Fuzzing"><span class="nav-text">Fuzzing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F"><span class="nav-text">1.构建目标程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9E%84%E5%BB%BA%E9%A2%84%E6%96%99%E7%A7%8D%E5%AD%90%E5%BA%93"><span class="nav-text">2.构建预料种子库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%9C%A8%E4%BD%BF%E7%94%A8ASan%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E6%9E%84%E5%BB%BA"><span class="nav-text">4.在使用ASan的情况下构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Fuzzing"><span class="nav-text">5.Fuzzing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%B4%A9%E6%BA%83%E5%88%86%E7%B1%BB"><span class="nav-text">6.崩溃分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%89%8D%E4%B8%89%E4%B8%AA%E7%BB%83%E4%B9%A0%E6%80%BB%E7%BB%93"><span class="nav-text">7.前三个练习总结</span></a></li></ol></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
 
 
                 
@@ -611,6 +871,27 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-side-tools-container">
