@@ -18,12 +18,12 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff 4.0.4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。1.预期收获通过本节练习，我们的预期收获是：掌握如何使用LCOV测量代码覆盖率并掌握如何使用代码覆盖率数据来提高模糊测试的有效性。 2.下载并构建目标程序：这个步骤在前面见过很多遍了，这里只给出操作命令： 1234567mkdir">
+        <meta name="description" content="在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff 4.0.4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。 1.预期收获通过本节练习，我们的预期收获是：掌握如何使用LCOV测量代码覆盖率并掌握如何使用代码覆盖率数据来提高模糊测试的有效性。 2.下载并构建目标程序：这个步骤在前面见过很多遍了，这里只给出操作命令： 1234567mkdir">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Fuzzing101-4：libTIFF（代码覆盖率）">
 <meta property="og:url" content="http://example.com/2024/10/13/Fuzzing101-4%EF%BC%9AlibTIFF%EF%BC%88%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%EF%BC%89/index.html">
 <meta property="og:site_name" content="Shad0hun&#39;s Blog">
-<meta property="og:description" content="在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff 4.0.4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。1.预期收获通过本节练习，我们的预期收获是：掌握如何使用LCOV测量代码覆盖率并掌握如何使用代码覆盖率数据来提高模糊测试的有效性。 2.下载并构建目标程序：这个步骤在前面见过很多遍了，这里只给出操作命令： 1234567mkdir">
+<meta property="og:description" content="在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff 4.0.4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。 1.预期收获通过本节练习，我们的预期收获是：掌握如何使用LCOV测量代码覆盖率并掌握如何使用代码覆盖率数据来提高模糊测试的有效性。 2.下载并构建目标程序：这个步骤在前面见过很多遍了，这里只给出操作命令： 1234567mkdir">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic.imgdb.cn/item/670be4c4d29ded1a8c3174fb.png">
 <meta property="og:image" content="https://pic.imgdb.cn/item/670be4ded29ded1a8c318b7a.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://pic.imgdb.cn/item/670be511d29ded1a8c31b65d.png">
 <meta property="og:image" content="https://pic.imgdb.cn/item/670be51dd29ded1a8c31c0bc.png">
 <meta property="article:published_time" content="2024-10-13T15:12:25.000Z">
-<meta property="article:modified_time" content="2024-10-13T15:25:19.309Z">
+<meta property="article:modified_time" content="2024-10-15T13:25:37.895Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://pic.imgdb.cn/item/670be4c4d29ded1a8c3174fb.png">
@@ -557,8 +557,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-10-13 23:25:19</span>
-            <span class="mobile">2024-10-13 23:25:19</span>
+            <span class="desktop">2024-10-15 21:25:37</span>
+            <span class="mobile">2024-10-15 21:25:37</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -601,7 +601,8 @@
 
 
         <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-            <h1 id="在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff-4-0-4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。"><a href="#在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff-4-0-4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。" class="headerlink" title="在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff 4.0.4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。"></a>在本节练习中，我们将尝试对<code>LibTIFF</code>图像库进行模糊测试，目标是在<code>libtiff 4.0.4</code>中找到<code>CVE-2016-9297</code>的崩溃POC，并测试崩溃的代码覆盖率数据。</h1><h1 id="1-预期收获"><a href="#1-预期收获" class="headerlink" title="1.预期收获"></a>1.预期收获</h1><p>通过本节练习，我们的预期收获是：掌握如何使用<code>LCOV</code>测量代码覆盖率并掌握如何使用代码覆盖率数据来提高模糊测试的有效性。</p>
+            <p>在本节练习中，我们将尝试对<code>LibTIFF</code>图像库进行模糊测试，目标是在<code>libtiff 4.0.4</code>中找到<code>CVE-2016-9297</code>的崩溃POC，并测试崩溃的代码覆盖率数据。</p>
+<h1 id="1-预期收获"><a href="#1-预期收获" class="headerlink" title="1.预期收获"></a>1.预期收获</h1><p>通过本节练习，我们的预期收获是：掌握如何使用<code>LCOV</code>测量代码覆盖率并掌握如何使用代码覆盖率数据来提高模糊测试的有效性。</p>
 <h1 id="2-下载并构建目标程序："><a href="#2-下载并构建目标程序：" class="headerlink" title="2.下载并构建目标程序："></a>2.下载并构建目标程序：</h1><p>这个步骤在前面见过很多遍了，这里只给出操作命令：</p>
 <div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> 04&amp;&amp;<span class="built_in">cd</span> ./04</span><br><span class="line">wget https://download.osgeo.org/libtiff/tiff-4.0.4.tar.gz</span><br><span class="line">tar -xzvf ./tiff-4.04.tar.gz</span><br><span class="line"><span class="built_in">cd</span> ./tiff-4.04/</span><br><span class="line">./configure --prefix=<span class="string">&#x27;/home/shad0hun/桌面/Fuzzing101/04/tiff-release&#x27;</span> --disable-shared</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
 <p>安装完成后测试：<br><code>./tiffinfo -D -j -s -w &#39;/home/shad0hun/桌面/Fuzzing101/04/tiff-4.0.4/test/images/logluv-3c-16b.tiff&#39;</code></p>
@@ -660,7 +661,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-10-13 23:25:19
+                    :</strong> 2024-10-15 21:25:37
             </li>
         
         <li>
@@ -761,7 +762,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">Fuzzing101-4：libTIFF（代码覆盖率）</div>
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8%E6%9C%AC%E8%8A%82%E7%BB%83%E4%B9%A0%E4%B8%AD%EF%BC%8C%E6%88%91%E4%BB%AC%E5%B0%86%E5%B0%9D%E8%AF%95%E5%AF%B9LibTIFF%E5%9B%BE%E5%83%8F%E5%BA%93%E8%BF%9B%E8%A1%8C%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%EF%BC%8C%E7%9B%AE%E6%A0%87%E6%98%AF%E5%9C%A8libtiff-4-0-4%E4%B8%AD%E6%89%BE%E5%88%B0CVE-2016-9297%E7%9A%84%E5%B4%A9%E6%BA%83POC%EF%BC%8C%E5%B9%B6%E6%B5%8B%E8%AF%95%E5%B4%A9%E6%BA%83%E7%9A%84%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E6%95%B0%E6%8D%AE%E3%80%82"><span class="nav-text">在本节练习中，我们将尝试对LibTIFF图像库进行模糊测试，目标是在libtiff 4.0.4中找到CVE-2016-9297的崩溃POC，并测试崩溃的代码覆盖率数据。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%A2%84%E6%9C%9F%E6%94%B6%E8%8E%B7"><span class="nav-text">1.预期收获</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%EF%BC%9A"><span class="nav-text">2.下载并构建目标程序：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85lcov"><span class="nav-text">3.下载安装lcov</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8lcov%E9%87%8D%E6%96%B0%E6%9E%84%E5%BB%BAlibtiff"><span class="nav-text">4.使用lcov重新构建libtiff</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Fuzzing"><span class="nav-text">5.Fuzzing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-crash%E6%A0%B7%E6%9C%AC%E5%88%86%E7%B1%BB"><span class="nav-text">6.crash样本分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E5%88%86%E6%9E%90"><span class="nav-text">7.代码覆盖率分析</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%A2%84%E6%9C%9F%E6%94%B6%E8%8E%B7"><span class="nav-text">1.预期收获</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%EF%BC%9A"><span class="nav-text">2.下载并构建目标程序：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85lcov"><span class="nav-text">3.下载安装lcov</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8lcov%E9%87%8D%E6%96%B0%E6%9E%84%E5%BB%BAlibtiff"><span class="nav-text">4.使用lcov重新构建libtiff</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Fuzzing"><span class="nav-text">5.Fuzzing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-crash%E6%A0%B7%E6%9C%AC%E5%88%86%E7%B1%BB"><span class="nav-text">6.crash样本分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E5%88%86%E6%9E%90"><span class="nav-text">7.代码覆盖率分析</span></a></li></ol>
 
     </div>
 </div>
