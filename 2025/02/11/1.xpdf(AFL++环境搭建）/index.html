@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Shad0hun">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://shad0hun.github.io/2025/02/11/1.xpdf(afl++环境搭建）/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.xpdf(AFL++环境搭建）">
+<meta property="og:url" content="https://shad0hun.github.io/2025/02/11/1.xpdf(AFL++%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%89/index.html">
+<meta property="og:site_name" content="Shad0hun&#39;s blog">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2025-02-11T09:15:59.000Z">
+<meta property="article:modified_time" content="2025-03-12T14:24:53.303Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Fuzzing101">
+<meta property="article:tag" content="二进制漏洞挖掘">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-2P50D0W8WD"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2P50D0W8WD');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            1.xpdf(AFL++环境搭建） | Shadohun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+    
+        
+<script src="/js/build/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"shad0hun.github.io","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":true,"custom_message":"有空多读书，没事早点睡"},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":true,"id":"G-2P50D0W8WD"}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Shad0hun's Blog","subtitle":{"text":["愿许秋风知我意，散我心中意难平"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.2","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":"致力于APT高级威胁分析，二进制漏洞挖掘\n在努力中...","show_on_mobile":true,"links":{"档案":{"path":"/archives","icon":"fa-regular fa-archive"},"标签":{"path":"/tags","icon":"fa-regular fa-tags"},"分类":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","excerpt_length":100,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 22:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+	<span class="scroll-progress-bar"></span>
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        有空多读书，没事早点睡
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({ loop: true })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [20, 0],
+                translateZ: 0,
+                opacity: [0, 1],
+                filter: ['blur(5px)', 'blur(0px)'],
+                easing: "easeOutExpo",
+                duration: 1200,
+                delay: (el, i) => 300 + 20 * i,
+            })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [0, -20],
+                opacity: [1, 0],
+                filter: ['blur(0px)', 'blur(5px)'],
+                easing: "easeInExpo",
+                duration: 1000,
+                delay: (el, i) => 15 * i,
+                complete: function() {
+                    hidePreloader();
+                }
+            }, '-=700');
+
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Shadohun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/archives"
+                        >
+                            <span>档案</span>
+                            <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>标签</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>分类</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">8</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">1.xpdf(AFL++环境搭建）</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/Shad0hun.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv2</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-02-11 17:15:59</span>
+        <span class="mobile">2025-02-11 17:15:59</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-03-12 22:24:53</span>
+            <span class="mobile">2025-03-12 22:24:53</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Fuzzing101/">Fuzzing101</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Fuzzing101/">Fuzzing101</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">二进制漏洞挖掘</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>4.7k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>26 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h1 id="AFL-环境搭建："><a href="#AFL-环境搭建：" class="headerlink" title="AFL++环境搭建："></a>AFL++环境搭建：</h1><p>官方文档里面有，懒得看的话我直接贴在这里了：</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get update</span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y build-essential python3-dev automake cmake git flex bison libglib2.0-dev libpixman-1-dev python3-setuptools cargo libgtk-3-dev</span><br><span class="line"><span class="comment"># try to install llvm 14 and install the distro default if that fails</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y lld-14 llvm-14 llvm-14-dev clang-14 || <span class="built_in">sudo</span> apt-get install -y lld llvm llvm-dev clang</span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y gcc-$(gcc --version|<span class="built_in">head</span> -n1|sed <span class="string">&#x27;s/\..*//&#x27;</span>|sed <span class="string">&#x27;s/.* //&#x27;</span>)-plugin-dev libstdc++-$(gcc --version|<span class="built_in">head</span> -n1|sed <span class="string">&#x27;s/\..*//&#x27;</span>|sed <span class="string">&#x27;s/.* //&#x27;</span>)-dev</span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y ninja-build <span class="comment"># for QEMU mode</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y cpio libcapstone-dev <span class="comment"># for Nyx mode</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y wget curl <span class="comment"># for Frida mode</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y python3-pip <span class="comment"># for Unicorn mode</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/AFLplusplus/AFLplusplus</span><br><span class="line"><span class="built_in">cd</span> AFLplusplus</span><br><span class="line">make distrib</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure></div>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise%201" >Fuzzing101-xpdf链接<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<h2 id="构建目标程序"><a href="#构建目标程序" class="headerlink" title="&lt;1&gt;.构建目标程序"></a>&lt;1&gt;.构建目标程序</h2><p>首先我们新建一个目录：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir 01-xpdf&amp;&amp;cd 01-xpdf</span><br></pre></td></tr></table></figure></div>
+<p>官网提示我们需要安装一个额外的工具：<br><code>sudo apt install build-essential</code><br>然后我们下载Xpdf 3.02版本：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.xpdfreader.com/old/xpdf-3.02.tar.gz</span><br><span class="line">tar -xvzf xpdf-3.02.tar.gz</span><br></pre></td></tr></table></figure></div>
+<p>我们使用刚下载下来的源码进行构建目标：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd xpdf-3.02</span><br><span class="line">sudo apt update &amp;&amp; sudo apt install -y build-essential gcc</span><br><span class="line">./configure --prefix=&quot;$HOME/fuzzing_xpdf/release/&quot;</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+<p>我们进行模糊测试的时候需要一些模板，下载下来：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir pdf_examples &amp;&amp; cd pdf_examples</span><br><span class="line">wget https://github.com/mozilla/pdf.js-sample-files/raw/master/helloworld.pdf</span><br><span class="line">wget http://www.africau.edu/images/default/sample.pdf</span><br><span class="line">wget https://www.melbpc.org.au/wp-content/uploads/2017/10/small-example-pdf-file.pdf</span><br></pre></td></tr></table></figure></div>
+<p>我当时下载的时候有一个是连接不上的。<br>从源码构建好之后，我们简单试用一下构建出来的目标，看看是否成功构建出来：<br><code>pdfinfo -box -meta ./helloworld.pdf</code><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/%5Cimages%5CFuzzing101/xpdf_release.png"
+                      alt="xpdf_release"
+                ><br>这样就说明我们构建出来的目标程序是没错的。<br>我们刚才构建的程序是没有经过插桩的，想在我们需要使用AFL++的编译器，对源码进行插桩编译：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd $HOME/fuzzing_xpdf/xpdf-3.02/</span><br><span class="line">make clean</span><br></pre></td></tr></table></figure></div>
+<p>然后我们指定编译器为AFL++的编译器，这里官网人家使用的是afl-fast，我这里就使用afl-fast了，但是理论上来说，afl-lto的效果应该是更好的。</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set CC &#x27;/home/shad0hun/AFLplusplus-stable/afl-clang-fast&#x27;</span><br><span class="line">set CXX &#x27;/home/shad0hun/AFLplusplus-stable/afl-clang-fast++&#x27;</span><br><span class="line">./configure --prefix=&quot;$HOME/fuzzing_xpdf/fuzzing/&quot;</span><br></pre></td></tr></table></figure></div>
+<p>然后我们需要重新构建：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd $HOME/fuzzing_xpdf/xpdf-3.02/</span><br><span class="line">make clean</span><br></pre></td></tr></table></figure></div>
+<p>现在我们生成新的目标程序：</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+<p><strong>需要注意的是，在这里，要构建fuzz版本的时候，很多教程都是叫你删除了release版本，然后重新插桩构建，我这里嫌麻烦没有删除，但是我在这个过程中遇到了一些问题：没有删除release版本，后续无法插桩，于是我尝试构建出插桩版本，再构建release版本，然后我发现，它还是会调用afl-clang-fast，但是我在后面再试的时候又构建出来了。</strong><br>问题解决：在进行构建之前，一定记得<code>make clean</code>，并且在构建之前，一定将环境变量设置正确。</p>
+<h2 id="Fuzzing"><a href="#Fuzzing" class="headerlink" title="&lt;2&gt;.Fuzzing"></a>&lt;2&gt;.Fuzzing</h2><p>现在我们就可以使用AFL++对目标程序进行Fuzz了：<br><code>afl-fuzz -i $HOME/fuzzing_xpdf/pdf_examples/ -o $HOME/fuzzing_xpdf/out/ -s 123 -- $HOME/fuzzing_xpdf/install/bin/pdftotext @@ $HOME/fuzzing_xpdf/output</code><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/%5Cimages%5CFuzzing101/xpdf_fuzz.png"
+                      alt="xpdf_fuzz"
+                ></p>
+<h2 id="模糊测试结果分析"><a href="#模糊测试结果分析" class="headerlink" title="&lt;3&gt;.模糊测试结果分析"></a>&lt;3&gt;.模糊测试结果分析</h2><p>可以看到，我这里已经拿到了4个导致进程crash的样本：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/%5Cimages%5CFuzzing101/xpdf_fuzz_end.png"
+                      alt="xpdf_fuzz_end"
+                ><br>这里<code>ctrl+C</code>手动暂停，然后我们在<code>out/default/crashes</code>目录下可以看到保存的样本：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/%5Cimages%5CFuzzing101/xpdf_crashes_sample.png"
+                      alt="xpdf_crashes_sample"
+                ><br>我们在<code>Fuzzing101/01/out/default/crashes</code>目录下可以看到导致进程crash的样本，这里一共是9个，我们现在要做的就是将这些样本传递给pdftotext，重现进程crash的场景；<br>这里我就是复现到无线递归漏洞，所以找了多尝试了几个样本：<br><strong>需要注意的是，这里使用附带调试信息，符号表的版本去复现，我们能更容易定位到漏洞位置</strong><br>这里使用命令<code>db --args /home/shad0hun/桌面/Fuzzing101/01-xpdf/install/bin/pdftotext /home/shad0hun/桌面/Fuzzing101/01-xpdf/out/default/crashes/id:000003,sig:11,src:000001,time:330516,execs:326081,op:havoc,rep:14  ./output</code>.<br>然后<code>run</code>。<br>这时候程序crash，gdb就会断下来，然后输入<code>bt</code>，就能看到栈回溯信息了，我这里输入bt之后直接回溯不完了，一直在滚动，这也印证了该漏洞为无限递归漏洞。<br>这里注意一下，其他导致进程crash的样本，不一定是漏洞，需要我们自己分析的。<br>这里复制一段出来，稍微分析一下异常的位置：</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">74633</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b2570</span>, dict=<span class="number">0x7fffffffa390</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74634</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b2570</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffa390</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74635</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffa390</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74636</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffa390</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffa550</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74637</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b20b0</span>, dict=<span class="number">0x7fffffffa550</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74638</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b20b0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffa550</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74639</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffa550</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74640</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffa550</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffa710</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74641</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b1bf0</span>, dict=<span class="number">0x7fffffffa710</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74642</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b1bf0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffa710</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74643</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffa710</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74644</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffa710</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffa8d0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74645</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b1730</span>, dict=<span class="number">0x7fffffffa8d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74646</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b1730</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffa8d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74647</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffa8d0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74648</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffa8d0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffaa90</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74649</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b1270</span>, dict=<span class="number">0x7fffffffaa90</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74650</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b1270</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffaa90</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74651</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffaa90</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74652</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffaa90</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffac50</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74653</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b0db0</span>, dict=<span class="number">0x7fffffffac50</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74654</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b0db0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffac50</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74655</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffac50</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74656</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffac50</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffae10</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74657</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b08f0</span>, dict=<span class="number">0x7fffffffae10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74658</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b08f0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffae10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74659</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffae10</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74660</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffae10</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffafd0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74661</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556b0430</span>, dict=<span class="number">0x7fffffffafd0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74662</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556b0430</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffafd0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74663</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffafd0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74664</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffafd0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffb190</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74665</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556aff70</span>, dict=<span class="number">0x7fffffffb190</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74666</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556aff70</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffb190</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74667</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffb190</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74668</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffb190</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffb350</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74669</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556afab0</span>, dict=<span class="number">0x7fffffffb350</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74670</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556afab0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffb350</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74671</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffb350</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74672</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffb350</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffb510</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74673</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556af5f0</span>, dict=<span class="number">0x7fffffffb510</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74674</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556af5f0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffb510</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74675</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffb510</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74676</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffb510</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffb6d0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74677</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556af130</span>, dict=<span class="number">0x7fffffffb6d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74678</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556af130</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffb6d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74679</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffb6d0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74680</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffb6d0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffb890</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74681</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556aec70</span>, dict=<span class="number">0x7fffffffb890</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74682</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556aec70</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffb890</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74683</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffb890</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74684</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffb890</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffba50</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74685</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ae7b0</span>, dict=<span class="number">0x7fffffffba50</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74686</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ae7b0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffba50</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74687</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffba50</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74688</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffba50</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffbc10</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74689</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ae2f0</span>, dict=<span class="number">0x7fffffffbc10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74690</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ae2f0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffbc10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74691</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffbc10</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74692</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffbc10</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffbdd0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74693</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ade30</span>, dict=<span class="number">0x7fffffffbdd0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74694</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ade30</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffbdd0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74695</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffbdd0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74696</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffbdd0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffbf90</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74697</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ad970</span>, dict=<span class="number">0x7fffffffbf90</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74698</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ad970</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffbf90</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74699</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffbf90</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74700</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffbf90</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffc150</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74701</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ad4b0</span>, dict=<span class="number">0x7fffffffc150</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74702</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ad4b0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffc150</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74703</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffc150</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74704</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffc150</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffc310</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74705</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556acff0</span>, dict=<span class="number">0x7fffffffc310</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74706</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556acff0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffc310</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74707</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffc310</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74708</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffc310</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffc4d0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74709</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556acb30</span>, dict=<span class="number">0x7fffffffc4d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74710</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556acb30</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffc4d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74711</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffc4d0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74712</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffc4d0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffc690</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74713</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ac670</span>, dict=<span class="number">0x7fffffffc690</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74714</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ac670</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffc690</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74715</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffc690</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74716</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffc690</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffc850</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74717</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ac1b0</span>, dict=<span class="number">0x7fffffffc850</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74718</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ac1b0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffc850</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74719</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffc850</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74720</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffc850</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffca10</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74721</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556abcf0</span>, dict=<span class="number">0x7fffffffca10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74722</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556abcf0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffca10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74723</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffca10</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74724</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffca10</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffcbd0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74725</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ab830</span>, dict=<span class="number">0x7fffffffcbd0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74726</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ab830</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffcbd0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74727</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffcbd0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74728</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffcbd0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffcd90</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74729</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556ab370</span>, dict=<span class="number">0x7fffffffcd90</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74730</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556ab370</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffcd90</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74731</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffcd90</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74732</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffcd90</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffcf50</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74733</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x55555569ae20</span>, dict=<span class="number">0x7fffffffcf50</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74734</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x55555569ae20</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffcf50</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74735</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffcf50</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74736</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffcf50</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffd110</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74737</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x55555569a9f0</span>, dict=<span class="number">0x7fffffffd110</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74738</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x55555569a9f0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffd110</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74739</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffd110</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74740</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffd110</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffd2d0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74741</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x55555569a530</span>, dict=<span class="number">0x7fffffffd2d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74742</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x55555569a530</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffd2d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74743</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffd2d0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74744</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffd2d0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffd490</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74745</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x55555569a070</span>, dict=<span class="number">0x7fffffffd490</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74746</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x55555569a070</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffd490</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74747</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffd490</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74748</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffd490</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffd650</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74749</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x555555699bb0</span>, dict=<span class="number">0x7fffffffd650</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74750</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x555555699bb0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffd650</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74751</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffd650</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74752</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffd650</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffd810</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74753</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x555555699780</span>, dict=<span class="number">0x7fffffffd810</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74754</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x555555699780</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffd810</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74755</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffd810</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74756</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffd810</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffd9d0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74757</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x555555699370</span>, dict=<span class="number">0x7fffffffd9d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74758</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x555555699370</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffd9d0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74759</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffd9d0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74760</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffffd9d0</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffffdba0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br><span class="line">#<span class="number">74761</span> Parser::makeStream (<span class="built_in">this</span>=<span class="number">0x5555556976a0</span>, dict=<span class="number">0x7fffffffdba0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">156</span></span><br><span class="line">#<span class="number">74762</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x5555556976a0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffffdba0</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">74763</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffffdba0</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">74764</span> <span class="number">0x00005555555df798</span> in Page::displaySlice (<span class="built_in">this</span>=<span class="number">0x555555694c90</span>, out=<span class="number">0x555555697270</span>, hDPI=<span class="number">72</span>, vDPI=<span class="number">72</span>, rotate=<span class="number">0</span>, useMediaBox=&lt;optimized out&gt;, crop=&lt;optimized out&gt;, sliceX=&lt;optimized out&gt;, sliceY=-<span class="number">1</span>, sliceW=-<span class="number">1</span>, sliceH=-<span class="number">1</span>, printing=<span class="number">0</span>, catalog=<span class="number">0x555555696760</span>, abortCheckCbk=<span class="number">0x0</span>, abortCheckCbkData=<span class="number">0x0</span>) at Page.cc:<span class="number">314</span></span><br><span class="line">#<span class="number">74765</span> <span class="number">0x00005555555dfa17</span> in Page::display (<span class="built_in">this</span>=&lt;optimized out&gt;, out=out<span class="meta">@entry</span>=<span class="number">0x555555697270</span>, hDPI=hDPI<span class="meta">@entry</span>=<span class="number">72</span>, vDPI=vDPI<span class="meta">@entry</span>=<span class="number">72</span>, rotate=rotate<span class="meta">@entry</span>=<span class="number">0</span>, useMediaBox=useMediaBox<span class="meta">@entry</span>=<span class="number">0</span>, crop=crop<span class="meta">@entry</span>=<span class="number">1</span>, printing=printing<span class="meta">@entry</span>=<span class="number">0</span>, catalog=<span class="number">0x555555696760</span>, abortCheckCbk=<span class="number">0x0</span>, abortCheckCbkData=<span class="number">0x0</span>) at Page.cc:<span class="number">264</span></span><br><span class="line">#<span class="number">74766</span> <span class="number">0x00005555555e11b9</span> in PDFDoc::displayPage (abortCheckCbkData=<span class="number">0x0</span>, abortCheckCbk=<span class="number">0x0</span>, printing=<span class="number">0</span>, crop=<span class="number">1</span>, useMediaBox=<span class="number">0</span>, rotate=<span class="number">0</span>, vDPI=<span class="number">72</span>, hDPI=<span class="number">72</span>, page=<span class="number">1</span>, out=<span class="number">0x555555697270</span>, <span class="built_in">this</span>=<span class="number">0x555555693c30</span>) at PDFDoc.cc:<span class="number">317</span></span><br><span class="line">#<span class="number">74767</span> PDFDoc::displayPages (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x555555693c30</span>, out=out<span class="meta">@entry</span>=<span class="number">0x555555697270</span>, firstPage=&lt;optimized out&gt;, lastPage=<span class="number">1</span>, hDPI=hDPI<span class="meta">@entry</span>=<span class="number">72</span>, vDPI=vDPI<span class="meta">@entry</span>=<span class="number">72</span>, rotate=rotate<span class="meta">@entry</span>=<span class="number">0</span>, useMediaBox=useMediaBox<span class="meta">@entry</span>=<span class="number">0</span>, crop=<span class="number">1</span>, printing=<span class="number">0</span>, abortCheckCbk=<span class="number">0x0</span>, abortCheckCbkData=<span class="number">0x0</span>) at PDFDoc.cc:<span class="number">330</span></span><br><span class="line">#<span class="number">74768</span> <span class="number">0x000055555558f27f</span> in <span class="title function_">main</span> <span class="params">(argc=&lt;optimized out&gt;, argc<span class="meta">@entry</span>=<span class="number">3</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffde88</span>)</span> at pdftotext.cc:<span class="number">237</span></span><br><span class="line">#<span class="number">74769</span> <span class="number">0x00007ffff7829d90</span> in <span class="title function_">__libc_start_call_main</span> <span class="params">(main=main<span class="meta">@entry</span>=<span class="number">0x55555558ecc0</span> &lt;main(<span class="type">int</span>, <span class="type">char</span>**)</span>&gt;, argc=argc<span class="meta">@entry</span>=<span class="number">3</span>, argv=argv<span class="meta">@entry</span>=<span class="number">0x7fffffffde88</span>) at ../sysdeps/nptl/libc_start_call_main.h:<span class="number">58</span></span><br><span class="line">#<span class="number">74770</span> <span class="number">0x00007ffff7829e40</span> in <span class="title function_">__libc_start_main_impl</span> <span class="params">(main=<span class="number">0x55555558ecc0</span> &lt;main(<span class="type">int</span>, <span class="type">char</span>**)</span>&gt;, argc=<span class="number">3</span>, argv=<span class="number">0x7fffffffde88</span>, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, stack_end=<span class="number">0x7fffffffde78</span>) at ../csu/libc-start.c:<span class="number">392</span></span><br><span class="line">#<span class="number">74771</span> <span class="number">0x000055555558f555</span> in <span class="title function_">_start</span> <span class="params">()</span></span><br></pre></td></tr></table></figure></div>
+<p>应该不难看出来这一段在一直循环吧：</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">64786</span> <span class="number">0x00005555555e06bc</span> in Parser::getObj (<span class="built_in">this</span>=<span class="built_in">this</span><span class="meta">@entry</span>=<span class="number">0x55555598d3f0</span>, obj=obj<span class="meta">@entry</span>=<span class="number">0x7fffffeecf10</span>, fileKey=<span class="number">0x0</span>, encAlgorithm=cryptRC4, keyLength=<span class="number">0</span>, objNum=objNum<span class="meta">@entry</span>=<span class="number">7</span>, objGen=<span class="number">0</span>) at Parser.cc:<span class="number">94</span></span><br><span class="line">#<span class="number">64787</span> <span class="number">0x00005555555f7b5d</span> in XRef::fetch (<span class="built_in">this</span>=<span class="number">0x5555556952b0</span>, num=<span class="number">7</span>, gen=<span class="number">0</span>, obj=<span class="number">0x7fffffeecf10</span>) at XRef.cc:<span class="number">823</span></span><br><span class="line">#<span class="number">64788</span> <span class="number">0x00005555555e010f</span> in Object::dictLookup (obj=<span class="number">0x7fffffeecf10</span>, key=<span class="number">0x55555560c1c6</span> <span class="string">&quot;Length&quot;</span>, <span class="built_in">this</span>=<span class="number">0x7fffffeed0d0</span>) at /home/shad0hun/桌面/Fuzzing101/<span class="number">01</span>-xpdf/xpdf-<span class="number">3.02</span>/xpdf/Object.h:<span class="number">253</span></span><br></pre></td></tr></table></figure></div>
+<p>这里明确指出了触发漏洞的位置，位于<code>Parser.cc文件的Object::getObj()</code>方法上，而且我们还是有参数的，我们就可以利用这些信息去找到这个漏洞。<br>由于这里是为了练习Fuzz，漏洞分析的过程不再演示。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 1.xpdf(AFL++环境搭建）</li>
+        <li><strong>Author:</strong> Shad0hun</li>
+        <li><strong>Created at
+                :</strong> 2025-02-11 17:15:59</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2025-03-12 22:24:53
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://shad0hun.github.io/2025/02/11/1.xpdf(AFL++环境搭建）/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Fuzzing101/">#Fuzzing101</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">#二进制漏洞挖掘</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/02/16/Yara%EF%BC%88%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%89/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">Yara（恶意样本检测工具）</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/02/10/AFL%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E3%80%902%E3%80%91%EF%BC%9Aafl-as/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">AFL源码分析【2】：afl-as</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        Comments
+    </div>
+    
+
+        
+            
+
+
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">1.xpdf(AFL++环境搭建）</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AFL-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%9A"><span class="nav-text">AFL++环境搭建：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F"><span class="nav-text">&lt;1&gt;.构建目标程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fuzzing"><span class="nav-text">&lt;2&gt;.Fuzzing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-text">&lt;3&gt;.模糊测试结果分析</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Shad0hun</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        12 posts in total
+                    </span>
+                    
+                        <span>
+                            27.6k words in total
+                        </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="fa-regular fa-arrow-up"></i>
+		</li>
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
