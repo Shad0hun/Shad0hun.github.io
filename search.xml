@@ -141,6 +141,26 @@
       </tags>
   </entry>
   <entry>
+    <title>2024年终总结</title>
+    <url>/2025/01/22/2024%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p>时间过得真快，一转眼，2024已经过去了，大三已经一半走过了，晃悠晃悠，就可以开始准备秋招了……<br>回想2024，一整年都在摆。要不是我翻了一下以前写的博客，还真不知道自己这一年都干了些什么。</p>
+<h2 id="2024总结"><a href="#2024总结" class="headerlink" title="2024总结"></a>2024总结</h2><p>前半年，过完年二三月份开始学习了漏洞，先知社区发表了几篇博客，关于Windows下的几种保护机制。<br>三四月份，应该在摆烂。<br>五六七八月份，安全研究员实习，分析APT样本，产出分析报告，yara、snotr、sgi规则，编写控制端。<br>七八九十十一月，emmmm……说实话谈恋爱去了。<br>十二月至今，安全研究员实习，还是分析APT样本……</p>
+<h1 id="关于2024的思考"><a href="#关于2024的思考" class="headerlink" title="关于2024的思考"></a>关于2024的思考</h1><p>我是2023年开始深入计算机学习，相较于2023年今年动力减少了很多，自驱力还是不够，今年真的是彻彻底底摆了一年，现在回想起来，我真该*啊，浪费了这么多时间，我要是把这些时间都花在学习上，也许就称为大佬了……哎，不过既然过去了也就不后悔，希望引以为戒，2025继续努力，更上一层楼！</p>
+<h1 id="2025展望"><a href="#2025展望" class="headerlink" title="2025展望"></a>2025展望</h1><p>前半年：</p>
+<ol>
+<li>继续深入二进制漏洞挖掘</li>
+<li>学习IOT安全</li>
+<li>争取拿到自己的cve<br>至于后半年，应该准备秋招了，到时候肯定会发现自己的很多短板，到时候去补足就可以了。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>总结规划</category>
+      </categories>
+      <tags>
+        <tag>总结规划</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>3.TCPdump</title>
     <url>/2025/02/21/3.TCPdump/</url>
     <content><![CDATA[<h1 id="目标："><a href="#目标：" class="headerlink" title="目标："></a>目标：</h1><ul>
@@ -198,26 +218,6 @@
       </tags>
   </entry>
   <entry>
-    <title>2024年终总结</title>
-    <url>/2025/01/22/2024%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<p>时间过得真快，一转眼，2024已经过去了，大三已经一半走过了，晃悠晃悠，就可以开始准备秋招了……<br>回想2024，一整年都在摆。要不是我翻了一下以前写的博客，还真不知道自己这一年都干了些什么。</p>
-<h2 id="2024总结"><a href="#2024总结" class="headerlink" title="2024总结"></a>2024总结</h2><p>前半年，过完年二三月份开始学习了漏洞，先知社区发表了几篇博客，关于Windows下的几种保护机制。<br>三四月份，应该在摆烂。<br>五六七八月份，安全研究员实习，分析APT样本，产出分析报告，yara、snotr、sgi规则，编写控制端。<br>七八九十十一月，emmmm……说实话谈恋爱去了。<br>十二月至今，安全研究员实习，还是分析APT样本……</p>
-<h1 id="关于2024的思考"><a href="#关于2024的思考" class="headerlink" title="关于2024的思考"></a>关于2024的思考</h1><p>我是2023年开始深入计算机学习，相较于2023年今年动力减少了很多，自驱力还是不够，今年真的是彻彻底底摆了一年，现在回想起来，我真该*啊，浪费了这么多时间，我要是把这些时间都花在学习上，也许就称为大佬了……哎，不过既然过去了也就不后悔，希望引以为戒，2025继续努力，更上一层楼！</p>
-<h1 id="2025展望"><a href="#2025展望" class="headerlink" title="2025展望"></a>2025展望</h1><p>前半年：</p>
-<ol>
-<li>继续深入二进制漏洞挖掘</li>
-<li>学习IOT安全</li>
-<li>争取拿到自己的cve<br>至于后半年，应该准备秋招了，到时候肯定会发现自己的很多短板，到时候去补足就可以了。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>总结规划</category>
-      </categories>
-      <tags>
-        <tag>总结规划</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>AFL源码分析【1】：afl-gcc</title>
     <url>/2025/02/10/AFL%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E3%80%901%E3%80%91%EF%BC%9Aafl-gcc/</url>
     <content><![CDATA[<p>AFL主要的代码在afl_fuzz当中，有几个独立功能代码是分开的，其中<code>llvm_mode</code>和<code>qumu_mode</code>代码差不多，是两种模式的插桩代码，我们主要要分析的代码在<code>afl_fuzz.c</code>中。<br>在分析源代码之前，我们需要大致理解一下AFL源码的结构：</p>
@@ -242,6 +242,24 @@
       <tags>
         <tag>二进制漏洞挖掘</tag>
         <tag>AFL源码分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ARM寄存器简介</title>
+    <url>/2025/03/12/ARM%E5%AF%84%E5%AD%98%E5%99%A8%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<h1 id="一-数据类型"><a href="#一-数据类型" class="headerlink" title="一.数据类型"></a>一.数据类型</h1><p>arm处理器支持一下几种数据类型：</p>
+<ul>
+<li>字节：8位</li>
+<li>半字：16位</li>
+<li>字：32位<br><strong>Load&#x2F;Store操作可以传送字节，半字和字，Load字节和半字数据时可以自动进行0扩展（unsigned类型）或符号扩展（signed类型）将其扩展为字。</strong><br><strong>所有数据运算操作，都按字宽度进行。</strong><br><strong>arm指令固定长度为32位，Thumb指令长度固定为16位。</strong></li>
+</ul>
+<h2 id="二-寄存器组织"><a href="#二-寄存器组织" class="headerlink" title="二.寄存器组织"></a>二.寄存器组织</h2><p>arm处理器共有37个寄存器包括31个通用寄存器和六个状态寄存器每个寄存器都是32位的但状态寄存器只用了其中的部分位。<br>寄存器R0<del>R7，在所有处理器模式下都只对应一个物理寄存器，称为未备份寄存器，未备份寄存器没有被系统用于任何特殊目的。<br>计算器R0</del>R12称为备份寄存器。每个寄存器对应两个物理寄存器，分别用R8<del>R12和R8_fiq</del>RF12_fiq表示，在快速状态模式使用R8_fiq到F12_fiq，在其他处理器模式中使用R8<del>R12。也就是说，在快速中断模式下，指令中的R8寄存器实际上是R8_fiq物理寄存器。这些寄存器也被系统用于特殊目的，只是当中断处理比较简单，仅仅使用R8_fiq到R14_fiq时，快速中断处理程序可以不必执行保存和恢复现场的指令，从而使中断处理器过程非常迅速。<br>寄存器R13</del>R14也被称为备份寄存器。但每个计算器对应6个物理寄存器，在用户模式和系统模式下共用一个物理寄存器，其他5种异常模式下分别使用另外五个物理寄存器。<br>寄存器R13在ARM中常用作堆栈指针，指令中常用SP，表示每一种异常模式都拥有自己的物理R13，应用程序在开始阶段初始化该R13，使其指向该异常模式专用的堆栈地址，当进入各一场模式时可以将需要使用的寄存器的值保存在R13所指的堆栈，中当退出异常处理程序时将保存在R13所指堆栈中的寄存器值弹出，这样就使异常处理程序不会破坏被其中断的应用程序的现场。<br>寄存器R14在ARM中被称为连接寄存器（LR）主要有如下两个作用：<br>&lt;1&gt;. 在每一种处理器模式中当通过<code>BL</code>或<code>BLX</code>指令调用子程序时，各模式对应的物理R14被设置成该子程序的返回地址，因此可以通过指令mov PC，LR来实现子程序的返回操作。<br>&lt;2&gt;. 当异常发生时该异常模式对应的物理R14被设置成该异常模式将由返回的地址。<br>计算器R15不是备份寄存器，在所有处理器模式下都只对应一个物理寄存器R15寄存器在arm中被称为程序计数器（PC），用来指出当前CPU执行的指令地址，由于arm采用流水线机制，一般PC指向当前指令后的两条指令的地址，即PC值为当前指令加八个字节。向R15寄存器中写入一个地址值就可以实现程序的跳转。<br><strong>上述R0<del>R15及部分备份寄存器共31个称为通用寄存器，即在程序中可以任意使用。但不建议把R13</del>R15当做通用寄存器来使用。</strong><br>寄存器CPSR称为当前程序状态寄存器，在所有模式下都只对应一个物理寄存器，不用户模式只能对它进行读操作外，其他处理器模式都可以对它进行完全的读写操作。</p>
+]]></content>
+      <categories>
+        <category>嵌入式系统应用</category>
+      </categories>
+      <tags>
+        <tag>嵌入式系统应用</tag>
       </tags>
   </entry>
   <entry>
@@ -279,66 +297,6 @@
       <tags>
         <tag>二进制漏洞挖掘</tag>
         <tag>AFL源码分析</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ARM寄存器简介</title>
-    <url>/2025/03/12/ARM%E5%AF%84%E5%AD%98%E5%99%A8%E7%AE%80%E4%BB%8B/</url>
-    <content><![CDATA[<h1 id="一-数据类型"><a href="#一-数据类型" class="headerlink" title="一.数据类型"></a>一.数据类型</h1><p>arm处理器支持一下几种数据类型：</p>
-<ul>
-<li>字节：8位</li>
-<li>半字：16位</li>
-<li>字：32位<br><strong>Load&#x2F;Store操作可以传送字节，半字和字，Load字节和半字数据时可以自动进行0扩展（unsigned类型）或符号扩展（signed类型）将其扩展为字。</strong><br><strong>所有数据运算操作，都按字宽度进行。</strong><br><strong>arm指令固定长度为32位，Thumb指令长度固定为16位。</strong></li>
-</ul>
-<h2 id="二-寄存器组织"><a href="#二-寄存器组织" class="headerlink" title="二.寄存器组织"></a>二.寄存器组织</h2><p>arm处理器共有37个寄存器包括31个通用寄存器和六个状态寄存器每个寄存器都是32位的但状态寄存器只用了其中的部分位。<br>寄存器R0<del>R7，在所有处理器模式下都只对应一个物理寄存器，称为未备份寄存器，未备份寄存器没有被系统用于任何特殊目的。<br>计算器R0</del>R12称为备份寄存器。每个寄存器对应两个物理寄存器，分别用R8<del>R12和R8_fiq</del>RF12_fiq表示，在快速状态模式使用R8_fiq到F12_fiq，在其他处理器模式中使用R8<del>R12。也就是说，在快速中断模式下，指令中的R8寄存器实际上是R8_fiq物理寄存器。这些寄存器也被系统用于特殊目的，只是当中断处理比较简单，仅仅使用R8_fiq到R14_fiq时，快速中断处理程序可以不必执行保存和恢复现场的指令，从而使中断处理器过程非常迅速。<br>寄存器R13</del>R14也被称为备份寄存器。但每个计算器对应6个物理寄存器，在用户模式和系统模式下共用一个物理寄存器，其他5种异常模式下分别使用另外五个物理寄存器。<br>寄存器R13在ARM中常用作堆栈指针，指令中常用SP，表示每一种异常模式都拥有自己的物理R13，应用程序在开始阶段初始化该R13，使其指向该异常模式专用的堆栈地址，当进入各一场模式时可以将需要使用的寄存器的值保存在R13所指的堆栈，中当退出异常处理程序时将保存在R13所指堆栈中的寄存器值弹出，这样就使异常处理程序不会破坏被其中断的应用程序的现场。<br>寄存器R14在ARM中被称为连接寄存器（LR）主要有如下两个作用：<br>&lt;1&gt;. 在每一种处理器模式中当通过<code>BL</code>或<code>BLX</code>指令调用子程序时，各模式对应的物理R14被设置成该子程序的返回地址，因此可以通过指令mov PC，LR来实现子程序的返回操作。<br>&lt;2&gt;. 当异常发生时该异常模式对应的物理R14被设置成该异常模式将由返回的地址。<br>计算器R15不是备份寄存器，在所有处理器模式下都只对应一个物理寄存器R15寄存器在arm中被称为程序计数器（PC），用来指出当前CPU执行的指令地址，由于arm采用流水线机制，一般PC指向当前指令后的两条指令的地址，即PC值为当前指令加八个字节。向R15寄存器中写入一个地址值就可以实现程序的跳转。<br><strong>上述R0<del>R15及部分备份寄存器共31个称为通用寄存器，即在程序中可以任意使用。但不建议把R13</del>R15当做通用寄存器来使用。</strong><br>寄存器CPSR称为当前程序状态寄存器，在所有模式下都只对应一个物理寄存器，不用户模式只能对它进行读操作外，其他处理器模式都可以对它进行完全的读写操作。</p>
-]]></content>
-      <categories>
-        <category>嵌入式系统应用</category>
-      </categories>
-      <tags>
-        <tag>嵌入式系统应用</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux C语言编程工具</title>
-    <url>/2025/03/11/Linux%20C%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<h1 id="一-GCC"><a href="#一-GCC" class="headerlink" title="一.GCC"></a>一.GCC</h1><p>GCC是GUN开源社区的一个编译器项目，最初只能编译C语言程序，随着众多开源爱好者对GCC功能的不断完善，如今，GCC已经能完成对多种编程语言编写的程序编译，包括C、C++、Ada、Object C、Java、Fortran等。<br>GCC不仅能够编译多种语言的程序，而且具有交叉编译的功能。<br><strong>在嵌入式系统开发中，经常利用GCC的交叉编译功能，在上位机中生成下位机中的可执行代码。</strong><br>使用GCC产生的可执行代码效率要比其他编译器所产生的可执行代码的执行效率平均提高20%~30%。<br>GCC将源代码程序转变为可执行程序的过程分为4个相互关联的步骤：预处理，编译，汇编和链接。</p>
-<ul>
-<li>预处理：对源代码文件中的包含（<code>include</code>）语句，预处理语句（<code>define</code>等）进行宏替换</li>
-<li>编译：调用ccl进行编译，生成.o为后缀的目标文件</li>
-<li>汇编：汇编过程是针对源代码中汇编语言代码的步骤，调用as将以<code>.s</code>和<code>.S</code>为后缀的汇编语言源代码文件进行和生成以<code>.o</code>为后缀的目标文件</li>
-<li>链接：当所有目标文件都生成之后，GCC就调用ld来完成链接，在链接阶段，所有的目标文件被安排在可执行程序中的恰当位置，同时，程序中所调用的库函数也从各自所在的函数库中链接到合适的地方。<br><strong>需要注意的是，Linux系统中，不以后缀名作为文件区分的标志，但是GCC通过文件后缀名来区分文件。</strong></li>
-</ul>
-<h2 id="gcc参数"><a href="#gcc参数" class="headerlink" title="gcc参数"></a>gcc参数</h2><h4 id="o-输出文件名"><a href="#o-输出文件名" class="headerlink" title="-o 输出文件名"></a>-o 输出文件名</h4><p><code>gcc test.c -o test</code> 将gcc的处理结果输出到test文件中。本例中输出可执行文件。</p>
-<h4 id="E-输出预处理文件"><a href="#E-输出预处理文件" class="headerlink" title="-E 输出预处理文件"></a>-E 输出预处理文件</h4><p><code>gcc -E test.c -o test.i</code> 将预处理输出到test.i文件中。在大型项目中，可能各个宏的值不容易从代码里面直接看出来，通过-E参数，可以全部展开。</p>
-<h4 id="S-输出汇编文件"><a href="#S-输出汇编文件" class="headerlink" title="-S 输出汇编文件"></a>-S 输出汇编文件</h4><p><code>gcc -S test.i -o test.S</code> <code>gcc -S test.c -o test.S</code> 将预处理文件test.i，或者源代码文件<code>test.c</code>，转出汇编文件test.S。</p>
-<h4 id="c-输出编译中间文件"><a href="#c-输出编译中间文件" class="headerlink" title="-c 输出编译中间文件"></a>-c 输出编译中间文件</h4><p><code>gcc -c test.S -o test.o</code> <code>gcc -c test.i -o test.o</code> <code>gcc -c test.c -o test.o</code> 将汇编文件<code>test.S</code>，或者预处理文件<code>test.i</code>，或者源代码文件<code>test.c</code>，编译成输出文件test.o；再将输出文件编译成可执行文件test。</p>
-<h4 id="无参数-输出可执行文件"><a href="#无参数-输出可执行文件" class="headerlink" title="无参数 输出可执行文件"></a>无参数 输出可执行文件</h4><p><code>gcc test.c -o test</code> <code>gcc test.S -o test</code> <code>gcc test.i -o test</code> <code>gcc test.o -o test</code></p>
-<h4 id="O"><a href="#O" class="headerlink" title="-O"></a>-O</h4><p><code>gcc -O1 test.c -o test</code> 使用优化级别1编译程序。级别1~3，越大优化越多，编译时间越长。也可以不带数字，默认是1。</p>
-<h4 id="Dmacro"><a href="#Dmacro" class="headerlink" title="-Dmacro"></a>-Dmacro</h4><ol>
-<li><code>gcc -DNO_FUNCTION test.c -o test</code> 相当于test.c中添加宏定义<code>#define NO_FUNCTION 1</code></li>
-<li><code>gcc -DCPU_NUM=4 test.c -o test</code> 相当于test.c中添加宏定义<code>#define CPU_NUM 4</code></li>
-<li><code>gcc -DCPU_NUM=&quot;4&quot; test.c -o test</code> 与上相同，相当于定义<code>#define CPU_NUM 4</code></li>
-<li><code>gcc -DCPU_NUM=\&quot;4\&quot; test.c -o test</code> 定义一个字符串宏，相当于<code>#define CPU_NUM &quot;4&quot;</code></li>
-</ol>
-<h4 id="Wall"><a href="#Wall" class="headerlink" title="-Wall"></a>-Wall</h4><p>生成所有警告信息</p>
-<h4 id="lxx-Lxx-Ixx"><a href="#lxx-Lxx-Ixx" class="headerlink" title="-lxx -Lxx -Ixx"></a>-lxx -Lxx -Ixx</h4><p><code>gcc test.c -lstr -L/path/lib -I/path/include -o test</code> 表示链接libstr.so库，库所在路径为&#x2F;path&#x2F;lib，头文件所在路径为&#x2F;path&#x2F;include</p>
-<h4 id="g"><a href="#g" class="headerlink" title="-g"></a>-g</h4><p><code>gcc -g test.c -o test</code> 生成gbd的调试信息，可以通过<code>gdb test</code>跟踪调试</p>
-<h1 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h1><h2 id="一-常用变量以及通配符："><a href="#一-常用变量以及通配符：" class="headerlink" title="一.常用变量以及通配符："></a>一.常用变量以及通配符：</h2><p>$@   目标文件<br>$^    所有依赖文件<br>$&lt;  表示第一个依赖文件     &#x2F;&#x2F;第一个依赖文件是.c文件。<br>$?  表示比目标还要新的依赖文件列表 </p>
-<ul>
-<li><strong>通配符符号：%</strong></li>
-</ul>
-<h2 id="二-使用举例："><a href="#二-使用举例：" class="headerlink" title="二.使用举例："></a>二.使用举例：</h2><p>假设某工程师需要计算6~10的阶乘之和，包含两个C语言源文件：a.c和al.c：<br>a.c：</p>
-<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span> </span></span><br><span class="line"><span class="type">int</span> <span class="title function_">factorial</span><span class="params">(<span class="type">int</span>)</span>; </span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123; </span><br><span class="line">	<span class="type">int</span> sum = <span class="number">0</span>; </span><br><span class="line">	<span class="keyword">for</span>(x=<span class="number">6</span>;x&lt;=<span class="number">10</span>;i++)&#123;</span><br><span class="line">		sum += factorial(x);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;sum = %d\n&quot;</span>,sum); </span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-<p>al.c：</p>
-<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">factorial</span><span class="params">(<span class="type">int</span> h)</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> k,s = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(k = <span class="number">1</span>; k &lt;= h;k++)&#123;</span><br><span class="line">        s*=k;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-<p>这时候我们就需要Makefile文件：</p>
-<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="code"><pre><span class="line">CC = gcc <span class="comment">#设置变量CC的值为gcc，代表编译器</span></span><br><span class="line">FLAGS += -Wall <span class="comment">#该变量将作为编译器的参数</span></span><br><span class="line">EXEC = aa <span class="comment">#设置变量EXEC的值为aa，该变量代表要生成的可执行文件名</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:$&#123;EXEC&#125; #规则语句块，目标名为all，依赖文件为变量EXEC的值</span></span><br><span class="line"></span><br><span class="line"><span class="section">$&#123;EXEC&#125;:a.o al.o #规则语句块，目标名为变量EXEC的值，依赖文件为a.o和al.o</span></span><br><span class="line">	$&#123;CC&#125; $&#123;FLAGS&#125; -c <span class="variable">$@</span> a.o al.o <span class="comment">#规则语句块的命令行，使用依赖文件生成目标，$@代表该规则语句块的目标</span></span><br><span class="line"></span><br><span class="line"><span class="section">a.o:a.c #规则语句块，目标名为发al.o，依赖文件为al.c</span></span><br><span class="line">	$&#123;CC&#125; $&#123;FLAGS&#125; -c @^ <span class="comment">#规则语句块的命令行，使用依赖文件a.c生成目标a.o,$^代表生成目标的依赖文件</span></span><br><span class="line"></span><br><span class="line"><span class="section">al.o:al.c #规则语句块，目标名为al.o，依赖文件名为al.c</span></span><br><span class="line">	$&#123;CC&#125; $&#123;FLAGS&#125; -c al.c <span class="comment">#规则语句块的命令行，使用依赖文件al.c生成目标al.o</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean: #伪目标规则语句块，无依赖文件</span></span><br><span class="line">	rm -f $&#123;EXEC&#125; a.o al.o <span class="comment">#规则语句块的命令行，删除所有目标文件</span></span><br><span class="line"></span><br><span class="line">test： <span class="comment">#伪目标规则语句块，无依赖文件</span></span><br><span class="line">	./$&#123;EXEC&#125; <span class="comment">#规则语句块的命令行，运行变量EXEC所代表的最终目标文件</span></span><br></pre></td></tr></table></figure></div>]]></content>
-      <categories>
-        <category>嵌入式系统应用</category>
-      </categories>
-      <tags>
-        <tag>嵌入式系统应用</tag>
       </tags>
   </entry>
   <entry>
@@ -579,6 +537,57 @@
       </tags>
   </entry>
   <entry>
+    <title>Linux C语言编程工具</title>
+    <url>/2025/03/11/Linux%20C%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<h1 id="一-GCC"><a href="#一-GCC" class="headerlink" title="一.GCC"></a>一.GCC</h1><p>GCC是GUN开源社区的一个编译器项目，最初只能编译C语言程序，随着众多开源爱好者对GCC功能的不断完善，如今，GCC已经能完成对多种编程语言编写的程序编译，包括C、C++、Ada、Object C、Java、Fortran等。<br>GCC不仅能够编译多种语言的程序，而且具有交叉编译的功能。<br><strong>在嵌入式系统开发中，经常利用GCC的交叉编译功能，在上位机中生成下位机中的可执行代码。</strong><br>使用GCC产生的可执行代码效率要比其他编译器所产生的可执行代码的执行效率平均提高20%~30%。<br>GCC将源代码程序转变为可执行程序的过程分为4个相互关联的步骤：预处理，编译，汇编和链接。</p>
+<ul>
+<li>预处理：对源代码文件中的包含（<code>include</code>）语句，预处理语句（<code>define</code>等）进行宏替换</li>
+<li>编译：调用ccl进行编译，生成.o为后缀的目标文件</li>
+<li>汇编：汇编过程是针对源代码中汇编语言代码的步骤，调用as将以<code>.s</code>和<code>.S</code>为后缀的汇编语言源代码文件进行和生成以<code>.o</code>为后缀的目标文件</li>
+<li>链接：当所有目标文件都生成之后，GCC就调用ld来完成链接，在链接阶段，所有的目标文件被安排在可执行程序中的恰当位置，同时，程序中所调用的库函数也从各自所在的函数库中链接到合适的地方。<br><strong>需要注意的是，Linux系统中，不以后缀名作为文件区分的标志，但是GCC通过文件后缀名来区分文件。</strong></li>
+</ul>
+<h2 id="gcc参数"><a href="#gcc参数" class="headerlink" title="gcc参数"></a>gcc参数</h2><h4 id="o-输出文件名"><a href="#o-输出文件名" class="headerlink" title="-o 输出文件名"></a>-o 输出文件名</h4><p><code>gcc test.c -o test</code> 将gcc的处理结果输出到test文件中。本例中输出可执行文件。</p>
+<h4 id="E-输出预处理文件"><a href="#E-输出预处理文件" class="headerlink" title="-E 输出预处理文件"></a>-E 输出预处理文件</h4><p><code>gcc -E test.c -o test.i</code> 将预处理输出到test.i文件中。在大型项目中，可能各个宏的值不容易从代码里面直接看出来，通过-E参数，可以全部展开。</p>
+<h4 id="S-输出汇编文件"><a href="#S-输出汇编文件" class="headerlink" title="-S 输出汇编文件"></a>-S 输出汇编文件</h4><p><code>gcc -S test.i -o test.S</code> <code>gcc -S test.c -o test.S</code> 将预处理文件test.i，或者源代码文件<code>test.c</code>，转出汇编文件test.S。</p>
+<h4 id="c-输出编译中间文件"><a href="#c-输出编译中间文件" class="headerlink" title="-c 输出编译中间文件"></a>-c 输出编译中间文件</h4><p><code>gcc -c test.S -o test.o</code> <code>gcc -c test.i -o test.o</code> <code>gcc -c test.c -o test.o</code> 将汇编文件<code>test.S</code>，或者预处理文件<code>test.i</code>，或者源代码文件<code>test.c</code>，编译成输出文件test.o；再将输出文件编译成可执行文件test。</p>
+<h4 id="无参数-输出可执行文件"><a href="#无参数-输出可执行文件" class="headerlink" title="无参数 输出可执行文件"></a>无参数 输出可执行文件</h4><p><code>gcc test.c -o test</code> <code>gcc test.S -o test</code> <code>gcc test.i -o test</code> <code>gcc test.o -o test</code></p>
+<h4 id="O"><a href="#O" class="headerlink" title="-O"></a>-O</h4><p><code>gcc -O1 test.c -o test</code> 使用优化级别1编译程序。级别1~3，越大优化越多，编译时间越长。也可以不带数字，默认是1。</p>
+<h4 id="Dmacro"><a href="#Dmacro" class="headerlink" title="-Dmacro"></a>-Dmacro</h4><ol>
+<li><code>gcc -DNO_FUNCTION test.c -o test</code> 相当于test.c中添加宏定义<code>#define NO_FUNCTION 1</code></li>
+<li><code>gcc -DCPU_NUM=4 test.c -o test</code> 相当于test.c中添加宏定义<code>#define CPU_NUM 4</code></li>
+<li><code>gcc -DCPU_NUM=&quot;4&quot; test.c -o test</code> 与上相同，相当于定义<code>#define CPU_NUM 4</code></li>
+<li><code>gcc -DCPU_NUM=\&quot;4\&quot; test.c -o test</code> 定义一个字符串宏，相当于<code>#define CPU_NUM &quot;4&quot;</code></li>
+</ol>
+<h4 id="Wall"><a href="#Wall" class="headerlink" title="-Wall"></a>-Wall</h4><p>生成所有警告信息</p>
+<h4 id="lxx-Lxx-Ixx"><a href="#lxx-Lxx-Ixx" class="headerlink" title="-lxx -Lxx -Ixx"></a>-lxx -Lxx -Ixx</h4><p><code>gcc test.c -lstr -L/path/lib -I/path/include -o test</code> 表示链接libstr.so库，库所在路径为&#x2F;path&#x2F;lib，头文件所在路径为&#x2F;path&#x2F;include</p>
+<h4 id="g"><a href="#g" class="headerlink" title="-g"></a>-g</h4><p><code>gcc -g test.c -o test</code> 生成gbd的调试信息，可以通过<code>gdb test</code>跟踪调试</p>
+<h1 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h1><h2 id="一-常用变量以及通配符："><a href="#一-常用变量以及通配符：" class="headerlink" title="一.常用变量以及通配符："></a>一.常用变量以及通配符：</h2><p>$@   目标文件<br>$^    所有依赖文件<br>$&lt;  表示第一个依赖文件     &#x2F;&#x2F;第一个依赖文件是.c文件。<br>$?  表示比目标还要新的依赖文件列表 </p>
+<ul>
+<li><strong>通配符符号：%</strong></li>
+</ul>
+<h2 id="二-使用举例："><a href="#二-使用举例：" class="headerlink" title="二.使用举例："></a>二.使用举例：</h2><p>假设某工程师需要计算6~10的阶乘之和，包含两个C语言源文件：a.c和al.c：<br>a.c：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span> </span></span><br><span class="line"><span class="type">int</span> <span class="title function_">factorial</span><span class="params">(<span class="type">int</span>)</span>; </span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123; </span><br><span class="line">	<span class="type">int</span> sum = <span class="number">0</span>; </span><br><span class="line">	<span class="keyword">for</span>(x=<span class="number">6</span>;x&lt;=<span class="number">10</span>;i++)&#123;</span><br><span class="line">		sum += factorial(x);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;sum = %d\n&quot;</span>,sum); </span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>al.c：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">factorial</span><span class="params">(<span class="type">int</span> h)</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> k,s = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(k = <span class="number">1</span>; k &lt;= h;k++)&#123;</span><br><span class="line">        s*=k;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这时候我们就需要Makefile文件：</p>
+<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="code"><pre><span class="line">CC = gcc <span class="comment">#设置变量CC的值为gcc，代表编译器</span></span><br><span class="line">FLAGS += -Wall <span class="comment">#该变量将作为编译器的参数</span></span><br><span class="line">EXEC = aa <span class="comment">#设置变量EXEC的值为aa，该变量代表要生成的可执行文件名</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:$&#123;EXEC&#125; #规则语句块，目标名为all，依赖文件为变量EXEC的值</span></span><br><span class="line"></span><br><span class="line"><span class="section">$&#123;EXEC&#125;:a.o al.o #规则语句块，目标名为变量EXEC的值，依赖文件为a.o和al.o</span></span><br><span class="line">	$&#123;CC&#125; $&#123;FLAGS&#125; -c <span class="variable">$@</span> a.o al.o <span class="comment">#规则语句块的命令行，使用依赖文件生成目标，$@代表该规则语句块的目标</span></span><br><span class="line"></span><br><span class="line"><span class="section">a.o:a.c #规则语句块，目标名为发al.o，依赖文件为al.c</span></span><br><span class="line">	$&#123;CC&#125; $&#123;FLAGS&#125; -c @^ <span class="comment">#规则语句块的命令行，使用依赖文件a.c生成目标a.o,$^代表生成目标的依赖文件</span></span><br><span class="line"></span><br><span class="line"><span class="section">al.o:al.c #规则语句块，目标名为al.o，依赖文件名为al.c</span></span><br><span class="line">	$&#123;CC&#125; $&#123;FLAGS&#125; -c al.c <span class="comment">#规则语句块的命令行，使用依赖文件al.c生成目标al.o</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean: #伪目标规则语句块，无依赖文件</span></span><br><span class="line">	rm -f $&#123;EXEC&#125; a.o al.o <span class="comment">#规则语句块的命令行，删除所有目标文件</span></span><br><span class="line"></span><br><span class="line">test： <span class="comment">#伪目标规则语句块，无依赖文件</span></span><br><span class="line">	./$&#123;EXEC&#125; <span class="comment">#规则语句块的命令行，运行变量EXEC所代表的最终目标文件</span></span><br></pre></td></tr></table></figure></div>]]></content>
+      <categories>
+        <category>嵌入式系统应用</category>
+      </categories>
+      <tags>
+        <tag>嵌入式系统应用</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Obsidian笔记到Hexo图片链接转换</title>
+    <url>/2025/03/12/Obsidian%E7%AC%94%E8%AE%B0%E5%88%B0Hexo%E5%9B%BE%E7%89%87%E9%93%BE%E6%8E%A5%E8%BD%AC%E6%8D%A2/</url>
+    <content><![CDATA[<p>最近写了个CTF刷题记录，里面有很多图片文件，之前我都是上传在图床的，但是这次太多了，手动改起来很麻烦，这里就写了一个脚本，有需要可以使用：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os  </span><br><span class="line"><span class="keyword">import</span> re  </span><br><span class="line"><span class="keyword">import</span> argparse  </span><br><span class="line"><span class="keyword">from</span> bisect <span class="keyword">import</span> bisect_left  </span><br><span class="line">  </span><br><span class="line">ALLOWED_EXTS = &#123;<span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.jpeg&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.svg&#x27;</span>&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChangeTracker</span>:  </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, original_content</span>):  </span><br><span class="line">        <span class="variable language_">self</span>.changes = []  </span><br><span class="line">        <span class="comment"># 预计算行尾位置  </span></span><br><span class="line">        <span class="variable language_">self</span>.line_ends = [m.end() <span class="keyword">for</span> m <span class="keyword">in</span> re.finditer(<span class="string">r&#x27;\n&#x27;</span>, original_content)]  </span><br><span class="line">      </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_line_number</span>(<span class="params">self, pos</span>):  </span><br><span class="line">        <span class="string">&quot;&quot;&quot;根据字符位置计算行号&quot;&quot;&quot;</span>  </span><br><span class="line">        <span class="keyword">return</span> bisect_left(<span class="variable language_">self</span>.line_ends, pos) + <span class="number">1</span>  <span class="comment"># 行号从1开始  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">enhanced_converter</span>(<span class="params"><span class="keyword">match</span>, img_dir</span>):  </span><br><span class="line">    raw_path = <span class="keyword">match</span>.group(<span class="number">1</span>).split(<span class="string">&#x27;|&#x27;</span>)[<span class="number">0</span>].strip()  </span><br><span class="line">    basename = os.path.basename(raw_path)  </span><br><span class="line">    name, ext = os.path.splitext(basename)  </span><br><span class="line">      </span><br><span class="line">    <span class="keyword">if</span> ext.lower() <span class="keyword">not</span> <span class="keyword">in</span> ALLOWED_EXTS:  </span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span>  <span class="comment"># 标记跳过  </span></span><br><span class="line">      </span><br><span class="line">    clean_dir = img_dir.rstrip(<span class="string">&#x27;/&#x27;</span>) + <span class="string">&#x27;/&#x27;</span>  </span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&#x27;![<span class="subst">&#123;name&#125;</span>](<span class="subst">&#123;clean_dir&#125;</span><span class="subst">&#123;basename&#125;</span>)&#x27;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_markdown</span>(<span class="params">file_path, img_dir, debug=<span class="literal">True</span></span>):  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;r+&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">            content = f.read()  </span><br><span class="line">            tracker = ChangeTracker(content)  </span><br><span class="line">            pattern = re.<span class="built_in">compile</span>(<span class="string">r&#x27;!\[\[\s*([^$$\|]+?)\s*\]\]&#x27;</span>, re.IGNORECASE)  </span><br><span class="line">              </span><br><span class="line">            <span class="comment"># 构建新内容并记录修改  </span></span><br><span class="line">            new_content = []  </span><br><span class="line">            last_pos = <span class="number">0</span>  </span><br><span class="line">            change_count = <span class="number">0</span>  </span><br><span class="line">              </span><br><span class="line">            <span class="keyword">for</span> <span class="keyword">match</span> <span class="keyword">in</span> pattern.finditer(content):  </span><br><span class="line">                start, end = <span class="keyword">match</span>.span()  </span><br><span class="line">                new_text = enhanced_converter(<span class="keyword">match</span>, img_dir)  </span><br><span class="line">                  </span><br><span class="line">                <span class="comment"># 记录未修改内容  </span></span><br><span class="line">                <span class="keyword">if</span> start &gt; last_pos:  </span><br><span class="line">                    new_content.append(content[last_pos:start])  </span><br><span class="line">                  </span><br><span class="line">                <span class="keyword">if</span> new_text:  </span><br><span class="line">                    <span class="comment"># 记录修改  </span></span><br><span class="line">                    change_count += <span class="number">1</span>  </span><br><span class="line">                    line_num = tracker.get_line_number(start)  </span><br><span class="line">                    old_line = content[content.rfind(<span class="string">&#x27;\n&#x27;</span>, <span class="number">0</span>, start)+<span class="number">1</span> : content.find(<span class="string">&#x27;\n&#x27;</span>, end)]  </span><br><span class="line">                      </span><br><span class="line">                    tracker.changes.append(&#123;  </span><br><span class="line">                        <span class="string">&#x27;line&#x27;</span>: line_num,  </span><br><span class="line">                        <span class="string">&#x27;old&#x27;</span>: <span class="keyword">match</span>.group(<span class="number">0</span>).strip(),  </span><br><span class="line">                        <span class="string">&#x27;new&#x27;</span>: new_text,  </span><br><span class="line">                        <span class="string">&#x27;context&#x27;</span>: old_line  </span><br><span class="line">                    &#125;)  </span><br><span class="line">                    new_content.append(new_text)  </span><br><span class="line">                <span class="keyword">else</span>:  </span><br><span class="line">                    new_content.append(content[start:end])  </span><br><span class="line">                  </span><br><span class="line">                last_pos = end  </span><br><span class="line">              </span><br><span class="line">            <span class="comment"># 添加最后一段  </span></span><br><span class="line">            new_content.append(content[last_pos:])  </span><br><span class="line">            new_content = <span class="string">&#x27;&#x27;</span>.join(new_content)  </span><br><span class="line">              </span><br><span class="line">            <span class="keyword">if</span> debug <span class="keyword">and</span> change_count &gt; <span class="number">0</span>:  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;\n=== 详细修改记录 ===&quot;</span>)  </span><br><span class="line">                <span class="keyword">for</span> change <span class="keyword">in</span> tracker.changes:  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;行号 <span class="subst">&#123;change[<span class="string">&#x27;line&#x27;</span>]&#125;</span>:&quot;</span>)  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;  原内容: <span class="subst">&#123;change[<span class="string">&#x27;old&#x27;</span>]&#125;</span>&quot;</span>)  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;  新内容: <span class="subst">&#123;change[<span class="string">&#x27;new&#x27;</span>]&#125;</span>&quot;</span>)  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;  上下文: ...<span class="subst">&#123;change[<span class="string">&#x27;context&#x27;</span>]&#125;</span>...\n&quot;</span> + <span class="string">&quot;-&quot;</span>*<span class="number">60</span>)  </span><br><span class="line">              </span><br><span class="line">            <span class="keyword">if</span> change_count &gt; <span class="number">0</span>:  </span><br><span class="line">                f.seek(<span class="number">0</span>)  </span><br><span class="line">                f.write(new_content)  </span><br><span class="line">                f.truncate()  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;\033[32m成功\033[0m 共修改 <span class="subst">&#123;change_count&#125;</span> 处&quot;</span>)  </span><br><span class="line">            <span class="keyword">else</span>:  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;\033[33m提示\033[0m 未发现需要修改的内容&quot;</span>)  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;\033[31m错误\033[0m 处理失败: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():  </span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">&#x27;Obsidian笔记到Hexo图片链接转换器&#x27;</span>)  </span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-f&#x27;</span>, <span class="string">&#x27;--file&#x27;</span>, required=<span class="literal">True</span>, <span class="built_in">help</span>=<span class="string">&#x27;Markdown文件路径&#x27;</span>)  </span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-i&#x27;</span>, <span class="string">&#x27;--img-dir&#x27;</span>, required=<span class="literal">True</span>, <span class="built_in">help</span>=<span class="string">&#x27;图片目录路径&#x27;</span>)  </span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-d&#x27;</span>, <span class="string">&#x27;--debug&#x27;</span>, action=<span class="string">&#x27;store_true&#x27;</span>, <span class="built_in">help</span>=<span class="string">&#x27;显示详细修改位置&#x27;</span>)  </span><br><span class="line">    args = parser.parse_args()  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(args.file):  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\033[31m错误\033[0m 文件不存在&quot;</span>)  </span><br><span class="line">        <span class="keyword">return</span>  </span><br><span class="line">  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span> 转换开始 <span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span>&quot;</span>)  </span><br><span class="line">    process_markdown(args.file, args.img_dir, args.debug)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span> 转换结束 <span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span>&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></div>]]></content>
+      <tags>
+        <tag>Tools</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Yara（恶意样本检测工具）</title>
     <url>/2025/02/16/Yara%EF%BC%88%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%89/</url>
     <content><![CDATA[<p><a class="link"   href="https://virustotal.github.io/yara/" >Yara官网地址<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><br><a class="link"   href="https://www.cnblogs.com/Hekeats-L/p/17902549.html" >本人学习地址<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
@@ -659,18 +668,9 @@
       </tags>
   </entry>
   <entry>
-    <title>Obsidian笔记到Hexo图片链接转换</title>
-    <url>/2025/03/12/Obsidian%E7%AC%94%E8%AE%B0%E5%88%B0Hexo%E5%9B%BE%E7%89%87%E9%93%BE%E6%8E%A5%E8%BD%AC%E6%8D%A2/</url>
-    <content><![CDATA[<p>最近写了个CTF刷题记录，里面有很多图片文件，之前我都是上传在图床的，但是这次太多了，手动改起来很麻烦，这里就写了一个脚本，有需要可以使用：</p>
-<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os  </span><br><span class="line"><span class="keyword">import</span> re  </span><br><span class="line"><span class="keyword">import</span> argparse  </span><br><span class="line"><span class="keyword">from</span> bisect <span class="keyword">import</span> bisect_left  </span><br><span class="line">  </span><br><span class="line">ALLOWED_EXTS = &#123;<span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.jpeg&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.svg&#x27;</span>&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChangeTracker</span>:  </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, original_content</span>):  </span><br><span class="line">        <span class="variable language_">self</span>.changes = []  </span><br><span class="line">        <span class="comment"># 预计算行尾位置  </span></span><br><span class="line">        <span class="variable language_">self</span>.line_ends = [m.end() <span class="keyword">for</span> m <span class="keyword">in</span> re.finditer(<span class="string">r&#x27;\n&#x27;</span>, original_content)]  </span><br><span class="line">      </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_line_number</span>(<span class="params">self, pos</span>):  </span><br><span class="line">        <span class="string">&quot;&quot;&quot;根据字符位置计算行号&quot;&quot;&quot;</span>  </span><br><span class="line">        <span class="keyword">return</span> bisect_left(<span class="variable language_">self</span>.line_ends, pos) + <span class="number">1</span>  <span class="comment"># 行号从1开始  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">enhanced_converter</span>(<span class="params"><span class="keyword">match</span>, img_dir</span>):  </span><br><span class="line">    raw_path = <span class="keyword">match</span>.group(<span class="number">1</span>).split(<span class="string">&#x27;|&#x27;</span>)[<span class="number">0</span>].strip()  </span><br><span class="line">    basename = os.path.basename(raw_path)  </span><br><span class="line">    name, ext = os.path.splitext(basename)  </span><br><span class="line">      </span><br><span class="line">    <span class="keyword">if</span> ext.lower() <span class="keyword">not</span> <span class="keyword">in</span> ALLOWED_EXTS:  </span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span>  <span class="comment"># 标记跳过  </span></span><br><span class="line">      </span><br><span class="line">    clean_dir = img_dir.rstrip(<span class="string">&#x27;/&#x27;</span>) + <span class="string">&#x27;/&#x27;</span>  </span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&#x27;![<span class="subst">&#123;name&#125;</span>](<span class="subst">&#123;clean_dir&#125;</span><span class="subst">&#123;basename&#125;</span>)&#x27;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_markdown</span>(<span class="params">file_path, img_dir, debug=<span class="literal">True</span></span>):  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;r+&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">            content = f.read()  </span><br><span class="line">            tracker = ChangeTracker(content)  </span><br><span class="line">            pattern = re.<span class="built_in">compile</span>(<span class="string">r&#x27;!\[\[\s*([^$$\|]+?)\s*\]\]&#x27;</span>, re.IGNORECASE)  </span><br><span class="line">              </span><br><span class="line">            <span class="comment"># 构建新内容并记录修改  </span></span><br><span class="line">            new_content = []  </span><br><span class="line">            last_pos = <span class="number">0</span>  </span><br><span class="line">            change_count = <span class="number">0</span>  </span><br><span class="line">              </span><br><span class="line">            <span class="keyword">for</span> <span class="keyword">match</span> <span class="keyword">in</span> pattern.finditer(content):  </span><br><span class="line">                start, end = <span class="keyword">match</span>.span()  </span><br><span class="line">                new_text = enhanced_converter(<span class="keyword">match</span>, img_dir)  </span><br><span class="line">                  </span><br><span class="line">                <span class="comment"># 记录未修改内容  </span></span><br><span class="line">                <span class="keyword">if</span> start &gt; last_pos:  </span><br><span class="line">                    new_content.append(content[last_pos:start])  </span><br><span class="line">                  </span><br><span class="line">                <span class="keyword">if</span> new_text:  </span><br><span class="line">                    <span class="comment"># 记录修改  </span></span><br><span class="line">                    change_count += <span class="number">1</span>  </span><br><span class="line">                    line_num = tracker.get_line_number(start)  </span><br><span class="line">                    old_line = content[content.rfind(<span class="string">&#x27;\n&#x27;</span>, <span class="number">0</span>, start)+<span class="number">1</span> : content.find(<span class="string">&#x27;\n&#x27;</span>, end)]  </span><br><span class="line">                      </span><br><span class="line">                    tracker.changes.append(&#123;  </span><br><span class="line">                        <span class="string">&#x27;line&#x27;</span>: line_num,  </span><br><span class="line">                        <span class="string">&#x27;old&#x27;</span>: <span class="keyword">match</span>.group(<span class="number">0</span>).strip(),  </span><br><span class="line">                        <span class="string">&#x27;new&#x27;</span>: new_text,  </span><br><span class="line">                        <span class="string">&#x27;context&#x27;</span>: old_line  </span><br><span class="line">                    &#125;)  </span><br><span class="line">                    new_content.append(new_text)  </span><br><span class="line">                <span class="keyword">else</span>:  </span><br><span class="line">                    new_content.append(content[start:end])  </span><br><span class="line">                  </span><br><span class="line">                last_pos = end  </span><br><span class="line">              </span><br><span class="line">            <span class="comment"># 添加最后一段  </span></span><br><span class="line">            new_content.append(content[last_pos:])  </span><br><span class="line">            new_content = <span class="string">&#x27;&#x27;</span>.join(new_content)  </span><br><span class="line">              </span><br><span class="line">            <span class="keyword">if</span> debug <span class="keyword">and</span> change_count &gt; <span class="number">0</span>:  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;\n=== 详细修改记录 ===&quot;</span>)  </span><br><span class="line">                <span class="keyword">for</span> change <span class="keyword">in</span> tracker.changes:  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;行号 <span class="subst">&#123;change[<span class="string">&#x27;line&#x27;</span>]&#125;</span>:&quot;</span>)  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;  原内容: <span class="subst">&#123;change[<span class="string">&#x27;old&#x27;</span>]&#125;</span>&quot;</span>)  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;  新内容: <span class="subst">&#123;change[<span class="string">&#x27;new&#x27;</span>]&#125;</span>&quot;</span>)  </span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;  上下文: ...<span class="subst">&#123;change[<span class="string">&#x27;context&#x27;</span>]&#125;</span>...\n&quot;</span> + <span class="string">&quot;-&quot;</span>*<span class="number">60</span>)  </span><br><span class="line">              </span><br><span class="line">            <span class="keyword">if</span> change_count &gt; <span class="number">0</span>:  </span><br><span class="line">                f.seek(<span class="number">0</span>)  </span><br><span class="line">                f.write(new_content)  </span><br><span class="line">                f.truncate()  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;\033[32m成功\033[0m 共修改 <span class="subst">&#123;change_count&#125;</span> 处&quot;</span>)  </span><br><span class="line">            <span class="keyword">else</span>:  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;\033[33m提示\033[0m 未发现需要修改的内容&quot;</span>)  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;\033[31m错误\033[0m 处理失败: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():  </span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">&#x27;Obsidian笔记到Hexo图片链接转换器&#x27;</span>)  </span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-f&#x27;</span>, <span class="string">&#x27;--file&#x27;</span>, required=<span class="literal">True</span>, <span class="built_in">help</span>=<span class="string">&#x27;Markdown文件路径&#x27;</span>)  </span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-i&#x27;</span>, <span class="string">&#x27;--img-dir&#x27;</span>, required=<span class="literal">True</span>, <span class="built_in">help</span>=<span class="string">&#x27;图片目录路径&#x27;</span>)  </span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-d&#x27;</span>, <span class="string">&#x27;--debug&#x27;</span>, action=<span class="string">&#x27;store_true&#x27;</span>, <span class="built_in">help</span>=<span class="string">&#x27;显示详细修改位置&#x27;</span>)  </span><br><span class="line">    args = parser.parse_args()  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(args.file):  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\033[31m错误\033[0m 文件不存在&quot;</span>)  </span><br><span class="line">        <span class="keyword">return</span>  </span><br><span class="line">  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span> 转换开始 <span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span>&quot;</span>)  </span><br><span class="line">    process_markdown(args.file, args.img_dir, args.debug)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span> 转换结束 <span class="subst">&#123;<span class="string">&#x27;=&#x27;</span>*<span class="number">30</span>&#125;</span>&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></div>]]></content>
-      <tags>
-        <tag>Tools</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>【觉醒时刻：被偷走的42天生存报告】</title>
+    <title></title>
     <url>/2025/05/12/%E3%80%90%E8%A7%89%E9%86%92%E6%97%B6%E5%88%BB%EF%BC%9A%E8%A2%AB%E5%81%B7%E8%B5%B0%E7%9A%8442%E5%A4%A9%E7%94%9F%E5%AD%98%E6%8A%A5%E5%91%8A%E3%80%91/</url>
-    <content><![CDATA[<p>自从四月份实习结束以来，一直处于摆烂状态，今日为5月12日，持续时间长达一个半月，在这一个半月时间以来，每天都成谜在游戏当中，在这段时间中，也常常会反思自己，烂在了学生宿舍里面，也活成了曾经我最讨厌的样子。</p>
+    <content><![CDATA[<p>自从四月份实习结束以来，一直处于摆烂状态，今日为5月12日，持续时间长达一个半月，在这一个半月时间以来，每天都沉谜在游戏当中，在这段时间中，也常常会反思自己，烂在了学生宿舍里面，也活成了曾经我最讨厌的样子。</p>
 <h1 id="数据化沉沦（每日实录）"><a href="#数据化沉沦（每日实录）" class="headerlink" title="数据化沉沦（每日实录）"></a>数据化沉沦（每日实录）</h1><ul>
 <li>八点多起床已成常态，阳光已穿透积灰的窗帘</li>
 <li>每天无心上课，只要没课就窝在宿舍玩游戏，实际游戏也没有赢多少，反而因为游戏导致心态极差</li>
@@ -681,66 +681,9 @@
 <li>海马体萎缩13%：记忆提取速度下降至备考期68%  </li>
 <li>前额叶皮层活性衰减：决策能力退行至初中水平  </li>
 <li>多巴胺阈值失控：持续刺激需求超健康值300%</li>
-<li></li>
 </ul>
 <p>回想过去的三年时间，前两年基本都是非常自律，奋进的状态，但是在这次实习结束之后，长达一个月的摆烂，使我感到焦虑。<br>有句话说，摆烂时间太长，上天回收走你的天赋，所以此刻，我将真心做出改变！！！</p>
-<h1 id="【涅槃重启协议】"><a href="#【涅槃重启协议】" class="headerlink" title="【涅槃重启协议】"></a>【涅槃重启协议】</h1><p><strong>06:00​</strong>​ 起床<br>​<strong>​07:00​</strong>​ 吃早餐<br>​<strong>​08:30​</strong>​ 深度学习3小时<br>​<strong>​14:00​</strong>​ 实战项目攻坚<br>​<strong>​20:00​</strong>​ 嘻嘻，给女朋友打视频，这段时间真的有点冷落她啦</p>
-]]></content>
-      <categories>
-        <category>总结规划</category>
-      </categories>
-      <tags>
-        <tag>总结规划</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客搭建/运营指南</title>
-    <url>/2025/01/22/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%EF%BC%8C%E8%BF%90%E8%90%A5%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="一-准备"><a href="#一-准备" class="headerlink" title="一.准备"></a>一.准备</h1><ul>
-<li>需要GitHub账号</li>
-<li>安装node.js和npm<br>  在<a class="link"   href="https://nodejs.org/en/download/package-manager" >Node官网<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>下载Node，我使用的安装程序，直接无脑安装就行了，下载完成之后，使用命令<code>node -v</code>看看安装好了没，然后使用命令<code>npm -v</code>再次查看安装成功了没。</li>
-<li>安装Git：<br>  在<a class="link"   href="https://git-scm.com/" >Git官网<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>安装最新版本，这里如果你不是程序员或者说不想研究git的话装不装无所谓，因为hexo可以一键部署，我当时也不会Git，但是想着学习一下，因为还是很重要的，所以就去学习了，安装成功之后，右键鼠标就会有<code>Open Git Bash here</code>:<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://pic.imgdb.cn/item/66c89de9d9c307b7e9c7fab4.png"
-                      alt="Git"
-                ></li>
-<li>安装Hexo框架：<br>  主题框架需要借助npm包管理器来安装：  <div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure></div>
-  完成之后，用shell进到你想要保存博客所有东西的目录（这里的hexo_blog就是文件夹的名称，该命令会创建一个文件夹，该文件夹保存博客的所有东西）:  <div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init hexo_blog</span><br><span class="line">cd hexo_blog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure></div>
-至此，我们需要的东西基本上都准备好了。</li>
-</ul>
-<h1 id="二-搭建博客"><a href="#二-搭建博客" class="headerlink" title="二.搭建博客"></a>二.搭建博客</h1><p>首先我们需要创建一个GitHub项目，需要注意的是，这个项目需要以<code>&lt;用户名&gt;.github.io</code>命名。</p>
-<ul>
-<li>更换主题：<br>  hexo的默认界面说实话有点小丑，我们可以到<a class="link"   href="https://hexo.io/themes/" >这里<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>选择我们想要的主题，这里我们可以用这种方式下载主题：  <div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">cd hexo-blog</span><br><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure></div>
-  如果这种方式有点慢或者说下不下来的话，你可以直接到主题的GitHub页面把项目全部下载下来，然后保存到<code>themes/next</code>目录下，完成之后修改博客根目录下的<code>_config.yml</code>:  <div class="code-container" data-rel="Yml"><figure class="iseeu highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">redefine</span></span><br></pre></td></tr></table></figure></div>
-  好了，现在你可以使用命令<code>hexo g</code>,<code>hexo s</code>，正常启动之后在浏览器使用<code>localhost:4000</code>查看是否搭建成功。如果本地没有问题的话，就可以上传到github了<br>  这里需要注意，只需要上传public目录就可以了，我当时学习搭建的时候没有看到，直接把博客的根目录传上去了，折腾了好久</li>
-</ul>
-<p>其实每个主题都是有官方文档的，可以看着文档自己diy一下。<br>完成这些之后，你就可以上传到GitHub了：</p>
-<ul>
-<li>方法一（使用Git）：<br>  首先Open Git Bash here</li>
-</ul>
-<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">git init -b main</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;Fitst commit&quot; #提交信息</span><br><span class="line">git remote add origin https://github.com/Shad0hun/Shad0hun.github.io.git</span><br><span class="line">git remote -v #验证远程仓库</span><br><span class="line">git push origin main</span><br></pre></td></tr></table></figure></div>
-<p>如果你使用https上传不了的话，建议多试几次，或者使用ssh上传。</p>
-<ul>
-<li>方法二（一键部署）：<br>  这个方法需要我们修改<code>_config.yml</code>：</li>
-</ul>
-<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Deployment</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/Shad0hun/Shad0hun.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure></div>
-<p>这里如果不想用shh，一定要安装插件：<br><code> npm install hexo-deployer-git --save</code><br>然后使用命令<code>hexo d</code>一键部署，如果不成功的话，还是建议多试几次或者将https改为ssh进行上传。<br>完成上面的工作，实际上我们已经可以在自己的网站上看到博客了，如果看不到的话，去看看GitHub Pages有没有正常工作。</p>
-<h1 id="三-博客运营"><a href="#三-博客运营" class="headerlink" title="三.博客运营"></a>三.博客运营</h1><p>修改<code>_config.yml</code>文件：<code>post_asset_folder: true</code>即可在生成文章的时候生成一个同名资源目录用于存放图片文件。<br>这里主要介绍hexo的一些指令，主要就是发布文章，同步到GitHub的一些操作。</p>
-<ul>
-<li>新建博客并初始化：<code>hexo init [folder]</code></li>
-<li>新建文章：<code>hexo new [layout] &lt;title&gt;</code></li>
-<li>生成静态文件：<code>hexo generate</code>，这实际上就是把我们的.md文件生成为html文件</li>
-<li>发布草稿：<code>hexo publish [layout] &lt;filename&gt;</code></li>
-<li>部署网站：<code>hexo deploy</code></li>
-<li>清理缓存文件：<code>hexo clean</code></li>
-<li>获取配置：<code>hexo config</code></li>
-<li>将草稿帖子从 _drafts 移动到 _posts 文件夹：<code>hexo publish</code><br>这里再来说一下文章标签：<blockquote>
-<p>title:网页文章标题<br>date:文章创建如期<br>comments:文章评论功能是否启动<br>tags:文章标签<br>categories:文章分类<br>keywords:文章关键字</p>
-</blockquote>
-</li>
-</ul>
-<p>最后，附上参考播客：<a class="link"   href="https://blog.csdn.net/yaorongke/article/details/119089190" >GitHub Pages + Hexo搭建个人博客网站，史上最全教程<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<h1 id="【涅槃重启协议】"><a href="#【涅槃重启协议】" class="headerlink" title="【涅槃重启协议】"></a>【涅槃重启协议】</h1><p><strong>06:00​</strong>​ 唤醒（手机锁柜至12:00）<br>​<strong>​07:00​</strong>​ 吃早餐<br>​<strong>​08:30​</strong>​ 深度学习3小时<br>​<strong>​14:00​</strong>​ 实战项目攻坚（近期主要为二进制漏洞挖掘）<br>​<strong>​20:00​</strong>​ 嘻嘻，给女朋友打视频，这段时间真的有点冷落她啦</p>
 ]]></content>
   </entry>
   <entry>
@@ -923,5 +866,55 @@
         <tag>Tools</tag>
         <tag>Snort</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>博客搭建/运营指南</title>
+    <url>/2025/01/22/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%EF%BC%8C%E8%BF%90%E8%90%A5%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="一-准备"><a href="#一-准备" class="headerlink" title="一.准备"></a>一.准备</h1><ul>
+<li>需要GitHub账号</li>
+<li>安装node.js和npm<br>  在<a class="link"   href="https://nodejs.org/en/download/package-manager" >Node官网<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>下载Node，我使用的安装程序，直接无脑安装就行了，下载完成之后，使用命令<code>node -v</code>看看安装好了没，然后使用命令<code>npm -v</code>再次查看安装成功了没。</li>
+<li>安装Git：<br>  在<a class="link"   href="https://git-scm.com/" >Git官网<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>安装最新版本，这里如果你不是程序员或者说不想研究git的话装不装无所谓，因为hexo可以一键部署，我当时也不会Git，但是想着学习一下，因为还是很重要的，所以就去学习了，安装成功之后，右键鼠标就会有<code>Open Git Bash here</code>:<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://pic.imgdb.cn/item/66c89de9d9c307b7e9c7fab4.png"
+                      alt="Git"
+                ></li>
+<li>安装Hexo框架：<br>  主题框架需要借助npm包管理器来安装：  <div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo -v</span><br></pre></td></tr></table></figure></div>
+  完成之后，用shell进到你想要保存博客所有东西的目录（这里的hexo_blog就是文件夹的名称，该命令会创建一个文件夹，该文件夹保存博客的所有东西）:  <div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init hexo_blog</span><br><span class="line">cd hexo_blog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure></div>
+至此，我们需要的东西基本上都准备好了。</li>
+</ul>
+<h1 id="二-搭建博客"><a href="#二-搭建博客" class="headerlink" title="二.搭建博客"></a>二.搭建博客</h1><p>首先我们需要创建一个GitHub项目，需要注意的是，这个项目需要以<code>&lt;用户名&gt;.github.io</code>命名。</p>
+<ul>
+<li>更换主题：<br>  hexo的默认界面说实话有点小丑，我们可以到<a class="link"   href="https://hexo.io/themes/" >这里<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>选择我们想要的主题，这里我们可以用这种方式下载主题：  <div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">cd hexo-blog</span><br><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure></div>
+  如果这种方式有点慢或者说下不下来的话，你可以直接到主题的GitHub页面把项目全部下载下来，然后保存到<code>themes/next</code>目录下，完成之后修改博客根目录下的<code>_config.yml</code>:  <div class="code-container" data-rel="Yml"><figure class="iseeu highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">redefine</span></span><br></pre></td></tr></table></figure></div>
+  好了，现在你可以使用命令<code>hexo g</code>,<code>hexo s</code>，正常启动之后在浏览器使用<code>localhost:4000</code>查看是否搭建成功。如果本地没有问题的话，就可以上传到github了<br>  这里需要注意，只需要上传public目录就可以了，我当时学习搭建的时候没有看到，直接把博客的根目录传上去了，折腾了好久</li>
+</ul>
+<p>其实每个主题都是有官方文档的，可以看着文档自己diy一下。<br>完成这些之后，你就可以上传到GitHub了：</p>
+<ul>
+<li>方法一（使用Git）：<br>  首先Open Git Bash here</li>
+</ul>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">git init -b main</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;Fitst commit&quot; #提交信息</span><br><span class="line">git remote add origin https://github.com/Shad0hun/Shad0hun.github.io.git</span><br><span class="line">git remote -v #验证远程仓库</span><br><span class="line">git push origin main</span><br></pre></td></tr></table></figure></div>
+<p>如果你使用https上传不了的话，建议多试几次，或者使用ssh上传。</p>
+<ul>
+<li>方法二（一键部署）：<br>  这个方法需要我们修改<code>_config.yml</code>：</li>
+</ul>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Deployment</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># Docs: https://hexo.io/docs/one-command-deployment</span></span></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/Shad0hun/Shad0hun.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure></div>
+<p>这里如果不想用shh，一定要安装插件：<br><code> npm install hexo-deployer-git --save</code><br>然后使用命令<code>hexo d</code>一键部署，如果不成功的话，还是建议多试几次或者将https改为ssh进行上传。<br>完成上面的工作，实际上我们已经可以在自己的网站上看到博客了，如果看不到的话，去看看GitHub Pages有没有正常工作。</p>
+<h1 id="三-博客运营"><a href="#三-博客运营" class="headerlink" title="三.博客运营"></a>三.博客运营</h1><p>修改<code>_config.yml</code>文件：<code>post_asset_folder: true</code>即可在生成文章的时候生成一个同名资源目录用于存放图片文件。<br>这里主要介绍hexo的一些指令，主要就是发布文章，同步到GitHub的一些操作。</p>
+<ul>
+<li>新建博客并初始化：<code>hexo init [folder]</code></li>
+<li>新建文章：<code>hexo new [layout] &lt;title&gt;</code></li>
+<li>生成静态文件：<code>hexo generate</code>，这实际上就是把我们的.md文件生成为html文件</li>
+<li>发布草稿：<code>hexo publish [layout] &lt;filename&gt;</code></li>
+<li>部署网站：<code>hexo deploy</code></li>
+<li>清理缓存文件：<code>hexo clean</code></li>
+<li>获取配置：<code>hexo config</code></li>
+<li>将草稿帖子从 _drafts 移动到 _posts 文件夹：<code>hexo publish</code><br>这里再来说一下文章标签：<blockquote>
+<p>title:网页文章标题<br>date:文章创建如期<br>comments:文章评论功能是否启动<br>tags:文章标签<br>categories:文章分类<br>keywords:文章关键字</p>
+</blockquote>
+</li>
+</ul>
+<p>最后，附上参考播客：<a class="link"   href="https://blog.csdn.net/yaorongke/article/details/119089190" >GitHub Pages + Hexo搭建个人博客网站，史上最全教程<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+]]></content>
   </entry>
 </search>
