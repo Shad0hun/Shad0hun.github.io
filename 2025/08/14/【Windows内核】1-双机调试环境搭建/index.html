@@ -123,7 +123,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://shad0hun.github.io/tags/windows/"/>
+    <link rel="canonical" href="https://shad0hun.github.io/2025/08/14/【windows内核】1-双机调试环境搭建/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -132,14 +132,17 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Shad0hun&#39;s blog">
-<meta property="og:url" content="https://shad0hun.github.io/tags/Windows/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Windows内核】1.双机调试环境搭建">
+<meta property="og:url" content="https://shad0hun.github.io/2025/08/14/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%911-%E5%8F%8C%E6%9C%BA%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="Shad0hun&#39;s blog">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2025-08-14T09:28:00.000Z">
+<meta property="article:modified_time" content="2025-08-15T07:42:17.195Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Windows kernel">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://shad0hun.github.io/images/redefine-og.webp">
     
@@ -163,7 +166,7 @@
     
     <title>
         
-            Tag: Windows | Shadohun&#39;s Blog
+            【Windows内核】1.双机调试环境搭建 | Shadohun&#39;s Blog
         
     </title>
 
@@ -560,7 +563,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">25</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">29</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -577,58 +580,237 @@
 			
 
 			<div class="main-content">
-				<div class="page-template-container">
-	
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
 
-	
-	<div class="tag-name">
-    <i class="fa-solid fa-tag"></i>&nbsp;Windows
-</div>
-<div class="tag-post-list">
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">【Windows内核】1.双机调试环境搭建</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/Shad0hun.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-08-14 17:28</span>
+        <span class="mobile">2025-08-14 17:28</span>
+        <span class="hover-info">Created</span>
+    </span>
     
-<div class="archive-list-container">
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-15 15:42:17</span>
+            <span class="mobile">2025-08-15 15:42:17</span>
+            <span class="hover-info">Updated</span>
+        </span>
     
-        <section class="archive-item mb-spacing-unit last:mb-0">
-            <div class="archive-item-header flex flex-row items-center mb-2">
-                <span class="archive-year font-semibold text-3xl mr-2">2025</span>
-                <span class="archive-year-post-count text-xs md:text-sm font-bold rounded-small bg-third-background-color py-[2px] px-[10px] border border-border-color">1</span>
-            </div>
-            
-            <ul class="article-list pl-0 md:pl-8 text-lg leading-[1.5]">
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
                 
                     
+                        
+                        <li>
+                            <a href="/categories/Windows-kernel/">Windows kernel</a>&nbsp;
+                        </li>
                     
-                         <!-- Close the previous LI if not the first item -->
-                        <li class="article-item space-y-2 px-6 pt-10 pb-2 text-xl relative border-l-2 border-border-color" date-is='08-15'>
-                    
-                    <a href="/2025/08/15/%E3%80%90%E5%86%85%E6%A0%B8%E5%AD%A6%E4%B9%A0%E3%80%913-%E6%AE%B5%E7%9A%84%E5%88%9D%E6%8E%A2/" class="block w-fit">
-                        <span class="article-title my-0.5 text-2xl">【内核学习】3.段的初探</span>
-                    </a>
                     
                 
-                </li> <!-- Ensure the last item is properly closed -->
             </ul>
-        </section>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Windows-kernel/">Windows kernel</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
     
 </div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>在学习内核的时候，由于我们需要去观察操作系统内核中的结构体等，我们需要一个双机调试的环境，这里就来记录一下双机调试环境的搭建。这里主要是Windows 7的环境搭建，首先我们需要搭建好虚拟机，下载好WinDbg软件。</p>
+<h1 id="工具了解"><a href="#工具了解" class="headerlink" title="工具了解"></a>工具了解</h1><p>首先，我们需要了解一些工具：</p>
+<h2 id="1-bcdedit"><a href="#1-bcdedit" class="headerlink" title="1.bcdedit"></a>1.bcdedit</h2><p>bcdedit是Windows操作系统中的一个命令行工具，用于查看和修改启动配置数据（BCD）。启动配置数据存储重要的启动信息，包括启动加载程序和启动设置。这个工具主要由高级用户、系统管理员和开发人员使用，以调整与系统启动相关的各种参数。<br>工具界面：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/bcdedit.png"
+                      alt="bcdedit"
+                ><br>我们在bcdedit中的命令，实际上都是写到<code>winload</code>的配置里面去的，而不是注册表，所以我们需要用到这个工具去配置环境。</p>
+<h2 id="2-msconfig"><a href="#2-msconfig" class="headerlink" title="2.msconfig"></a>2.msconfig</h2><p><code>MSConfig</code>是用于在Windows操作系统中配置软件，设备驱动程序，引导参数和启动服务的工具。 它与Windows XP和以前的操作系统的<code>Microsoft System Configuration Utility</code>一起发布。<br>工具界面：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/msconfig.png"
+                      alt="msconfig"
+                ><br>观察这个界面，我们发现该界面是没有办法去创建引导的，所以我们需要结合上面介绍的<code>bcdedit</code>工具去创建一个引导。</p>
+<h1 id="被调试端配置"><a href="#被调试端配置" class="headerlink" title="被调试端配置"></a>被调试端配置</h1><ol>
+<li>首先，我们将当前引导状态复制一份，命名为debug：<br><code>bcdedit /copy &#123;current&#125; /d debug</code><br>这样的话我们将当前引导状态复制了一份，并命名为debug，需要注意的是，在这条命令成功执行之后，会生成一个id，这个id我们需要复制，并且保证后面命令中的id与改id一致</li>
+<li>将我们生成的启动项加入到启动菜单中，并放到最后：<br><code>bcdedit /displayorder &#123;14b2d2bb-2107-11eb-b8b2-ae737953d857&#125; /addlast</code></li>
+<li>设置全局调试通道为串口，端口为<code>com1</code>，波特率为11520：<br><code>bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200</code></li>
+<li>对该启动项开启内核调试，内核加载后调试器可接管：<br><code>bcdedit /bootdebug &#123;7db2d2bb-2107-11eb-b8b2-ae737953d857&#125; ON</code></li>
+<li>对该启动项开启阶段调试，也就是在bootmgr和winload这些早期组件阶段久允许调试器连接：<br><code>bcdedit /debug &#123;7db2d2bb-2107-11eb-b8b2-ae737953d857&#125; ON</code></li>
+<li>设置启动菜单的停留时间为30秒，让我们有时间去选择调试模式：<br><code>bcdedit /timeout 30</code><br><strong>设置完这些后，被调试端就设置好了，现在我们需要去调试端，也就是我们的物理机器上去设置。</strong></li>
+</ol>
+<h1 id="调试端设置"><a href="#调试端设置" class="headerlink" title="调试端设置"></a>调试端设置</h1><p>首先，我们需要移除虚拟机中的打印机，以免调试端口被占用，然后添加串行端口：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/pipe.png"
+                      alt="pipe"
+                ><br>最后，我们需要去设置windbg，让其可以调试我们设置好的虚拟机：<br>设置Windbg的目标：<br><code>&quot;C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\windbg.exe&quot; -y &quot;SRV*D:\symbols(win7)*http://msdl.microsoft.com/download/symbols&quot; -b -k com:port=\\.\pipe\com_1,baud=115200,pipe</code><br>“C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\windbg.exe”是本快捷方式关联的windbg可执行文件的绝对路径。<br>“\\.\pipe\com_1”是虚拟机添加串行端口时使用的命名管道名称，这个要与之前Windows7虚拟机的设置一致。<br>“D:\symbols(win7)”是我们使用的符号文件默认保存位置，可以根据自己喜好进行设置。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 【Windows内核】1.双机调试环境搭建</li>
+        <li><strong>Author:</strong> Shad0hun</li>
+        <li><strong>Created at
+                :</strong> 2025-08-14 17:28:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2025-08-15 15:42:17
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://shad0hun.github.io/2025/08/14/【Windows内核】1-双机调试环境搭建/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
 </div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Windows-kernel/">#Windows kernel</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/08/15/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%912-%E6%AE%B5%E7%9A%84%E5%88%9D%E6%8E%A2/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">【Windows内核】2.段的初探</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/07/16/%E3%80%90%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E3%80%91CVE-2010-3333%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">【漏洞复现】CVE-2010-3333漏洞复现</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        Comments
+    </div>
+    
+
+        
+            
+
+
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
 	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">【Windows内核】1.双机调试环境搭建</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BA%86%E8%A7%A3"><span class="nav-text">工具了解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-bcdedit"><span class="nav-text">1.bcdedit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-msconfig"><span class="nav-text">2.msconfig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A2%AB%E8%B0%83%E8%AF%95%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-text">被调试端配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-text">调试端设置</span></a></li></ol>
 
-	<div class="page-template-content markdown-body">
-		
-
-		
-	</div>
-
-	<div class="page-template-comments">
-		
 	</div>
 </div>
-
-<div class="paginator">
-	<span class="page-number current">1</span>
+	</div>
+	
 </div>
-  
 			</div>
 
 			
@@ -649,7 +831,7 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        25 posts in total
+                        29 posts in total
                     </span>
                     
                 </p>
@@ -706,6 +888,26 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -808,6 +1010,7 @@
         containers: ["#swup"],
     });
 </script>
+
 
 
 

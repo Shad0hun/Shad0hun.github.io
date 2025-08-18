@@ -123,7 +123,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://shad0hun.github.io/2025/08/14/【内核学习】1-双机调试环境搭建/"/>
+    <link rel="canonical" href="https://shad0hun.github.io/2025/08/18/【windows内核】6-中断门与int3劫持/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -133,16 +133,16 @@
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【内核学习】1.双机调试环境搭建">
-<meta property="og:url" content="https://shad0hun.github.io/2025/08/14/%E3%80%90%E5%86%85%E6%A0%B8%E5%AD%A6%E4%B9%A0%E3%80%911-%E5%8F%8C%E6%9C%BA%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:title" content="【Windows内核】6.中断门与int3劫持">
+<meta property="og:url" content="https://shad0hun.github.io/2025/08/18/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%916-%E4%B8%AD%E6%96%AD%E9%97%A8%E4%B8%8Eint3%E5%8A%AB%E6%8C%81/index.html">
 <meta property="og:site_name" content="Shad0hun&#39;s blog">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://shad0hun.github.io/images/redefine-og.webp">
-<meta property="article:published_time" content="2025-08-14T09:28:00.000Z">
-<meta property="article:modified_time" content="2025-08-14T09:28:54.332Z">
+<meta property="article:published_time" content="2025-08-18T09:30:00.000Z">
+<meta property="article:modified_time" content="2025-08-18T09:35:35.730Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="Windows kernel">
+<meta property="article:tag" content="Windows_Kernel">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://shad0hun.github.io/images/redefine-og.webp">
     
@@ -166,7 +166,7 @@
     
     <title>
         
-            【内核学习】1.双机调试环境搭建 | Shadohun&#39;s Blog
+            【Windows内核】6.中断门与int3劫持 | Shadohun&#39;s Blog
         
     </title>
 
@@ -563,7 +563,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">25</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">29</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -586,7 +586,7 @@
 		<div class="article-title relative w-full">
 			
 			<div class="w-full flex items-center pt-6 justify-start">
-				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">【内核学习】1.双机调试环境搭建</h1>
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">【Windows内核】6.中断门与int3劫持</h1>
 			</div>
 			
 		</div>
@@ -607,15 +607,15 @@
 					<div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2025-08-14 17:28</span>
-        <span class="mobile">2025-08-14 17:28</span>
+        <span class="desktop">2025-08-18 17:30</span>
+        <span class="mobile">2025-08-18 17:30</span>
         <span class="hover-info">Created</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2025-08-14 17:28:54</span>
-            <span class="mobile">2025-08-14 17:28:54</span>
+            <span class="desktop">2025-08-18 17:35:35</span>
+            <span class="mobile">2025-08-18 17:35:35</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -643,7 +643,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/Windows-kernel/">Windows kernel</a>&nbsp;
+                        <a href="/tags/Windows-Kernel/">Windows_Kernel</a>&nbsp;
                     </li>
                 
             </ul>
@@ -669,34 +669,128 @@
 
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<p>在学习内核的时候，由于我们需要去观察操作系统内核中的结构体等，我们需要一个双机调试的环境，这里就来记录一下双机调试环境的搭建。这里主要是Windows 7的环境搭建，首先我们需要搭建好虚拟机，下载好WinDbg软件。</p>
-<h1 id="工具了解"><a href="#工具了解" class="headerlink" title="工具了解"></a>工具了解</h1><p>首先，我们需要了解一些工具：</p>
-<h2 id="1-bcdedit"><a href="#1-bcdedit" class="headerlink" title="1.bcdedit"></a>1.bcdedit</h2><p>bcdedit是Windows操作系统中的一个命令行工具，用于查看和修改启动配置数据（BCD）。启动配置数据存储重要的启动信息，包括启动加载程序和启动设置。这个工具主要由高级用户、系统管理员和开发人员使用，以调整与系统启动相关的各种参数。<br>工具界面：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/Kernel/bcdedit.png"
-                      alt="bcdedit"
-                ><br>我们在bcdedit中的命令，实际上都是写到<code>winload</code>的配置里面去的，而不是注册表，所以我们需要用到这个工具去配置环境。</p>
-<h2 id="2-msconfig"><a href="#2-msconfig" class="headerlink" title="2.msconfig"></a>2.msconfig</h2><p><code>MSConfig</code>是用于在Windows操作系统中配置软件，设备驱动程序，引导参数和启动服务的工具。 它与Windows XP和以前的操作系统的<code>Microsoft System Configuration Utility</code>一起发布。<br>工具界面：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/Kernel/msconfig.png"
-                      alt="msconfig"
-                ><br>观察这个界面，我们发现该界面是没有办法去创建引导的，所以我们需要结合上面介绍的<code>bcdedit</code>工具去创建一个引导。</p>
-<h1 id="被调试端配置"><a href="#被调试端配置" class="headerlink" title="被调试端配置"></a>被调试端配置</h1><ol>
-<li>首先，我们将当前引导状态复制一份，命名为debug：<br><code>bcdedit /copy &#123;current&#125; /d debug</code><br>这样的话我们将当前引导状态复制了一份，并命名为debug，需要注意的是，在这条命令成功执行之后，会生成一个id，这个id我们需要复制，并且保证后面命令中的id与改id一致</li>
-<li>将我们生成的启动项加入到启动菜单中，并放到最后：<br><code>bcdedit /displayorder &#123;14b2d2bb-2107-11eb-b8b2-ae737953d857&#125; /addlast</code></li>
-<li>设置全局调试通道为串口，端口为<code>com1</code>，波特率为11520：<br><code>bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200</code></li>
-<li>对该启动项开启内核调试，内核加载后调试器可接管：<br><code>bcdedit /bootdebug &#123;7db2d2bb-2107-11eb-b8b2-ae737953d857&#125; ON</code></li>
-<li>对该启动项开启阶段调试，也就是在bootmgr和winload这些早期组件阶段久允许调试器连接：<br><code>bcdedit /debug &#123;7db2d2bb-2107-11eb-b8b2-ae737953d857&#125; ON</code></li>
-<li>设置启动菜单的停留时间为30秒，让我们有时间去选择调试模式：<br><code>bcdedit /timeout 30</code><br><strong>设置完这些后，被调试端就设置好了，现在我们需要去调试端，也就是我们的物理机器上去设置。</strong></li>
+			<h1 id="一-中断"><a href="#一-中断" class="headerlink" title="一.中断"></a>一.中断</h1><p>中断(Interrupt)是计算机系统中一种硬件&#x2F;软件基址，用来打断CPU当前正在执行的任务，把控制权转移到一个特定的中断服务程序(Interrupt Service Routine,ISR)，执行完中断服务后再返回原程序。<br>它的存在意义在于：让CPU不必“死等”外设或者错误事件，而是等事情发生时在被“提醒”。这大大提高了计算机的并发能力和效率。<br>在<code>Intel x86</code>模式下，中断会通过IDT(Interrupt Description Table)找到对应的中断门&#x2F;陷阱门&#x2F;任务门，再由CPU自动完成栈切换、寄存器压栈、标志位控制等操作。<br>从可否屏蔽的角度，中断可以划分为两位：</p>
+<ul>
+<li>可屏蔽中断<br>来源：主要来自于外部硬件设备（例如键盘、网卡、磁盘控制器、定时器等）<br>线信号：在x86上通过<code>INTR引脚</code>进入CPU。<br>特点：CPU是否响应，取决于<code>EFLAGS.IF</code>位</li>
+<li>不可屏蔽中断<br>来源：主要是严重的硬件错误或系统级事件。<br>线信号：zaix86上通过<code>NMI引脚</code>进入CPU<br>特点：NMI不能被<code>EFLAGS.IF</code>控制，CPU必须响应</li>
+</ul>
+<p>另外，需要注意的是：我们调试的时候进行的断点，这不是中断，而是异常，这两个点特别容易混淆。</p>
+<h1 id="二-中断发生，CPU对EFLAGS的处理"><a href="#二-中断发生，CPU对EFLAGS的处理" class="headerlink" title="二.中断发生，CPU对EFLAGS的处理"></a>二.中断发生，CPU对EFLAGS的处理</h1><p>当 CPU 响应一个中断（可屏蔽、不可屏蔽、异常都算），它会自动做两件关键事</p>
+<ol>
+<li>把当前的 EFLAGS 压栈保存 ——这是为了保证中断返回时能恢复原先的执行状态。</li>
+<li><strong>修改 EFLAGS 中的某些位</strong>，其中最重要的是：<ul>
+<li>如果是通过 <strong>中断门 (Interrupt Gate)</strong> 进入：CPU 会自动清除 <strong>IF (Interrupt Flag)</strong> 位，屏蔽后续的可屏蔽中断。</li>
+<li>如果是通过 <strong>陷阱门 (Trap Gate)</strong> 进入：CPU 不会清 IF，允许继续响应新的中断<br>这样设计的目的是：</li>
+</ul>
+</li>
 </ol>
-<h1 id="调试端设置"><a href="#调试端设置" class="headerlink" title="调试端设置"></a>调试端设置</h1><p>首先，我们需要移除虚拟机中的打印机，以免调试端口被占用，然后添加串行端口：<br><img  
+<ul>
+<li>中断门 → 保证 ISR 不会被别的可屏蔽中断打断，避免混乱。</li>
+<li>陷阱门 → 适合调试器、异常处理（允许嵌套）。</li>
+</ul>
+<p>当 ISR 执行 <code>IRET</code>（或 <code>IRETD</code>&#x2F;<code>IRETQ</code>）指令返回时：</p>
+<ul>
+<li>CPU 会把<strong>之前压栈的 EFLAGS 弹出</strong>，恢复到中断发生前的状态。</li>
+<li>这意味着：<ul>
+<li>如果中断发生前 IF&#x3D;1，那么返回时也会恢复成 1。</li>
+<li>如果中断发生前 IF&#x3D;0，那么返回时也会是 0。</li>
+</ul>
+</li>
+</ul>
+<h1 id="三-中断门概述"><a href="#三-中断门概述" class="headerlink" title="三.中断门概述"></a>三.中断门概述</h1><p>在<code>Intel x86</code>保护模式下，中断门(Interrupt Gate)是一种系统段描述符，用于把CPU得控制权从当前执行的程序转移到中断或异常处理程序。他的核心目的就是在发生中断或者异常的时候，CPU自动地切换到相应的处理流程，以保证系统能够正确地应对外部设备请求、异常错误或软件触发的中断。<br>和调用门一样，中断门也是定义在中断描述符表中的一类“门描述符”，但是他们的应用场景不同。中断门最大的特征是：当CPU通过中断门进入处理程序时，会自动清除<code>EFLAG</code>寄存器中的<code>IF</code>位，从而屏蔽进一步可屏蔽中断。这保证了当前中断例程不会再被新的外部中断打断，避免嵌套混乱。</p>
+<h1 id="四-中断门描述符"><a href="#四-中断门描述符" class="headerlink" title="四.中断门描述符"></a>四.中断门描述符</h1><p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/Kernel/pipe.png"
-                      alt="pipe"
-                ><br>最后，我们需要去设置windbg，让其可以调试我们设置好的虚拟机：<br>设置Windbg的目标：<br><code>&quot;C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\windbg.exe&quot; -y &quot;SRV*D:\symbols(win7)*http://msdl.microsoft.com/download/symbols&quot; -b -k com:port=\\.\pipe\com_1,baud=115200,pipe</code><br>“C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\windbg.exe”是本快捷方式关联的windbg可执行文件的绝对路径。<br>“\\.\pipe\com_1”是虚拟机添加串行端口时使用的命名管道名称，这个要与之前Windows7虚拟机的设置一致。<br>“D:\symbols(win7)”是我们使用的符号文件默认保存位置，可以根据自己喜好进行设置。</p>
+                     data-src="/images/Kernel/Interrupt_Gate_description.png"
+                      alt="Interrupt_Gate_description"
+                ><br>这里我们可以看到和调用门是比较像的，我们来看一下其中标志位的含义：<br><code>Offset</code>：目标中断处理程序入口偏移<br><code>Selector</code>：目标代码段段选择子<br><code>Type</code>：这里和调用门一样，都是固定的，根据系统描述符表可知在中断门中，32位下，该值为<code>1110</code>也就是14.<br><code>DPL</code>：描述符特权级，一般设置为0<br><code>P</code>：描述该段是否有效，必须为1</p>
+<h1 id="四-IDT表"><a href="#四-IDT表" class="headerlink" title="四.IDT表"></a>四.IDT表</h1><p>中断描述符表(IDT)是x86架构下的一张数组表，每一个表项对应一个中断向量号。当CPU接收到中断&#x2F;异常&#x2F;NMI&#x2F;软中断的时候，就会用中断向量号作为索引，去IDT中找到对应的描述符，然后跳转到指定的中断&#x2F;异常处理例程。<br>IDT是CPU硬件层面强制使用的基址，软件必须经过正确初始化IDT，操作系统才能正常工作。Linux，Windows内核启动时，都会构建自己的IDT，并通过LIDT命令加载到CPU的IDTR寄存器中。<br>IDT本质上是一张门描述符表，其中包含的类型主要有三类：</p>
+<ul>
+<li>中断门</li>
+<li>陷阱门</li>
+<li>任务门<br>当CPU遇到中断&#x2F;异常的时候，会生成一个中断向量号，然后作为索引差IDT</li>
+<li>0–31 (0x00–0x1F) → Intel 保留，用于异常和系统故障（如 0 除、缺页异常、通用保护错误）。</li>
+<li>32–255 (0x20–0xFF) → 系统可用，用于硬件中断和软件中断<br>比如：</li>
+<li>向量 0 → 除零错误 (#DE)</li>
+<li>向量 14 → 缺页异常 (#PF)</li>
+<li>向量 32 (0x20) → 时钟中断（通常 OS 映射给 PIT 或 APIC Timer）</li>
+<li>向量 128 (0x80) → Linux 经典系统调用入口 (<code>int 0x80</code>)<br>在WinDbg中，我们可以使用<code>dq idtr</code>来查看IDT表：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_IDT_1.png"
+                      alt="Interrupt_IDT_1"
+                ><br>我们可以使用<code>!idt</code>来查看具体的IDT表项：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_IDT_2.png"
+                      alt="Interrupt_IDT_2"
+                ><br>另外，我们还可以查看特定向量的表项：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_IDT_3.png"
+                      alt="Interrupt_IDT_3"
+                ></li>
+</ul>
+<h1 id="五-中断门堆栈观察"><a href="#五-中断门堆栈观察" class="headerlink" title="五.中断门堆栈观察"></a>五.中断门堆栈观察</h1><p>首先我们来观察一下IDT表，我们使用<code>dq idtr L100</code>命令查看其前100项：</p>
+<blockquote>
+<p>kd&gt; dq idtr L100<br>80bfd000  83e58e00<code>0008a210 83e58e00</code>0008a57c<br>80bfd010  00008500<code>00580000 83e5ee00</code>0008afc0<br>80bfd020  83e5ee00<code>0008b338 83e58e00</code>0008b688<br>80bfd030  83e58e00<code>0008b9ec 83e58e00</code>0008c6f8<br>80bfd040  00008500<code>00500000 83e58e00</code>0008cd3c<br>80bfd050  83e58e00<code>0008d050 83e58e00</code>0008d380<br>80bfd060  83e58e00<code>0008d7f0 83e58e00</code>0008dcfc<br>80bfd070  83e58e00<code>0008e9b8 83e58e00</code>0008ee40<br>80bfd080  83e58e00<code>0008f154 83e58e00</code>0008f488<br>80bfd090  00008500<code>00a00000 83e58e00</code>0008f7e4<br>80bfd0a0  83e58e00<code>0008ee40 83e58e00</code>0008ee40<br>80bfd0b0  83e58e00<code>0008ee40 83e58e00</code>0008ee40<br>80bfd0c0  83e58e00<code>0008ee40 83e58e00</code>0008ee40<br>80bfd0d0  83e58e00<code>0008ee40 83e58e00</code>0008ee40<br>80bfd0e0  83e58e00<code>0008ee40 83e58e00</code>0008ee40<br>80bfd0f0  83e58e00<code>0008ee40 83e58e00</code>0008fbb0<br>80bfd100  00000000<code>00080000 00000000</code>00080000<br>80bfd110  00000000<code>00080000 00000000</code>00080000<br>80bfd120  00000000<code>00080000 00000000</code>00080000</p>
+</blockquote>
+<p>首先，我们来观察一下第三项，也就是<code>int 3</code>：<code>83e5ee000008afc0</code>：<br>1000 0011 1110 0101 1110 1110 0000 0000<br>0000 0000 0000 1000 1010 1111 1100 0000<br>我们经过拆分，可以发现其DPL为3，这也就是为什么我们在3环有权限去调用<code>int 3</code>。<br>然后我们发现在<code>0x80bfd100</code>位置上，它是空的，那我们就用这个来做实验：<br>首先，用<code>0x80bfd100</code>减去<code>0x80bfd000</code>，为0x100，每一项占8字节，那么就是0x20，也就是32，那么就是说，我们要调用这里的中断例程的话，就需要<code>int 32</code>，然后我们写出代码：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)Interrupt_Gate_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Interrupt_Gate_test Addr : %p\r\n&quot;</span>, Interrupt_Gate_test);</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">32</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这里为了方便，仍然关闭增量链接和随机基址。<br>我们拿到<code>Interrupt_Gate_test</code>函数地址：<code>0x00401000</code>。然后我们需要去修改中断门描述符，我们直接用int3的修改吧：<br>83e5ee00 0008afc0，我们只需要修改函数地址即可：<br>0040ee00 00081000<br>然后利用<code>eq 0x80bfd100 0040ee0000081000</code>命令将其写上。<br>现在我们就去观察一下走中断门之后的堆栈情况，首先我们需要在调试器里加载，为了方便我们看返回地址等：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_OD_1.png"
+                      alt="Interrupt_OD_1.png"
+                ><br>然后我们直接F9让其执行过去，然后我们WinDbg就可以接过来：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_WinDbg_1.png"
+                      alt="Interrupt_WinDbg_1"
+                ><br>然后我们来看看堆栈情况：</p>
+<blockquote>
+<p>kd&gt; dds esp<br>96989c9c  004010eb autochk+0x410eb<br>96989ca0  0000001b<br>96989ca4  00000316<br>96989ca8  0012fe30<br>96989cac  00000023<br>96989cb0  00000000<br>96989cb4  00000000<br>96989cb8  00000000<br>96989cbc  00000000<br>96989cc0  0000027f<br>96989cc4  00000000<br>96989cc8  00000000<br>96989ccc  00000000</p>
+</blockquote>
+<p>根据我们前面观察调用门的堆栈，这里004010eb应该是返回地址，通过OD的截图也能看出来这就是，1b是cs段段选择子，但是这里多了一个316，其实这是EFLAGS，后面跟着的0012fe30是esp，23是ss段选择子。<br>这里就是比调用门多压了一个参数，就是EFLAGS，实际上，我们在前面介绍过了，在中断例程执行的之前，会将EFLAGS进行压栈保存，至于这里为什么跟OD中看到的不一样，就是因为他对IF位做了修改。<br>&#x3D;&#x3D;我们发现进入中断门的时候，压入了5个参数，那我们使用retf返回必然会蓝屏。我们这里可以使用iretd，意思就是返回一个dword，如果是64位，可以使用iretq。&#x3D;&#x3D;<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_OD_2.png"
+                      alt="Interrupt_OD_2"
+                ><br>另外，我们没有保存fs，所以还是会出问题的，我们还需要修改一下代码：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)Interrupt_Gate_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		iretd;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Interrupt_Gate_test Addr : %p\r\n&quot;</span>, Interrupt_Gate_test);</span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		<span class="type">int</span> <span class="number">32</span>;</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h2 id="retf-4返回观察"><a href="#retf-4返回观察" class="headerlink" title="retf 4返回观察"></a>retf 4返回观察</h2><p>那我们使用retf 4是否正确呢？理论上来说，多压入了一个参数，我们使用<code>retf 4</code>是没错的，我们来观察一下：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_OD_3.png"
+                      alt="Interrupt_OD_3"
+                ><br>来到WinDbg：</p>
+<blockquote>
+<p>kd&gt; dds esp<br>96fbec9c  004010ed<br>96fbeca0  0000001b<br>96fbeca4  00000316<br>96fbeca8  0012fe2c<br>96fbecac  00000023</p>
+</blockquote>
+<p>内核态堆栈里保存的esp也没有问题，那么应该是没有问题的，但是当我们返回之后：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_OD_4.png"
+                      alt="Interrupt_OD_4"
+                ><br>我们发现了一个问题，堆栈被多弹出了4字节。<br>我们来回想一下调用门，当我们需要参数的时候，不仅要保证<code>Param Count</code>字段等于参数个数，而且，我们是将参数压栈了的，所以返回之后堆栈平衡，所以，这里使用<code>retf 4</code>返回的话是有问题的。<br>那我们在进入中断门之前，随便压入一个参数，即可保证堆栈平衡。同时，我们也得知：&#x3D;&#x3D;retf不仅能平衡0环堆栈，回到3环后还会对应对3环做一个平衡。&#x3D;&#x3D;就比如说，我们压入了参数，在0环返回的时候，保证了0环的平衡，那么回到3环之后，还将3环堆栈还原到了未压栈的情况（在调用们章节，我们在参数观察调用们的时候，我们只进行了压栈，但是未弹出，最后堆栈也得到了平衡）。</p>
+<h1 id="六-练习（手动劫持int3）"><a href="#六-练习（手动劫持int3）" class="headerlink" title="六.练习（手动劫持int3）"></a>六.练习（手动劫持int3）</h1><p>那我们来思考一下，我们如何通过修改中断门描述符，来达到int 3劫持的效果呢？<br>首先，我们肯定要修改表项3的中断描述符，我们只需要将其偏移修改掉就可以了吧？（因为我们在做实验的时候，我们没有修改段选择子，那么就是说明，我们的代码和int 3的中断例程代码基址是一样的。<br>我们首先拿到<code>DbgPrint</code>函数地址：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_WinDbg_2.png"
+                      alt="Interrupt_WinDbg_2"
+                ><br>然后写出代码，拿到我们HOOK后的地址：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*__CRTDECL MyDbgPrint)</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_z_ _Printf_format_string_ <span class="type">char</span> <span class="type">const</span>* <span class="type">const</span> _Format,</span></span><br><span class="line"><span class="params">	...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span>* Format = (<span class="type">char</span>*)<span class="string">&quot;Hook int3 Successful!&quot;</span>;</span><br><span class="line">MyDbgPrint Func = (MyDbgPrint)<span class="number">0x83e27c60</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)Int3Hook() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, <span class="number">0x30</span>;</span><br><span class="line">		mov fs, ax;</span><br><span class="line">		mov eax, [Format];</span><br><span class="line">		push eax;</span><br><span class="line">		call Func;</span><br><span class="line">		add esp, <span class="number">4</span>;</span><br><span class="line">		iretd;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Int3Hook : %p\r\n&quot;</span>, Int3Hook);</span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>Int3Hook : 00401000。<br>现在我们只需要修改表项3的中断描述符：<br>83e5ee00 0008afc0 -&gt; 0040ee00 00081000<br><code>eq 80b93018 0040ee0000081000</code>（具体的IDT表地址需要实时确认）。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_WinDbg_3.png"
+                      alt="Interrupt_WinDbg_3"
+                ><br>然后我们就可以看到：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Interrupt_Hook_int3.png"
+                      alt="Interrupt_Hook_int3"
+                ><br>注意不要用调试器加载，因为我们已经将int 3的中断回调修改掉了，为<code>0x401000</code>，但是我们的进程还未加载，就是401000还没东西，调试器加载的话要用到int 3，所以会导致找不到地址而出错，会重启。</p>
 
 		</div>
 
@@ -704,18 +798,18 @@
 		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
 			<div class="article-copyright-info-container">
     <ul>
-        <li><strong>Title:</strong> 【内核学习】1.双机调试环境搭建</li>
+        <li><strong>Title:</strong> 【Windows内核】6.中断门与int3劫持</li>
         <li><strong>Author:</strong> Shad0hun</li>
         <li><strong>Created at
-                :</strong> 2025-08-14 17:28:00</li>
+                :</strong> 2025-08-18 17:30:00</li>
         
             <li>
                 <strong>Updated at
-                    :</strong> 2025-08-14 17:28:54
+                    :</strong> 2025-08-18 17:35:35
             </li>
         
         <li>
-            <strong>Link:</strong> https://shad0hun.github.io/2025/08/14/【内核学习】1-双机调试环境搭建/
+            <strong>Link:</strong> https://shad0hun.github.io/2025/08/18/【Windows内核】6-中断门与int3劫持/
         </li>
         <li>
             <strong>
@@ -737,7 +831,7 @@
 		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/Windows-kernel/">#Windows kernel</a>&nbsp;
+				<a href="/tags/Windows-Kernel/">#Windows_Kernel</a>&nbsp;
 			</li>
 			
 		</ul>
@@ -748,23 +842,11 @@
 		
 		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
 			
-			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/2025/08/15/%E3%80%90%E5%86%85%E6%A0%B8%E5%AD%A6%E4%B9%A0%E3%80%913-%E6%AE%B5%E7%9A%84%E5%88%9D%E6%8E%A2/">
-					<span class="left arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-left"></i>
-					</span>
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item truncate max-w-48">【内核学习】3.段的初探</span>
-						<span class="post-nav-item">Prev posts</span>
-					</span>
-				</a>
-			</div>
-			
 			
 			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="next" rel="next" href="/2025/07/16/%E3%80%90%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E3%80%91CVE-2010-3333%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">
+				<a class="next" rel="next" href="/2025/08/18/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%915-%E8%B0%83%E7%94%A8%E9%97%A8%E8%AF%A6%E8%A7%A3%E5%8F%8A%E8%B7%A8%E6%AE%B5%E6%8F%90%E6%9D%83call/">
 					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item truncate max-w-48">【漏洞复现】CVE-2010-3333漏洞复现</span>
+						<span class="post-nav-title-item truncate max-w-48">【Windows内核】5.调用门详解及跨段提权call</span>
 						<span class="post-nav-item">Next posts</span>
 					</span>
 					<span class="right arrow-icon flex justify-center items-center">
@@ -803,8 +885,8 @@
 		<div class="post-toc-wrap">
 	<div class="post-toc">
 		<div class="toc-title">On this page</div>
-		<div class="page-title">【内核学习】1.双机调试环境搭建</div>
-		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BA%86%E8%A7%A3"><span class="nav-text">工具了解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-bcdedit"><span class="nav-text">1.bcdedit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-msconfig"><span class="nav-text">2.msconfig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A2%AB%E8%B0%83%E8%AF%95%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-text">被调试端配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-text">调试端设置</span></a></li></ol>
+		<div class="page-title">【Windows内核】6.中断门与int3劫持</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80-%E4%B8%AD%E6%96%AD"><span class="nav-text">一.中断</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C-%E4%B8%AD%E6%96%AD%E5%8F%91%E7%94%9F%EF%BC%8CCPU%E5%AF%B9EFLAGS%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-text">二.中断发生，CPU对EFLAGS的处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89-%E4%B8%AD%E6%96%AD%E9%97%A8%E6%A6%82%E8%BF%B0"><span class="nav-text">三.中断门概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B-%E4%B8%AD%E6%96%AD%E9%97%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-text">四.中断门描述符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B-IDT%E8%A1%A8"><span class="nav-text">四.IDT表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94-%E4%B8%AD%E6%96%AD%E9%97%A8%E5%A0%86%E6%A0%88%E8%A7%82%E5%AF%9F"><span class="nav-text">五.中断门堆栈观察</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#retf-4%E8%BF%94%E5%9B%9E%E8%A7%82%E5%AF%9F"><span class="nav-text">retf 4返回观察</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD-%E7%BB%83%E4%B9%A0%EF%BC%88%E6%89%8B%E5%8A%A8%E5%8A%AB%E6%8C%81int3%EF%BC%89"><span class="nav-text">六.练习（手动劫持int3）</span></a></li></ol>
 
 	</div>
 </div>
@@ -831,7 +913,7 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        25 posts in total
+                        29 posts in total
                     </span>
                     
                 </p>
