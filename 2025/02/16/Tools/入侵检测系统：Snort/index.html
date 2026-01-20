@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Shad0hun">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://shad0hun.github.io/2025/02/16/tools/入侵检测系统：snort/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="入侵检测系统：Snort">
+<meta property="og:url" content="https://shad0hun.github.io/2025/02/16/Tools/%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ASnort/index.html">
+<meta property="og:site_name" content="Shad0hun&#39;s blog">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2025-02-16T13:20:44.000Z">
+<meta property="article:modified_time" content="2025-02-16T13:21:20.712Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Tools">
+<meta property="article:tag" content="Snort">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-2P50D0W8WD"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2P50D0W8WD');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            入侵检测系统：Snort | Shadohun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+    
+        
+<script src="/js/build/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"shad0hun.github.io","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":true,"custom_message":"有空多读书，没事早点睡"},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":true,"id":"G-2P50D0W8WD"}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Shad0hun's Blog","subtitle":{"text":["愿许秋风知我意，散我心中意难平"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.4","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"CSDN":{"path":"https://blog.csdn.net/qq_73985089","icon":null}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":"致力于APT高级威胁分析，二进制漏洞挖掘\n在努力中...","show_on_mobile":true,"links":{"档案":{"path":"/archives","icon":"fa-regular fa-archive"},"标签":{"path":"/tags","icon":"fa-regular fa-tags"},"分类":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","excerpt_length":100,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 22:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+	<span class="scroll-progress-bar"></span>
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        有空多读书，没事早点睡
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({ loop: true })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [20, 0],
+                translateZ: 0,
+                opacity: [0, 1],
+                filter: ['blur(5px)', 'blur(0px)'],
+                easing: "easeOutExpo",
+                duration: 1200,
+                delay: (el, i) => 300 + 20 * i,
+            })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [0, -20],
+                opacity: [1, 0],
+                filter: ['blur(0px)', 'blur(5px)'],
+                easing: "easeInExpo",
+                duration: 1000,
+                delay: (el, i) => 15 * i,
+                complete: function() {
+                    hidePreloader();
+                }
+            }, '-=700');
+
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Shadohun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   target="_blank" rel="noopener" href="https://blog.csdn.net/qq_73985089"
+                                        >
+                                    
+                                    CSDN
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           target="_blank" rel="noopener" href="https://blog.csdn.net/qq_73985089"
+                        >
+                            <span>
+                                CSDN
+                            </span>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/archives"
+                        >
+                            <span>档案</span>
+                            <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>标签</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>分类</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">11</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">入侵检测系统：Snort</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/Shad0hun.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-02-16 21:20:44</span>
+        <span class="mobile">2025-02-16 21:20:44</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-02-16 21:21:20</span>
+            <span class="mobile">2025-02-16 21:21:20</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Tools/">Tools</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Tools/">Tools</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Snort/">Snort</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h1 id="一-系统安装："><a href="#一-系统安装：" class="headerlink" title="一.系统安装："></a>一.系统安装：</h1><p>当时安装的时候看的这一篇文档，感觉还可以：<a class="link"   target="_blank" rel="noopener" href="https://www.jianshu.com/p/9296cb4131b5" >安装文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><br>本人环境：<code>Ubuntu22.04</code></p>
+<ol>
+<li>安装libpcap:<br><a class="link"   target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http://www.tcpdump.org/" >官网下载<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，其实如果用过<code>tcpdump</code>的话这个是默认安装的。</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget https://www.tcpdump.org/release/libpcap-1.10.0.tar.gz</span><br><span class="line">tar -zxvf ./libpcap-1.10.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> ./libpcap-1.10.0.tar.gz</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">最后需要有这一步：</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">cp</span> /usr/local/lib/libpcap.* /usr/lib/</span><br></pre></td></tr></table></figure></div>
+<ol start="2">
+<li>安装LuaJIT:<br><a class="link"   target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http://luajit.org/download.html" >官网下载<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（这个可以不安装）</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://luajit.org/git/luajit.git</span><br><span class="line"><span class="built_in">cd</span> ./luajit</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+<ol start="3">
+<li>daq安装:</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://www.snort.org/downloads/snort/daq-2.0.7.tar.gz</span><br><span class="line">tar -zxvf ./daq-2.0.7.tar.gz</span><br><span class="line"><span class="built_in">cd</span> .//daq-2.0.7</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></div>
+<ol start="4">
+<li>依赖安装:</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install bison flex </span><br></pre></td></tr></table></figure></div>
+<ol start="5">
+<li>Snort安装:</li>
+</ol>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">get https://www.snort.org/downloads/snort/snort-2.9.20.tar.gz</span><br><span class="line">tar -zxvf ./snort-2.9.20.tar.gz</span><br><span class="line"><span class="built_in">cd</span> ./snort-2.9.20</span><br><span class="line">./configure --enable-sourcefire</span><br></pre></td></tr></table></figure></div>
+<h2 id="报错解决："><a href="#报错解决：" class="headerlink" title="报错解决："></a>报错解决：</h2><h3 id="1-check"><a href="#1-check" class="headerlink" title="1.check"></a>1.check</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">No package <span class="string">&#x27;check&#x27;</span> found Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you installed software <span class="keyword">in</span> a non-standard prefix. Alternatively, you may <span class="built_in">set</span> the environment variables CHECK_CFLAGS and CHECK_LIBS to avoid the need to call pkg-config. See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure></div>
+<p>这个是因为没有check库，我们安装一下就好：<br><code>sudo apt-get install check</code></p>
+<h3 id="2-daq"><a href="#2-daq" class="headerlink" title="2.daq"></a>2.daq</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> daq_load_modules <span class="keyword">in</span> -ldaq_static... no ERROR! daq_static library not found, go get it from http://www.snort.org/.</span><br></pre></td></tr></table></figure></div>
+<p>这个错误是因为没有正确安装daq，按照前面安装daq的方法重新安装。</p>
+<h3 id="3-luajit"><a href="#3-luajit" class="headerlink" title="3.luajit"></a>3.luajit</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> luajit... no ERROR! LuaJIT library not found. Go get it from http://www.luajit.org/ (or) Try compiling without openAppId using <span class="string">&#x27;--disable-open-appid&#x27;</span> configure: error: <span class="string">&quot;Fatal!&quot;</span></span><br></pre></td></tr></table></figure></div>
+<p>这个错误是因为系统找不到<code>LuaJIT</code>库，如果不需要<code>openAppId</code>功能的话，可以将其屏蔽：<br><code>./configure --disable-open-appid</code></p>
+<h3 id="4-rcp-h"><a href="#4-rcp-h" class="headerlink" title="4.rcp.h"></a>4.rcp.h</h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">en -Wall -c -o sp_rpc_check.o sp_rpc_check.c sp_rpc_check.c:32:10: fatal error: rpc/rpc.h: 没有那个文件或目录 32 | <span class="comment">#include &lt;rpc/rpc.h&gt; | ^~~~~~~~~~~ compilation terminated. make[3]: *** [Makefile:489：sp_rpc_check.o] 错误 1 make[3]: 离开目录“/home/shad0hun/snort-2.9.20/src/detection-plugins” make[2]: *** [Makefile:594：install] 错误 2 make[2]: 离开目录“/home/shad0hun/snort-2.9.20/src/detection-plugins” make[1]: *** [Makefile:558：install-recursive] 错误 1 make[1]: 离开目录“/home/shad0hun/snort-2.9.20/src” make: *** [Makefile:516：install-recursive] 错误 1</span></span><br></pre></td></tr></table></figure></div>
+<p>这个问题是因为系统找不到指定文件，不要尝试修改Makefile，因为每次.&#x2F;config它都会重置Makefile。<br>解决方法：<br>使用命令<code>sudo find /usr -name &quot;rpc.h&quot;</code>找一下文件位置，我这里是位于<code>/usr/include/ntirpc/rpc/rpc.h</code>。<br>然后我们进入该目录，我们只要将<code>ntirpc</code>目录下的所有内容放到<code>/usr/include/</code>目录下即可。</p>
+<h1 id="二-Snort概述："><a href="#二-Snort概述：" class="headerlink" title="二.Snort概述："></a>二.Snort概述：</h1><p>1.嗅探器模式：只是从网络读取数据包并在控制台上以连续流的形式显示<br>2.数据包记录模式：将数据包记录到磁盘<br>3.网络入侵检测系统（NIDS）模式：对网络流量进行检测和分析。</p>
+<h2 id="1-嗅探器模式"><a href="#1-嗅探器模式" class="headerlink" title="1.嗅探器模式"></a>1.嗅探器模式</h2><p>所谓的嗅探器模式就是Snort从网络上读出的数据包然后显示在控制台上。<br>如果只想将TCP&#x2F;IP数据包头打印到屏幕上：<br><code>snort -v</code><br>启动之后，我ping了该主机，可以看到效果：<br>![[1.1 v.png]]<br>可以观察到，我们只能看到IP和TCP&#x2F;UDP&#x2F;TCMP标头，不显示其他任何内容。<br>如果想查看其中的应用层数据：<br><code>snort -vd</code><br>![[1.1 vd.png]]<br>可以看到，我们现在不仅能看到头数据，还能看到应用层数据。<br>如果要更具体的显示，比如要显示数据链路层报文头：<br><code>snort -vde</code><br>![[1.1 vde.png]]<br>观察发现，多出来的信息：</p>
+<blockquote>
+<p>02&#x2F;12-14:21:38.474048 00:50:56:C0:00:08 -&gt; 00:0C:29:07:0C:E9 type:0x800 len:0x4A</p>
+</blockquote>
+<p>很明显这其中包含了MAC地址信息，这是数据链路层的报文头。<br>最后，这些命令开关也可以单独使用：例如，最后一个命令我们可以这样输入：<br><code>snort -v -d -e</code><br>那么就是说：<br>-v : 打印IP数据报文头<br>-d : 打印应用层数据<br>-e : 打印数据链路层报文头</p>
+<h2 id="2-数据包记录模式"><a href="#2-数据包记录模式" class="headerlink" title="2.数据包记录模式"></a>2.数据包记录模式</h2><p>该模式就是吧数据包都记录到磁盘上，使用的时候我们需要指定一个日志记录，Snort就会自动记录数据包：<br><code>snort -dev -l ./log</code><br>那么我们将会在.&#x2F;log文件夹下面看到捕获到的数据包文件。<br>注意需要我们事先创建好log文件夹，如果没有，Snort 将退出并显示错误消息。<br><strong>日志命名规则：后缀为时间戳或远程主机IP地址。</strong><br>如果想要只对本地网络进行日志：<br><code>snort -dev -l ./log -h 192.168.175.0/24</code><br>这个命令告诉Snrot，将进入C类网络92.168.175的所有数据记录到.&#x2F;log文件夹中。<br>如果你使用高速网络或者希望将数据包记录为更紧凑的形式以供以后分析，则应考虑以二进制模式记录：<br><code>snort -l ./log -b</code><br>-b模式下，我们不需要指定-d , -e等选项，因为-b选项默认将所有信息都记录下来。<br>一旦数据包被记录到二进制文件中，我们可以使用tcpdump等读取文件。<br><strong>此外，Snort还可以使用-r开关读出数据包，该开关将其置于回放模式。</strong> 如果你想在嗅探器模式下通过Snort运行二进制日志文件将其数据包显示到屏幕上：<br><code>snort -dv -r filename</code><br>![[1.1 r.png]]<br>在日治包和入侵检测模式下，通过BPF(BSD Packet Filter)接口，可以使用许多方式维护日志文件中的数据。<br>例如，你想从日志文件中提取ICMP包：<br><code>/snort -dvr packet.log icmp</code><br>最后的输出还是像嗅探模式那样将数据包信息打印在控制台中。</p>
+<h2 id="3-网络入侵检测系统模式"><a href="#3-网络入侵检测系统模式" class="headerlink" title="3.网络入侵检测系统模式"></a>3.网络入侵检测系统模式</h2><p>要启用网络入侵检测系统(NIDS)模式，以便不记录通过网络发送的每一个数据包：<br><code>snort -dev -l ./log -h 192.168.1.0/24 -c snort.conf</code><br>其中，<code>snort.conf</code>是配置文件，也是规则集文件。Snort会对每个包和规则集进行匹配，发现这样的包就采取行动。如果不指定输出目录，Snort就输出到<code>/var/log/snort</code>目录。<br>注意：如果你想长期使用snort作为自己的入侵检测系统，最好不要使用-v选项。因为使用这个选项，使snort向屏幕上输出一些信息，会大大降低snort的处理速度，从而在向显示器输出的过程中丢弃一些包。<br>此外，在大多数下情况下，也没必要记录数据链路层包头，所以-e选项也可以不用：<br><code>./snort -d -h 192.168.1.0/24 -l ./log -c snort.conf</code><br>这是使用Snort作为网络入侵检测系统最基本的形式,将 Snort 配置为以其最基本的 NIDS 形式运行，使用分层目录结构（就像数据包记录器模式一样），将触发 snort.conf 中指定规则的数据包以纯 ASCII 格式记录到磁盘</p>
+<h3 id="NIDS模式输出选项"><a href="#NIDS模式输出选项" class="headerlink" title="&lt;1&gt;.NIDS模式输出选项"></a>&lt;1&gt;.NIDS模式输出选项</h3><p>在NIDS模式下，有很多方式配置Snort的输出。在默认情况下，Snort以ASCII格式记录日志，使用full报警机制。如果使用full报警机制，Snort会在包头之后打印报警信息，如果你不需要日志包，则可以使用-N选项。<br>Snort有6种报警机制：full、fast、socket、syslog、smb(winpopup)和none。其中有4个可以在命令行状态下使用-A选项设置。这4个是：</p>
+<table>
+<thead>
+<tr>
+<th>-A fast:</th>
+<th>报警信息包括：时间戳，报警信息，源&#x2F;目的IP地址以及端口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-A full</td>
+<td>默认报警模式，这是默认的警报模式，如果您未指定模式，它将自动使用</td>
+</tr>
+<tr>
+<td>-A unsock</td>
+<td>把报警发送到一个UNIX套接字，需要有一个程序进行时监听，这样可以实现事实报警</td>
+</tr>
+<tr>
+<td>-A none</td>
+<td>关闭报警机制</td>
+</tr>
+<tr>
+<td>-A console</td>
+<td>将fast样式’警报发送到控制台</td>
+</tr>
+<tr>
+<td>-A cmg</td>
+<td>生成“cmg样式”警报</td>
+</tr>
+<tr>
+<td>这里我们就看一下这几种区别：</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>&#x3D;&#x3D;-A fast:&#x3D;&#x3D;</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>![[2.1 fast.png]]</td>
+<td></td>
+</tr>
+<tr>
+<td>fast选项下，我们可以看到，会记录时间，后面这三个数字，在下面&#x3D;&#x3D;《了解警报输出》&#x3D;&#x3D;会有讲解，我们自己写的msg，priority，数据包类型，源，目的端口。</td>
+<td></td>
+</tr>
+<tr>
+<td>&#x3D;&#x3D;<strong>-A full：&#x3D;&#x3D;</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>![[2.1 full.png]]</td>
+<td></td>
+</tr>
+<tr>
+<td>full选项下，可以看到记录比fast选项详细了很多。</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>&#x3D;&#x3D;-A console：&#x3D;&#x3D;</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>console选项则将alert直接输出到控制台：</td>
+<td></td>
+</tr>
+<tr>
+<td>![[2.1 console.png]]</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>&#x3D;&#x3D;-A cmg:&#x3D;&#x3D;</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>![[2.1 cmg.png]]</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>使用-s选项可以使snort把报警消息发送到syslog，默认的设备是LOG_AUTHPRIV和LOG_ALERT。可以修改snort.conf文件修改其配置。</p>
+<ul>
+<li>登录到默认（解码的 ASCII）功能并将警报发送到 syslog<br><code>./snort -c snort.conf -l ./log -h 192.168.6.0/24 -s</code></li>
+<li>登录到 &#x2F;var&#x2F;log &#x2F;snort 中的默认工具，并将警报发送到快速警报文件<br><code>./snort -c snort.conf -A fast-h 192.168.6.0/24</code></li>
+</ul>
+<h3 id="了解标准警报输出"><a href="#了解标准警报输出" class="headerlink" title="&lt;2&gt;.了解标准警报输出"></a>&lt;2&gt;.了解标准警报输出</h3><p>Snort生成警报消息时，通常如下所示：<br><code>[**] [116:56:1] (snort_decoder): T/TCP Detected [**]</code><br>对于[116:56:1]:<br>第一个数字是生成器ID，它告诉用户Snort的哪个组件生成了此警报，在这种情况下，我们知道此时间来自Snort的“解码”（116）组件。<br>第二个数字是Snort ID也就是SID，我们写Snort规则的时候写的哪个sid。<br>第三个数字是修订ID，此数字主要在编写签名时使用，因为规则的每个表示形式都应使用rev选项将该数字递增。</p>
+<h3 id="作为守护进程运行"><a href="#作为守护进程运行" class="headerlink" title="&lt;3&gt;.作为守护进程运行"></a>&lt;3&gt;.作为守护进程运行</h3><p>如果要将 Snort 作为守护进程运行，可以将 -D 开关添加到前面部分中描述的任意组合。请注意，如果您希望能够通过向守护进程发送 SIGHUP 信号来重新启动 Snort，则_必须_在启动时指定 Snort 二进制文件的完整路径，例如：<br><code>/usr/local/bin/snort -d -h 192.168.1.0/24 -l /var/log/snortlogs -c /usr/local/etc/snort.conf -s -D</code></p>
+<h2 id="4-snort-conf配置文件"><a href="#4-snort-conf配置文件" class="headerlink" title="4.snort.conf配置文件"></a>4.snort.conf配置文件</h2><blockquote>
+<ol>
+<li>Set the network variables.  设置各类网络地址，规则中易于使用</li>
+<li>Configure the decoder      设置解码器</li>
+<li>Configure the base detection engine  设置基础检测引擎</li>
+<li>Configure dynamic loaded libraries   设置动态链接库</li>
+<li>Configure preprocessors     设置预处理器</li>
+<li>Configure output plugins    设置输出插件</li>
+<li>Customize your rule set     设置自定义规则</li>
+<li>Customize preprocessor and decoder rule set设置预处理、解码器规则</li>
+<li>Customize shared object rule set 设置共享对象规则集</li>
+</ol>
+</blockquote>
+<h1 id="三-Snort规则编写"><a href="#三-Snort规则编写" class="headerlink" title="三.Snort规则编写"></a>三.Snort规则编写</h1><p>大多数Snort规则都写在一行中，Snort规则分为两个逻辑部分：规则头和规则选项。<br>规则头包含规则的操作，协议，源和目的ip地址和子网掩码，以及源和目的端口信息。规则选项部分包含警报消息以及有关检查数据包的哪些部分以及确定是否采取规则操作的信息。<br>![[3.1 snort.png]]<br>第一个括号之前的文本是规则头，括号内的部分包含规则选项。规则选项部分中，括号之前的单词称为选项关键字。<br>构成规则的所有元素必须为真，才能执行值是否的规则操作。当这些元素放在一起时，可以视为形成逻辑AND语句。同时，Snort规则集中的各种规则可以视为大型OR语句。</p>
+<h2 id="1-规则头"><a href="#1-规则头" class="headerlink" title="1.规则头"></a>1.规则头</h2><p>规则头包含了定义数据包的谁，哪里和什么信息，以及出现具有规则中知识的所有属性的规则包时应该执行的操作。</p>
+<h3 id="规则操作"><a href="#规则操作" class="headerlink" title="&lt;1&gt;.规则操作"></a>&lt;1&gt;.规则操作</h3><p>Snort规则中的第一项就是规则操作，规则操作告诉Snort在找到符合规则条件的数据包时要做什么。Snort中有3个可用的默认操作：alert（警报），log（记录），pass（忽略）。此外，如果你以内联模式运行Snort，则您还有其他的选项，包括drop（阻止并记录），reject（阻止）和sdrop（阻止但不记录）。<br>另外，也可以定义自己的规则类型，并将一个或者多个输出插件与其关联，然后，你可以将规则类型用作Snort规则中的操作。<br>示例：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ruletype suspicious&#123;</span><br><span class="line">	type log output</span><br><span class="line">	log_tcpdump:suspicious.log</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>此示例将创建一个记录到 syslog 和 tcpdump 的规则类型:</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ruletype redalert</span><br><span class="line">   &#123;</span><br><span class="line">         type alert </span><br><span class="line">         output alert_syslog: LOG_AUTH LOG_ALERT </span><br><span class="line">         output log_tcpdump: suspicious.log</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></div>
+<h3 id="协议"><a href="#协议" class="headerlink" title="&lt;2&gt;.协议"></a>&lt;2&gt;.协议</h3><p>规则中的下一个字段是协议，Snort目前分析可疑行为的协议有四种：<code>tcp,udp,icmp和ip</code>,将来可能会更多，比如<code>arp,igrp,gre,ospf,rip,ipx</code>等。</p>
+<h3 id="ip地址"><a href="#ip地址" class="headerlink" title="&lt;3&gt;.ip地址"></a>&lt;3&gt;.ip地址</h3><p>规则头的下一个部分决定了那些ip可以触发该规则。<br>关键字”any”可以被用来定义任何地址。<br>Snort没有提供根据ip地址查询域名的机制。地址就是由直接的数字型ip地址和一个cidr块组成的。Cidr块指示作用在规则地址和需要检查的进入的任何包的网络掩码。&#x2F;24表示c类网络，&#x2F;16表示b类网络，&#x2F;32表示一个特定的机器的地址。例如，192.168.1.0&#x2F;24代表从192.168.1.1到192.168.1.255的地址块。在这个地址范围的任何地址都匹配使用这个192.168.1.0&#x2F;24标志的规则。这种记法给我们提供了一个很好的方法来表示一个很大的地址空间。<br>有一个操作符可以应用在ip地址上，它是否定运算符（!）。这个操作符告诉snort匹配除了列出的ip地址以外的所有ip地址。否定操作符用”！”表示。下面这条规则对任何来自本地网络以外的流都进行报警。<br>比如：<code>alert tcp !192.168.1.0/24 any -&gt; 192.168.1.0/24 111(content:&quot;|00 01 86 a5|&quot;;msg:&quot;external mountd access&quot;;)</code><br>这条规则表示：任何源ip和目的ip地址不是来自内部网络，且目的端口不为111的tcp数据包。<br>此外，还可以指定ip地址列表，IP地址列表通过在方括号内将逗号分隔ip地址和CIDR块列表来指定。<br>示例：<br><code>alert tcp ![192.168.1.0/24,10.1.1.0/24] any -&gt; [192.168.1.0/.24,10.1.1.0/24] 111 (content:&quot;|00 01 86 a5|&quot;;msg:&quot;external mountd access&quot;;)</code></p>
+<h3 id="端口号："><a href="#端口号：" class="headerlink" title="&lt;4&gt;.端口号："></a>&lt;4&gt;.端口号：</h3><p>端口号可以用多种方式指定，包括任意端口，静态端口，端口范围和非运算符。任意端口时通配符，静态端口即为指定单个端口，端口范围用:表示，范围运算符可以用多种方式表示：<br><code>log udp any any -&gt; 192.168.1.0/24 1:1024</code>源ip，端口为任意，目的IP为192.168.1.0&#x2F;24内任意一个，目的端口范围为1~1024<br><code>log tcp any any-&gt; 192.168.1.0/24 :6000</code>源ip，端口为任意，目的IP为192.168.1.0&#x2F;24内任意一个，目的端口范围为：小于等于6000<br><code>log tcp any :1024 -&gt; 192.168.1.0/24 500:</code>源ip为任意，源端口小于等于1024，目的IP为192.168.1.0&#x2F;24内任意一个，目的端口范围为：大于或等于6000</p>
+<h3 id="方向运算符"><a href="#方向运算符" class="headerlink" title="&lt;3&gt;.方向运算符"></a>&lt;3&gt;.方向运算符</h3><p>方向运算符<code>-&gt;</code>表示规则适用的流量的方向,方向运算符左侧的 IP 地址和端口号被视为来自源主机的流量，而方向运算符右侧的地址和端口信息是目标主机的流量。还有一个双向运算符，用符号<code>&lt;&gt;</code>表示。这告诉 Snort 考虑源方向或目标方向的地址&#x2F;端口对。这对于记录&#x2F;分析对话的双方（例如 telnet 或 POP3 会话）非常方便。</p>
+<h2 id="2-规则选项："><a href="#2-规则选项：" class="headerlink" title="2.规则选项："></a>2.规则选项：</h2><p>规则选项是 Snort 入侵检测引擎的核心，集易用性、强大功能和灵活性于一身。所有 Snort 规则选项都使用分号 (;) 字符相互分隔。规则选项关键字与其参数使用冒号 (:) 字符分隔。</p>
+<p>规则选项主要有四类：<br><strong>general</strong><br>这些选项提供有关规则的信息，但在检测期间不会产生任何影响<br><strong>payload</strong><br>这些选项都在数据包有效负载内查找数据，并且可以相互关联<br><strong>non-payload</strong><br>这些选项寻找非有效载荷数据<br><strong>post-detection</strong><br>这些选项是规则特定的触发器，在规则“触发”后发生。</p>
+<h3 id="1）一般规则选项"><a href="#1）一般规则选项" class="headerlink" title="1）一般规则选项"></a>1）一般规则选项</h3><h4 id="msg"><a href="#msg" class="headerlink" title="&#x3D;&#x3D;msg&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;msg&#x3D;&#x3D;</strong></h4><p>msg 规则选项告诉日志记录和警报引擎要与数据包转储一起打印的消息或警报。它是一个简单的文本字符串，利用 <code>\ </code>作为转义字符，用来指示可能混淆 Snort 规则解析器的离散字符（例如分号 ; 字符）。<br><code>msg:&quot;&lt;message text&gt;&quot;;</code></p>
+<h4 id="reference"><a href="#reference" class="headerlink" title="&#x3D;&#x3D;reference&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;reference&#x3D;&#x3D;</strong></h4><p>引用关键字允许规则包含对外部攻击识别系统的引用。该插件目前支持多个特定系统以及唯一 URL。输出插件将使用此插件提供有关所生成警报的其他信息的链接。</p>
+<p>请务必查看 <a class="link"   target="_blank" rel="noopener" href="http://www.snort.org/pub-bin/sigs-search.cgi/" >http://www.snort.org/pub-bin/sigs-search.cgi/<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，以了解基于sid 索引警报描述的系统</p>
+<h4 id="gid"><a href="#gid" class="headerlink" title="&#x3D;&#x3D;gid&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;gid&#x3D;&#x3D;</strong></h4><p>gid关键字用于标识在触发特定规则时Snort的哪个部分生成事件。例如，gid 1与规则子系统相关联，并且为特定的预处理器和解码器指定超过100的各种gid。请参阅源代码树中的etc&#x2F;generators以获取当前使用的生成器ID。请注意，gid关键字是可选的，如果没有在规则中指定，它将默认为1，并且规则将成为通用规则子系统的一部分。为了避免与Snort中定义的gids（由于某些原因，它没有注意到etc&#x2F;generators）发生冲突，建议使用从1，000，000开始的值。对于常规规则编写，不建议使用gid关键字。此选项应与sid关键字一起使用。(See部分）<br><code>gid:&lt;generator id&gt;;</code></p>
+<h4 id="sid"><a href="#sid" class="headerlink" title="&#x3D;&#x3D;sid&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;sid&#x3D;&#x3D;</strong></h4><p>sid关键字用于唯一标识Snort规则。这些信息允许输出插件轻松地识别规则。此选项应与rev关键字一起使用。<br>文件sid-msg.map包含警报消息到Snort规则ID的映射。在对警报进行后处理以将ID映射到警报消息时，此信息非常有用。<br><code>sid:&lt;snort rules id&gt;;</code></p>
+<h4 id="rev"><a href="#rev" class="headerlink" title="&#x3D;&#x3D;rev&#x3D;&#x3D;*"></a><em>&#x3D;&#x3D;rev&#x3D;&#x3D;</em>*</h4><p>rev关键字用于唯一标识Snort规则的修订。修订版本与 Snort 规则 ID 一起允许改进签名和描述并将其替换为更新的信息。<br><code>rev:&lt;revision integer&gt;;</code><br>示例：此示例是Snort规则修订版为1的规则。<br><code>alert tcp any any -&gt; any 80 (content:&quot;BOB&quot;; sid:1000983; rev:1;)</code></p>
+<h4 id="classtype"><a href="#classtype" class="headerlink" title="&#x3D;&#x3D;classtype&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;classtype&#x3D;&#x3D;</strong></h4><p>classtype关键字用于将规则分类为检测属于更一般类型的攻击类的攻击。Snort提供了一组默认的攻击类，由它提供的默认规则集使用。为规则定义分类提供了一种更好地组织Snort生成的事件数据的方法。<br><code>classtype:&lt;class name&gt;;</code><br>例如：<br><code>alert tcp any any -&gt; any 25 (msg:&quot;SMTP expn root&quot;; flags:A+; content:&quot;expn root&quot;; nocase; classtype:attempted-recon;)</code><br>Snort定义的攻击分类位于classification.config文件中。该文件使用以下语法：<br><code>config classification:  &lt;class name&gt;,&lt;class description&gt;,&lt;default priority&gt;</code><br><em>classtype 选项只能使用已通过配置分类选项在snort.conf中定义的分类。Snort 在分类.config 中提供了一组默认分类 ，供其提供的规则使用。</em></p>
+<h4 id="priority"><a href="#priority" class="headerlink" title="&#x3D;&#x3D;priority&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;priority&#x3D;&#x3D;</strong></h4><p>priority标记为规则分配严重性级别。classtype规则分配默认优先级（由配置分类选项定义），该优先级可以被优先级规则覆盖。每种情况的例子如下。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alert tcp any any -&gt; any 80 (msg:&quot;WEB-MISC phf attempt&quot;; flags:A+;content:&quot;/cgi-bin/phf&quot;; priority:10;)  </span><br><span class="line">  </span><br><span class="line">    alert tcp any any -&gt; any 80 (msg:&quot;EXPLOIT ntpdx overflow&quot;;dsize:&gt;128; classtype:attempted-admin; priority:10;)</span><br></pre></td></tr></table></figure></div>
+<h4 id="metadata"><a href="#metadata" class="headerlink" title="&#x3D;&#x3D;metadata&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;metadata&#x3D;&#x3D;</strong></h4><p>metadata标记允许规则编写者嵌入有关规则的附加信息，通常采用键-值格式。某些元数据键和值对Snort有意义，并在表中列出。除了表中列出的键之外，Snort实际上会忽略这些键，并且这些键可以是自由格式的，只有一个键和一个值。多个键之间用逗号分隔，而键和值之间用空格分隔。<br>![[3.2 snort-metadata.png]]</p>
+<h3 id="2）有效负荷检测规则选项"><a href="#2）有效负荷检测规则选项" class="headerlink" title="2）有效负荷检测规则选项"></a>2）有效负荷检测规则选项</h3><h4 id="content"><a href="#content" class="headerlink" title="&#x3D;&#x3D;content&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;content&#x3D;&#x3D;</strong></h4><p>content关键字是Snort的重要特性之一。它允许用户设置规则，搜索数据包有效载荷中的特定内容，并根据该数据触发响应。如果数据包的有效负载中包含与参数数据字符串完全匹配的数据，则测试成功，并执行其余的规则选项测试。请注意，此测试是区分大小写的。<br>content关键字的选项数据有些复杂;它可以包含混合的文本和二进制数据。二进制数据通常包含在<code>|</code>字符中，并表示为字节码。字节码将二进制数据表示为十六进制数，是描述复杂二进制数据的一种很好的速记方法。下面的示例显示了在Snort规则中混合使用文本和二进制数据。<br><strong>可以在一个规则中指定多个内容规则。这允许规则被定制以减少误报。</strong><br>如果规则前面有a！，将在不包含此内容的数据包上触发警报。这在编写要对不匹配特定模式的数据包发出警报的规则时很有用。<br><code>alert tcp any any -&gt; any 139 (content:&quot;|5c 00|P|00|I|00|P|00|E|00 5c|&quot;;)</code><br><code> alert tcp any any -&gt; any 80 (content:!&quot;GET&quot;;)</code></p>
+<h4 id="protected-content"><a href="#protected-content" class="headerlink" title="&#x3D;&#x3D;protected_content&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;protected_content&#x3D;&#x3D;</strong></h4><p><code>protected_content</code>关键字提供了<code>content</code>关键字的大部分功能，但是它的执行和使用方式非常不同。<code>protected_content</code>相对于<code>content</code>的主要优势是protected允许人们通过仅显示目标内容的安全哈希摘要来隐藏所述内容。与content关键字一样，它的主要目的是匹配特定字节的字符串。<br>目前，可以使用MD5、SHA256和SHA512哈希算法与protected_content关键字。如果在Snort配置中未设置默认值，则必须在规则中使用 hash 指定哈希算法。此外，使用protected，必须指定 length 修饰符，以指示原始数据的长度。<br>与<code>content</code>一样，可以在一个规则中使用多个<code>protected_content</code>规则。此外，可以将多个<code>protected_content</code>规则与多个<code>content</code>规则混合使用。<br><strong>如果规则前面有a！，将在不包含目标内容的分组上触发警报。这在编写要对不匹配特定模式的数据包发出警报的规则时很有用。</strong><br>格式：<code>protected_content:[!]&quot;&lt;content hash&gt;&quot;, length:orig_len[, hash:md5|sha256|sha512];</code><br>示例：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alert tcp any any &lt;&gt; any 80 (msg:&quot;MD5 Alert&quot;;protected_content:&quot;293C9EA246FF9985DC6F62A650F78986&quot;; hash:md5; offset:0; length:4;)</span><br><span class="line"></span><br><span class="line">alert tcp any any &lt;&gt; any 80 (msg:&quot;SHA256 Alert&quot;; protected_content:&quot;56D6F32151AD8474F40D7B939C2161EE2BBF10023F4AF1DBB3E13260EBDC6342&quot;;hash:sha256; offset:0; length:4;)</span><br></pre></td></tr></table></figure></div>
+<h4 id="hash"><a href="#hash" class="headerlink" title="&#x3D;&#x3D;hash&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;hash&#x3D;&#x3D;</strong></h4><p>hash关键字用于指定匹配protected_content规则时使用的哈希算法。如果Snort配置中未指定默认算法，则protected_content规则必须指定所使用的算法。目前支持MD5、SHA256和SHA512。<br>格式：<code> hash:[md5|sha256|sha512]</code></p>
+<h4 id="length"><a href="#length" class="headerlink" title="&#x3D;&#x3D;length&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;length&#x3D;&#x3D;</strong></h4><p>length关键字用于指定protected_content规则摘要中指定的内容的原始长度。提供的值必须大于0且小于65536。<br>格式：<code>length:[&lt;original_length&gt;];</code></p>
+<h4 id="nocase"><a href="#nocase" class="headerlink" title="&#x3D;&#x3D;nocase&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;nocase&#x3D;&#x3D;</strong></h4><p>指定对content字符串大小写不敏感。</p>
+<h4 id="rawbytes"><a href="#rawbytes" class="headerlink" title="&#x3D;&#x3D;rawbytes&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;rawbytes&#x3D;&#x3D;</strong></h4><p>rawbytes关键字允许规则查看原始数据包数据，忽略预处理器完成的任何解码。<br>HTTP Inspect有一组关键字来使用原始数据，例如http_raw_cookie，http_raw_header，http_raw_uri等，它们与原始HTTP请求和响应的特定部分相匹配。如果rawbytes没有明确指定，大多数其他预处理器默认使用解码&#x2F;规范化数据进行内容匹配。因此，应该指定rawbytes，以便检查数据包中的任意原始数据。<br><code>alert tcp any any -&gt; any 21 (msg:&quot;Telnet NOP&quot;; content:&quot;|FF F1|&quot;; rawbytes;)</code><br>这个例子告诉内容模式匹配器查看原始流量，而不是由HTTP解码器提供的解码流量。</p>
+<h4 id="depth"><a href="#depth" class="headerlink" title="&#x3D;&#x3D;## depth&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;## depth&#x3D;&#x3D;</strong></h4><p>depth关键字允许规则编写者指定Snort应该在数据包中搜索指定模式的范围。<br>深度为5将告诉Snort只在有效负载的前5个字节内查找指定的payload。由于深度关键字是先前内容关键字的修饰符，因此在指定深度之前规则中必须有内容。<br>此关键字允许值大于或等于正在搜索的模式长度。允许的最小值为1。此关键字允许的最大值为65535。</p>
+<h4 id="offset"><a href="#offset" class="headerlink" title="&#x3D;&#x3D;offset&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;offset&#x3D;&#x3D;</strong></h4><p>offset关键字允许规则编写者指定从何处开始搜索数据包中的模式。<br>偏移量5将告诉Snort在payload的前5个字节之后开始查找指定的模式。<br>由于此关键字是前一个内容关键字的修饰符，因此在指定偏移量之前，规则中必须有内容。此关键字允许的值范围为-65535到65535。</p>
+<h4 id="distance"><a href="#distance" class="headerlink" title="&#x3D;&#x3D;distance&#x3D;&#x3D;"></a><strong>&#x3D;&#x3D;distance&#x3D;&#x3D;</strong></h4><p>distance关键字允许规则编写器指定Snort在开始搜索指定payload之前，应该忽略数据包中相对于前一个payload匹配结束的距离。<br>这可以被认为是与offset完全相同的东西，只不过它是相对于最后一个payload匹配的末尾而不是数据包的开头。<br>例子：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert tcp any any -&gt; any any (content:&quot;ABC&quot;;content:&quot;DEF&quot;; distance:1;)</span><br></pre></td></tr></table></figure></div>
+<p>上面说的可能难理解，这个规则可以匹配：&#x2F;ABC.{1,}DEF&#x2F;. 一下就知道了哈哈哈。<br>后面的规则字段还有很多，这里只是列举出来了常用的。完整版在这里：<a class="link"   target="_blank" rel="noopener" href="http://manual-snort-org.s3-website-us-east-1.amazonaws.com/node32.html" >http://manual-snort-org.s3-website-us-east-1.amazonaws.com/node32.html<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<h1 id="四-编写规则，运行Snort"><a href="#四-编写规则，运行Snort" class="headerlink" title="四.编写规则，运行Snort"></a>四.编写规则，运行Snort</h1><p>我们在<code>Snort/etc/</code>文件夹下面可以看到一个配置文件：<code>snort.conf</code>，在这个文件中，指定了规则文件存放路径：<br><code>var RULE_PATH ../rules</code><br>..&#x2F;rules就是说在Snort&#x2F;rules文件夹中，我们到这个文件夹中看一下，有没有这个目录，如果没有的话，自己创建出来。<br>然后，在该文件夹下编写我们自己的规则，然后将规则文件名添加到<br>![[4.1 rules_path.png]]<br>这里的这些应该都是自带的，或者说我们可以从官网中一次性全下载到，但是我这里没有，所以我将这里的所有include的规则文件都删除，然后将我自己的规则文件添加上去：<br>![[4.2 test.rules.png]]<br>到这里，我们就完成了Snort最基本的配置，至于高级用法，后续慢慢学习到之后会更新。<br>最后，使用我们之前学习到的命令，将Snort启动即可。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 入侵检测系统：Snort</li>
+        <li><strong>Author:</strong> Shad0hun</li>
+        <li><strong>Created at
+                :</strong> 2025-02-16 21:20:44</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2025-02-16 21:21:20
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://shad0hun.github.io/2025/02/16/Tools/入侵检测系统：Snort/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Tools/">#Tools</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Snort/">#Snort</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/03/12/Tools/Obsidian%E7%AC%94%E8%AE%B0%E5%88%B0Hexo%E5%9B%BE%E7%89%87%E9%93%BE%E6%8E%A5%E8%BD%AC%E6%8D%A2/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Obsidian笔记到Hexo图片链接转换</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/02/16/Tools/Yara%EF%BC%88%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%89/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Yara（恶意样本检测工具）</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        Comments
+    </div>
+    
+
+        
+            
+
+
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">入侵检测系统：Snort</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80-%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%EF%BC%9A"><span class="nav-text">一.系统安装：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3%EF%BC%9A"><span class="nav-text">报错解决：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-check"><span class="nav-text">1.check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-daq"><span class="nav-text">2.daq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-luajit"><span class="nav-text">3.luajit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-rcp-h"><span class="nav-text">4.rcp.h</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C-Snort%E6%A6%82%E8%BF%B0%EF%BC%9A"><span class="nav-text">二.Snort概述：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%97%85%E6%8E%A2%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-text">1.嗅探器模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%95%B0%E6%8D%AE%E5%8C%85%E8%AE%B0%E5%BD%95%E6%A8%A1%E5%BC%8F"><span class="nav-text">2.数据包记录模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%BD%91%E7%BB%9C%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E6%A8%A1%E5%BC%8F"><span class="nav-text">3.网络入侵检测系统模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIDS%E6%A8%A1%E5%BC%8F%E8%BE%93%E5%87%BA%E9%80%89%E9%A1%B9"><span class="nav-text">&lt;1&gt;.NIDS模式输出选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E6%A0%87%E5%87%86%E8%AD%A6%E6%8A%A5%E8%BE%93%E5%87%BA"><span class="nav-text">&lt;2&gt;.了解标准警报输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E4%B8%BA%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E8%BF%90%E8%A1%8C"><span class="nav-text">&lt;3&gt;.作为守护进程运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-snort-conf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">4.snort.conf配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89-Snort%E8%A7%84%E5%88%99%E7%BC%96%E5%86%99"><span class="nav-text">三.Snort规则编写</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%A7%84%E5%88%99%E5%A4%B4"><span class="nav-text">1.规则头</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C"><span class="nav-text">&lt;1&gt;.规则操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE"><span class="nav-text">&lt;2&gt;.协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ip%E5%9C%B0%E5%9D%80"><span class="nav-text">&lt;3&gt;.ip地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E5%8F%B7%EF%BC%9A"><span class="nav-text">&lt;4&gt;.端口号：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%90%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text">&lt;3&gt;.方向运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%A7%84%E5%88%99%E9%80%89%E9%A1%B9%EF%BC%9A"><span class="nav-text">2.规则选项：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%89%E4%B8%80%E8%88%AC%E8%A7%84%E5%88%99%E9%80%89%E9%A1%B9"><span class="nav-text">1）一般规则选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%89%E6%9C%89%E6%95%88%E8%B4%9F%E8%8D%B7%E6%A3%80%E6%B5%8B%E8%A7%84%E5%88%99%E9%80%89%E9%A1%B9"><span class="nav-text">2）有效负荷检测规则选项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B-%E7%BC%96%E5%86%99%E8%A7%84%E5%88%99%EF%BC%8C%E8%BF%90%E8%A1%8CSnort"><span class="nav-text">四.编写规则，运行Snort</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Shad0hun</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        19 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.4</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="fa-regular fa-arrow-up"></i>
+		</li>
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Shad0hun">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://shad0hun.github.io/2025/08/18/windows内核/【windows内核】5-调用门详解及跨段提权call/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Windows内核】5.调用门详解及跨段提权call">
+<meta property="og:url" content="https://shad0hun.github.io/2025/08/18/Windows%E5%86%85%E6%A0%B8/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%915-%E8%B0%83%E7%94%A8%E9%97%A8%E8%AF%A6%E8%A7%A3%E5%8F%8A%E8%B7%A8%E6%AE%B5%E6%8F%90%E6%9D%83call/index.html">
+<meta property="og:site_name" content="Shad0hun&#39;s blog">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2025-08-18T01:10:00.000Z">
+<meta property="article:modified_time" content="2025-08-18T01:13:48.770Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Windows_Kernel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-2P50D0W8WD"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2P50D0W8WD');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            【Windows内核】5.调用门详解及跨段提权call | Shadohun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+    
+        
+<script src="/js/build/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"shad0hun.github.io","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":true,"custom_message":"有空多读书，没事早点睡"},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":true,"id":"G-2P50D0W8WD"}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Shad0hun's Blog","subtitle":{"text":["愿许秋风知我意，散我心中意难平"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.4","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"CSDN":{"path":"https://blog.csdn.net/qq_73985089","icon":null}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":"致力于APT高级威胁分析，二进制漏洞挖掘\n在努力中...","show_on_mobile":true,"links":{"档案":{"path":"/archives","icon":"fa-regular fa-archive"},"标签":{"path":"/tags","icon":"fa-regular fa-tags"},"分类":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","excerpt_length":100,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/1/22 22:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+	<span class="scroll-progress-bar"></span>
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        有空多读书，没事早点睡
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({ loop: true })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [20, 0],
+                translateZ: 0,
+                opacity: [0, 1],
+                filter: ['blur(5px)', 'blur(0px)'],
+                easing: "easeOutExpo",
+                duration: 1200,
+                delay: (el, i) => 300 + 20 * i,
+            })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [0, -20],
+                opacity: [1, 0],
+                filter: ['blur(0px)', 'blur(5px)'],
+                easing: "easeInExpo",
+                duration: 1000,
+                delay: (el, i) => 15 * i,
+                complete: function() {
+                    hidePreloader();
+                }
+            }, '-=700');
+
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Shadohun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   target="_blank" rel="noopener" href="https://blog.csdn.net/qq_73985089"
+                                        >
+                                    
+                                    CSDN
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           target="_blank" rel="noopener" href="https://blog.csdn.net/qq_73985089"
+                        >
+                            <span>
+                                CSDN
+                            </span>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/archives"
+                        >
+                            <span>档案</span>
+                            <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>标签</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>分类</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">11</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">7</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">【Windows内核】5.调用门详解及跨段提权call</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/Shad0hun.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-08-18 09:10</span>
+        <span class="mobile">2025-08-18 09:10</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-08-18 09:13:48</span>
+            <span class="mobile">2025-08-18 09:13:48</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Windows-kernel/">Windows kernel</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Windows-Kernel/">Windows_Kernel</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h1 id="调用门概述"><a href="#调用门概述" class="headerlink" title="调用门概述"></a>调用门概述</h1><p>调用门是Intel x86保护模式中一种系统描述符，它的主要功能是允许不同特权之间（比如R0和R3）的受控过程调用。通俗点来讲，就是我在R3要去调R0代码，那么我就需要经过一扇门去调用，这就是调用门，而跟我们进门一样，要满足一定的条件才能进入。<br>与普通的<code>jmp</code>、<code>call</code>不同，调用门不仅包含了目标代码段的选择子与偏移，还潜入了访问控制机制，用于确保调用过程中不会绕过CPU的特权检查，从而保障内存与执行环境的安全性。<br>我们在前面的章节中将结果段描述符，实际上，段描述符中的<code>S</code>位就可以确定段描述符是系统描述符还是（S&#x3D;0）或者代码，数据描述符S位1。<br>那么就是说，当段描述符中的S为0的时候，就可以确定该段是系统描述符或者门描述符。那么我们该如何确定一个段描述符是门描述符呢？我们接下来看一下调用门描述符。</p>
+<h1 id="调用门描述符"><a href="#调用门描述符" class="headerlink" title="调用门描述符"></a>调用门描述符</h1><p>这里我们来看一下调用门描述符：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Call-Gate_Descriptor.png"
+                      alt="Call-Gate_Descriptor"
+                ><br>我们可以发现，实际上这个描述符和普通段描述符很相似，只不过，其中有一些字段不同，另外，有些字段是确定的。</p>
+<h2 id="Type字段"><a href="#Type字段" class="headerlink" title="Type字段"></a>Type字段</h2><p>需要我们注意的是这里的<code>Type</code>字段，这里的<code>Type</code>字段确定为1100，也就是C。<br>对于系统描述符的Type字段，不同于普通段描述符，对于普通段描述符，我们利用<code>Type</code>字段可以确定是代码段还是数据段。而对于系统描述符中的<code>Type</code>字段，我们有另一张表：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/System-Segment-Type.png"
+                      alt="System-Segment-Type"
+                >从中可以看到，当<code>Type</code>字段为12的时候，就是一个调用们描述符。</p>
+<h2 id="Offset-in-Segment字段"><a href="#Offset-in-Segment字段" class="headerlink" title="Offset in Segment字段"></a>Offset in Segment字段</h2><p>另外，我们发现，在调用门描述符中，有一个<code>Offset in Segment</code>字段，这个字段用来表示调用目标代码在目标段内的入口地址偏移。<br>当通过调用门未进行转移时（段转移），处理器会将CS置为调用门中提供的目标段选择子（Segment Selector)，同时将EIP设置为该<code>Offset in Segment</code>，从而跳转到段内制定入口点。<br>也就是说，这里的<code>Offset in Segment</code>就是目标地址相对于目标段的偏移量。</p>
+<h2 id="Segment-Selector字段"><a href="#Segment-Selector字段" class="headerlink" title="Segment Selector字段"></a>Segment Selector字段</h2><p>调用们描述符中的<code>Segment Selector</code>字段，其实记录的是目标代码所在的段的段选择子。</p>
+<h2 id="DPL字段"><a href="#DPL字段" class="headerlink" title="DPL字段"></a>DPL字段</h2><p><code>DPL</code>字段记录了：谁可以进这扇门，也就是谁有权力进这扇门，从而：什么特权能进这扇门。也就是说，<code>DPL</code>字段记录了：访问我调用门所需的特权等级。<br>那么到底能否进入调用门呢？CPU会检查调用门的DPL，与CPL，段选择子的RPL进行比较，对于“门类”描述符，判断条件是：<code>max(CPL,RPL) &lt; DPL</code>。<br>调用门的 DPL 是控制“能不能调用门”，而目标代码段的 DPL 则进一步决定“能不能进入目标段”。也就是说，CPU 会先检查调用门的 DPL，再检查门中 Segment Selector 指向的目标段的 DPL。</p>
+<h2 id="Param-Count字段"><a href="#Param-Count字段" class="headerlink" title="Param Count字段"></a>Param Count字段</h2><p>这个字段就是当我们进入调用门，需要压入参数的时候，这个字段帮我们记录了我们压入参数的个数。</p>
+<h1 id="调用门提权实验"><a href="#调用门提权实验" class="headerlink" title="调用门提权实验"></a>调用门提权实验</h1><p>我们现在就来手动构造一下调用门：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这里为了方便，我们还是跟上章节一样，关掉增量链接，关掉随机基址保护。<br>首先，通过运行，我们拿到了<code>diaoyongmen_test</code>函数地址：<code>0x004010B0</code>。我们拿到这个地址之后，我们去构造调用门。</p>
+<h2 id="1-构造调用门"><a href="#1-构造调用门" class="headerlink" title="1.构造调用门"></a>1.构造调用门</h2><p>首先，我们要通过WinDbg拿到代码段的段选择子和全局描述符表：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_WinDbg_1.png"
+                      alt="diaoyongmen_WinDbg_1"
+                ><br>可以看到代码段段选择子是8，我们将其进行一个拆分：<br>0000 0000 0000 1000-&gt;Index:1,TI:0,RPLD:0，这说明我们需要在GDT表中寻找段描述符，在GDT表中的第一项，请求特权级为0。<br>现在我们照着调用门的描述符进行一个构造，为了方便，我们对照着表进行构造：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/Call-Gate_Descriptor.png"
+                      alt="Call-Gate_Descriptor"
+                ><br>0040 10B0 -&gt; 0000 0000 0100 0000 0001 0000 1011 0000<br>这里的地址需要拆分成两部分<br><code>Offset in Segment 31:16</code> : 0000 0000 0100 0000<br><code>Offset in Segment 15:00</code> : 0000 0000 0100 0000<br>然后填入：<br><code>Segment Selector</code> : 我们要访问的是代码段，也就是cs，我们填入cs段的段选择子即可：0000 0000 0000 1000<br><code>Param Count</code> : 我们填入0000 0000<br><code>Type</code> : 固定1100<br><code>DPL</code> : 为了确保三环能提权，我们填入E<br><code>P</code> : 1<br>那么我们最后构造好就是：0040EC00 000810B0<br><code>eq 80b93848 0040EC00000810B0</code><br>现在我们需要将其写入到GDT表中一个空白的位置（我们之前做了很多次，写到GDT + 0x48，段选择子0x48正好对应到这里）：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_W_GDT_1.png"
+                      alt="diaoyongmen_W_GDT_1"
+                ><br>现在我们来修改以下代码：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, esp;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>根据上章节讲的，远程call的时候，需要填入跳转地址，和目标段的段选择子，但是，我们这里走的是调用门，当远跳发现走的是调用们的时候，它是不会去管你的call后面的地址是啥（是啥都行，不会影响到任何东西，因为走了调用门），跳转地址就是由调用门决定的。&#x3D;&#x3D;虽然这里不用填跳转地址了，但是还是要保证远程call后面跟上6个字节（前四字节可视为占位符）&#x3D;&#x3D;。<br>另外，这里在裸函数中为什么要写入int3？<br>这是因为，我们在远程call的时候，进行了提权，也就相当于走到了0环地址，我们三环的调试器是无法调试的，所以我们打上int3，让WinDbg去接收中断。<br>另外，我们这里在远程call之前将esp的值赋给eax是为了观察堆栈变化。<br>现在我们就来到调试器中运行：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_OD_1.png"
+                      alt="diaoyongmen_OD_1"
+                ><br>我们可以观察到，在远程call之前，esp是<code>0012FE1C</code>，cs为1B，SS为23，现在让其运行，我们在WinDbg中等待断点：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_WinDbg_2.png"
+                      alt="diaoyongmen_WinDbg_2"
+                ></p>
+<h2 id="2-内核态观察堆栈"><a href="#2-内核态观察堆栈" class="headerlink" title="2.内核态观察堆栈"></a>2.内核态观察堆栈</h2><p>可以看到中断地址就是我们前面写的裸函数，那么说明我们已经成功调过来了，接下来，我们需要观察段选择子：</p>
+<blockquote>
+<p>kd&gt; r<br>eax&#x3D;0012fe1c ebx&#x3D;7ffd4000 ecx&#x3D;e75d67f3 edx&#x3D;001b0174 esi&#x3D;00000000 edi&#x3D;0012fefc<br>eip&#x3D;004010b0 esp&#x3D;947c3ca0 ebp&#x3D;0012fefc iopl&#x3D;0         nv up ei pl nz na po nc<br>cs&#x3D;0008  ss&#x3D;0010  ds&#x3D;0023  es&#x3D;0023  fs&#x3D;0030  gs&#x3D;0000             efl&#x3D;00000202<br>004010b0 cc              int     3</p>
+</blockquote>
+<p>可以看到，我们的cs和ss段寄存器均有改变，分别变为8和10，我们来对其进行一个拆分：<br>0008 -&gt; 0000 0000 0000 1000 -&gt; Index:1,TI:0,RPL:0<br>0010 -&gt; 0000 0000 0001 0000 -&gt; Index:2,TI:0,RPL:0<br>我们在上一章节讲过，CPL是由cs和ss段选择子中的RPL决定的，他俩现在都为0，也就是说我们的CPL变成了0，我们也就完成了提权。</p>
+<p>接下来我们来看看栈的变化：<br>esp由<code>0012FE1C</code>变化到了<code>947c3ca0</code><br>我们现在来看看现在的堆栈：</p>
+<blockquote>
+<p>kd&gt; dds 0x947c3ca0<br>947c3ca0  00401121<br>947c3ca4  0000001b<br>947c3ca8  0012fe1c autochk+0x4fe1c<br>947c3cac  00000023<br>947c3cb0  00000000<br>947c3cb4  00000000<br>947c3cb8  00000000<br>947c3cbc  00000000</p>
+</blockquote>
+<p>我们现在来猜测以下，我们在裸函数中只做了跳转回去的代码，也就是说我们提权之后什么都不做，就返回了，那么栈顶应该保存的是返回地址，然后后面跟一个段选择子，这里的1b倒是符合，那么<code>0x00401121</code>是否符合呢？我们用<code>u</code>命令来编译下：</p>
+<blockquote>
+<p>kd&gt; u 0x00401121<br>00401121 68e8114800      push    4811E8h<br>00401126 e8ccae0300      call    0043bff7<br>0040112b 83c404          add     esp,4<br>0040112e 33c0            xor     eax,eax<br>00401130 52              push    edx<br>00401131 8bcd            mov     ecx,ebp<br>00401133 50              push    eax<br>00401134 8d1560114000    lea     edx,ds:[401160h]</p>
+</blockquote>
+<p>结合我们上面给出的在调试器中的截图，我们可以发现这里就是返回地址，那么现在堆栈中保存的东西我们也就知道了，是用于返回的地址和段选择子。<br>&#x3D;&#x3D;但是观察堆栈中，段选择子后面，我们发现这是跳转之前的esp，这么看来，在0环中，堆栈里保存的数据都是有用的，那么，跟在esp后面的23是什么呢？这不ss段的段选择子嘛。&#x3D;&#x3D;<br>也就是说，我们从3环走调用门提权到0环，回到3环的时候，还要将这些东西恢复。<br>那我们放过去，在3环调试器中查看是否恢复：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_OD_2.png"
+                      alt="diaoyongmen_OD_2"
+                ><br>我们可以观察到确实是恢复了，但是有一个问题：fs段选择子变成了0，那肯定是要出错的呀。</p>
+<h2 id="3-恢复fs段选择子"><a href="#3-恢复fs段选择子" class="headerlink" title="3.恢复fs段选择子"></a>3.恢复fs段选择子</h2><p>那我们就需要尝试手动修复：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, esp;</span><br><span class="line">		push fs;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>但是有人就发现了，我们在int3断下来的时候，fs被修改为了<code>0x30</code>，这是因为内核中的<code>int 3</code>fs段段选择子修改为了<code>0x30</code>。</p>
+<h2 id="4-提权验证"><a href="#4-提权验证" class="headerlink" title="4.提权验证"></a>4.提权验证</h2><p>那么我们该如何验证我们已经提权了呢？<br>首先，我们知道CPL变成了0，那么就是说我们已经有了0环的权限，完成了提权，但是我们没有直观得感受到，很简单，我们来调用一下0环的函数不就验证了：<br>首先，我们拿到<code>DbgPrint</code>函数地址：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_WinDbg_3.png"
+                      alt="diaoyongmen_WinDbg_3"
+                ><br>这里地址为<code>0x83e62c60</code>，现在我们自己定义一个函数指针，尝试调用：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*__CRTDECL MyDbgPrint)</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_z_ _Printf_format_string_ <span class="type">char</span> <span class="type">const</span>* <span class="type">const</span> _Format,</span></span><br><span class="line"><span class="params">	...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	MyDbgPrint Func = <span class="number">0x83e62c60</span>;</span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	Func(<span class="string">&quot;DbgPrint&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, esp;</span><br><span class="line">		push fs;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>很明显，这里由于我们已经从内核返回回来了，所以会报错，那我们在裸函数中进行调用（执行裸函数的时候，我们是通过调用门进去的，进去的时候已经提权了，所以在执行裸函数期间我们具有0环权限），我们现在来修改一下：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*__CRTDECL MyDbgPrint)</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_z_ _Printf_format_string_ <span class="type">char</span> <span class="type">const</span>* <span class="type">const</span> _Format,</span></span><br><span class="line"><span class="params">	...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span>* Format = <span class="string">&quot;Call DbgPrint Function Success!&quot;</span>;</span><br><span class="line">MyDbgPrint Func = <span class="number">0x83e62c60</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, Format;</span><br><span class="line">		push eax;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		call Func;</span><br><span class="line">		pop eax;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, esp;</span><br><span class="line">		push fs;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>现在，我们来到Dbgview中查看输出：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/Kernel/diaoyongmen_DbgView.png"
+                      alt="diaoyongmen_DbgView"
+                ><br>这也就验证了我们的提权。</p>
+<h2 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题"></a>遗留问题</h2><p>这里有一个问题，就是我把<code>int 3</code>去掉之后，也就是不用WinDbg拦截之后，直接执行，出现了蓝屏！尝试过取消强制签名，但是还是出现蓝屏。</p>
+<h1 id="调用门带参数观察"><a href="#调用门带参数观察" class="headerlink" title="调用门带参数观察"></a>调用门带参数观察</h1><p>我们上面做的实验就是当我们没有压参数的时候，但是我们大多数情况下，通过跨段提权后，执行的代码都是需要参数的吧？那我们就来观察一下。<br>我们在上面讲到了，如果要带参数，那就需要修改<code>Param Count</code>字段，我们先来观察一下带一个参数的情况：<br>首先，对于调用门描述符，我们要对<code>Param Count</code>字段做修改：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eq 80b93848 0040EC01`000810B0</span><br></pre></td></tr></table></figure></div>
+<p>然后我们修改一下代码：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		push <span class="number">0x12345678</span>;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>我们执行后到WinDbg中等待中断，然后观察堆栈情况：</p>
+<blockquote>
+<p>kd&gt; dds esp<br>94603c9c  00401126<br>94603ca0  0000001b<br>94603ca4  12345678<br>94603ca8  0012fe14<br>94603cac  00000023<br>94603cb0  00000000</p>
+</blockquote>
+<p>我们可以观察到，我们压入的参数是在返回地址之后的，这实际上与我们平时的call相似，只不过这里远程call的话，压入的不仅有返回地址，还有段选择子。<br>那么我们返回的时候，就要用：<code>retf 4</code>进行返回了。<br>那我们修改一下上面调用门提权的代码：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*__CRTDECL MyFunc)</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_z_ _Printf_format_string_ <span class="type">char</span> <span class="type">const</span>* <span class="type">const</span> _Format,</span></span><br><span class="line"><span class="params">	...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span>* Format = <span class="string">&quot;Call DbgPrint Function Success!&quot;</span>;</span><br><span class="line">MyFunc MyDbgPrint = <span class="number">0x83e13c60</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test(<span class="type">char</span>* sz) &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		mov eax, sz;</span><br><span class="line">		push eax;</span><br><span class="line">		<span class="type">int</span> <span class="number">3</span>;</span><br><span class="line">		call MyDbgPrint;</span><br><span class="line">		pop eax;</span><br><span class="line">		retf <span class="number">4</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		push Format;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这里的<code>DbgPrint</code>函数地址已经改变，因为我重启了一次。<br>经过调试，我发现：<br><code>mov eax, sz;</code>这个寻址方式是ebp寻址，所以我们需要在裸函数中做一些初始化的操作。<br>另外，我发现，如果我是WinDbg接过去的话，那么返回的时候，堆栈会帮我修复好。这里好像给我有了一点思路：就是前面出现问题的原因是堆栈不平衡，但是WinDbg接过去返回之后，帮我平了，所以保留<code>int 3</code>实际上是WinDbg帮我平衡了堆栈，所以调用内核函数成功。那我这里还要仔细去观察一下堆栈。</p>
+<h1 id="遗留问题研究（int-3修改fs段选择子问题）"><a href="#遗留问题研究（int-3修改fs段选择子问题）" class="headerlink" title="遗留问题研究（int 3修改fs段选择子问题）"></a>遗留问题研究（int 3修改fs段选择子问题）</h1><p>首先，经过动态调试，我确定进入内核，到返回到3环的过程中，堆栈是平衡的，那么，问题出现在我恢复fs段选择子上了？<br>经过观察，我这也没问题啊？？<br>那么我现在，去除内核调用<code>DbgPrint</code>，去除<code>int 3</code>：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>然后我去<code>pop fs</code>的地方下断，来观察以下返回来的时候是什么情况。<br>这时候直接执行，没有报错！<br>经过我的观察，如果没有<code>int 3</code>的话（就是说我们没有断在WinDbg中，那么在内核里fs断寄存器就是0x3B，但是如果我们断到了WinDbg中，那么就会讲fs段段寄存器修改为0x30。<br>后来我修改了一种写法：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*__CRTDECL MyDbgPrint)</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_z_ _Printf_format_string_ <span class="type">char</span> <span class="type">const</span>* <span class="type">const</span> _Format,</span></span><br><span class="line"><span class="params">	...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span>* Format = <span class="string">&quot;Call DbgPrint Function Success!&quot;</span>;</span><br><span class="line">MyDbgPrint Func = <span class="number">0x83e62c60</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		mov eax, <span class="number">0x30</span>;</span><br><span class="line">		mov fs, ax;</span><br><span class="line">		mov eax, Format;</span><br><span class="line">		push eax;</span><br><span class="line">		call Func;</span><br><span class="line">		add esp, <span class="number">4</span>;</span><br><span class="line">		pop fs;</span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="comment">//eq 80b93848 0040EC00000810B0</span></span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>只要我们不断在WinDbg中，那么就能正常执行。<br>很明显，我的问题不是在fs在哪里恢复，我们来看这段代码，我说了，前提是不能断在WinDbg中，其实是为了在裸函数中保存正确的fs值，那我们还是沿用之前的写法：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*__CRTDECL MyDbgPrint)</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_z_ _Printf_format_string_ <span class="type">char</span> <span class="type">const</span>* <span class="type">const</span> _Format,</span></span><br><span class="line"><span class="params">	...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span>* Format = <span class="string">&quot;Call DbgPrint Function Success!&quot;</span>;</span><br><span class="line">MyDbgPrint Func = <span class="number">0x83e62c60</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __declspec(naked)diaoyongmen_test() &#123;</span><br><span class="line">	__asm &#123;</span><br><span class="line">		<span class="comment">//push fs;</span></span><br><span class="line">		mov eax, <span class="number">0x30</span>;</span><br><span class="line">		mov fs, ax;</span><br><span class="line">		mov eax, Format;</span><br><span class="line">		push eax;</span><br><span class="line">		call Func;</span><br><span class="line">		add esp, <span class="number">4</span>;</span><br><span class="line">		<span class="comment">//pop fs;</span></span><br><span class="line">		retf;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="comment">//eq 80b93848 0040EC00000810B0</span></span><br><span class="line">	<span class="type">char</span> bufcode[] = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x48</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;diaoyongmen_test Function Addr: %p\r\n&quot;</span>, &amp;diaoyongmen_test);</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		push fs;</span><br><span class="line">		call fword ptr bufcode;</span><br><span class="line">	MyRet:</span><br><span class="line">		pop fs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>那么现在来说，不管我在WinDbg中断不断，应该都是没有问题的，因为我保证了fs恢复正确。<br>确实，现在是正确的，那么我们最开始的代码出错在哪呢？<br>实际上，我们最初的代码，在执行过程中有<code>int 3</code>的情况下（或者断在WinDbg），<code>int 3</code>将fs段段选择子修改为了<code>0x30</code>，所以能够正常执行，而除掉<code>int 3</code>的而且不断在WinDbg中的话，在内核中执行代码时，fs段段选择子为<code>0x3B</code>，所以导致了蓝屏。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 【Windows内核】5.调用门详解及跨段提权call</li>
+        <li><strong>Author:</strong> Shad0hun</li>
+        <li><strong>Created at
+                :</strong> 2025-08-18 09:10:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2025-08-18 09:13:48
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://shad0hun.github.io/2025/08/18/Windows内核/【Windows内核】5-调用门详解及跨段提权call/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Windows-Kernel/">#Windows_Kernel</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/08/18/Windows%E5%86%85%E6%A0%B8/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%916-%E4%B8%AD%E6%96%AD%E9%97%A8%E4%B8%8Eint3%E5%8A%AB%E6%8C%81/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">【Windows内核】6.中断门与int3劫持，陷阱门</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/08/16/Windows%E5%86%85%E6%A0%B8/%E3%80%90Windows%E5%86%85%E6%A0%B8%E3%80%914-%E8%A3%B8%E5%87%BD%E6%95%B0%EF%BC%8C%E6%9D%83%E9%99%90%E4%B8%8E%E6%97%A0%E6%8F%90%E6%9D%83%E8%BF%9C%E7%A8%8Bcall/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">【Windows内核】4.裸函数，权限与无提权远程call</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        Comments
+    </div>
+    
+
+        
+            
+
+
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">【Windows内核】5.调用门详解及跨段提权call</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%97%A8%E6%A6%82%E8%BF%B0"><span class="nav-text">调用门概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%97%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-text">调用门描述符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Type%E5%AD%97%E6%AE%B5"><span class="nav-text">Type字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Offset-in-Segment%E5%AD%97%E6%AE%B5"><span class="nav-text">Offset in Segment字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Segment-Selector%E5%AD%97%E6%AE%B5"><span class="nav-text">Segment Selector字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DPL%E5%AD%97%E6%AE%B5"><span class="nav-text">DPL字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Param-Count%E5%AD%97%E6%AE%B5"><span class="nav-text">Param Count字段</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%97%A8%E6%8F%90%E6%9D%83%E5%AE%9E%E9%AA%8C"><span class="nav-text">调用门提权实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%9E%84%E9%80%A0%E8%B0%83%E7%94%A8%E9%97%A8"><span class="nav-text">1.构造调用门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%86%85%E6%A0%B8%E6%80%81%E8%A7%82%E5%AF%9F%E5%A0%86%E6%A0%88"><span class="nav-text">2.内核态观察堆栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%81%A2%E5%A4%8Dfs%E6%AE%B5%E9%80%89%E6%8B%A9%E5%AD%90"><span class="nav-text">3.恢复fs段选择子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%8F%90%E6%9D%83%E9%AA%8C%E8%AF%81"><span class="nav-text">4.提权验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%97%E7%95%99%E9%97%AE%E9%A2%98"><span class="nav-text">遗留问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%97%A8%E5%B8%A6%E5%8F%82%E6%95%B0%E8%A7%82%E5%AF%9F"><span class="nav-text">调用门带参数观察</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%81%97%E7%95%99%E9%97%AE%E9%A2%98%E7%A0%94%E7%A9%B6%EF%BC%88int-3%E4%BF%AE%E6%94%B9fs%E6%AE%B5%E9%80%89%E6%8B%A9%E5%AD%90%E9%97%AE%E9%A2%98%EF%BC%89"><span class="nav-text">遗留问题研究（int 3修改fs段选择子问题）</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Shad0hun</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        19 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.4</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="fa-regular fa-arrow-up"></i>
+		</li>
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog "></i>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
